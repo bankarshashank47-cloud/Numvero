@@ -1,0 +1,619 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<meta name="description"
+content="Free online calculators for basic arithmetic, scientific calculations, percentages, age, and BMI. Fast, accurate, and mobile-friendly.">
+
+  <meta name="robots" content="index, follow">  <meta name="theme-color" content="#176b45">  <link rel="canonical" href="https://example.com/"><meta property="og:title"
+content="CalcHub — Free Online Calculators">
+
+<meta property="og:description"
+content="Free basic, scientific, percentage, age, and BMI calculators.">
+
+<meta property="og:type"
+content="website">
+
+  <title>CalcHub — Free Online Calculators</title>  <link rel="stylesheet" href="style.css">  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "CalcHub",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "description": "Free online calculators for basic arithmetic, scientific calculations, percentages, age, and BMI.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script></head><body><header class="site-header">
+  <div class="header-inner"><a href="#home" class="logo" aria-label="CalcHub home">
+  Calc<span>Hub</span>
+</a>
+
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="#basic">Basic</a>
+  <a href="#scientific">Scientific</a>
+  <a href="#percentage">Percentage</a>
+  <a href="#age">Age</a>
+  <a href="#bmi">BMI</a>
+</nav>
+
+<button id="themeBtn"
+        class="theme-btn"
+        type="button"
+        aria-label="Toggle dark mode"
+        title="Toggle dark mode">
+  ◐
+</button>
+
+  </div>
+</header><main id="home">  <section class="hero">
+    <div class="hero-content">  <p class="eyebrow">FREE ONLINE TOOLS</p>
+
+  <h1>Calculators for everyday math</h1>
+
+  <p class="hero-text">
+    Fast, accurate and mobile-friendly calculators for arithmetic,
+    scientific calculations, percentages, age and BMI.
+  </p>
+
+  <div class="hero-buttons">
+    <a href="#basic" class="primary-btn">Open Calculator</a>
+    <a href="#all-calculators" class="secondary-btn">View All</a>
+  </div>
+
+</div>
+
+  </section>  <section id="all-calculators" class="calculator-grid"><!-- BASIC CALCULATOR -->
+
+<section id="basic"
+         class="calculator-card">
+
+  <div class="card-heading">
+    <div>
+      <span class="card-number">01</span>
+      <h2>Basic Calculator</h2>
+      <p>Arithmetic, percentages, brackets and powers.</p>
+    </div>
+  </div>
+
+  <div class="basic-calculator">
+
+    <input id="basicDisplay"
+           class="display"
+           type="text"
+           inputmode="decimal"
+           autocomplete="off"
+           autocapitalize="off"
+           spellcheck="false"
+           placeholder="0"
+           aria-label="Basic calculator display">
+
+    <div class="keypad">
+
+      <button class="key function"
+              type="button"
+              data-basic="clear">
+        AC
+      </button>
+
+      <button class="key function"
+              type="button"
+              data-basic="backspace">
+        ⌫
+      </button>
+
+      <button class="key function"
+              type="button"
+              data-basic="(">
+        (
+      </button>
+
+      <button class="key function"
+              type="button"
+              data-basic=")">
+        )
+      </button>
+
+      <button class="key" type="button" data-basic="7">7</button>
+      <button class="key" type="button" data-basic="8">8</button>
+      <button class="key" type="button" data-basic="9">9</button>
+      <button class="key operator" type="button" data-basic="/">÷</button>
+
+      <button class="key" type="button" data-basic="4">4</button>
+      <button class="key" type="button" data-basic="5">5</button>
+      <button class="key" type="button" data-basic="6">6</button>
+      <button class="key operator" type="button" data-basic="*">×</button>
+
+      <button class="key" type="button" data-basic="1">1</button>
+      <button class="key" type="button" data-basic="2">2</button>
+      <button class="key" type="button" data-basic="3">3</button>
+      <button class="key operator" type="button" data-basic="-">−</button>
+
+      <button class="key" type="button" data-basic="0">0</button>
+      <button class="key" type="button" data-basic=".">.</button>
+      <button class="key operator" type="button" data-basic="^">xʸ</button>
+      <button class="key operator" type="button" data-basic="+">+</button>
+
+      <button class="key equals"
+              type="button"
+              data-basic="=">
+        =
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- SCIENTIFIC CALCULATOR -->
+
+<section id="scientific"
+         class="calculator-card">
+
+  <div class="card-heading">
+    <div>
+      <span class="card-number">02</span>
+      <h2>Scientific Calculator</h2>
+      <p>Trigonometry, logarithms, roots and scientific notation.</p>
+    </div>
+  </div>
+
+  <div class="scientific-calculator">
+
+    <input id="scientificDisplay"
+           class="display"
+           type="text"
+           inputmode="decimal"
+           autocomplete="off"
+           autocapitalize="off"
+           spellcheck="false"
+           placeholder="0"
+           aria-label="Scientific calculator display">
+
+    <div class="mode-row">
+
+      <button id="angleMode"
+              class="small-btn"
+              type="button">
+        DEG
+      </button>
+
+      <button id="scientificClear"
+              class="small-btn"
+              type="button">
+        CLEAR
+      </button>
+
+    </div>
+
+    <div class="scientific-grid">
+
+      <button type="button" data-sci="sin">sin</button>
+      <button type="button" data-sci="cos">cos</button>
+      <button type="button" data-sci="tan">tan</button>
+      <button type="button" data-sci="sqrt">√</button>
+
+      <button type="button" data-sci="asin">sin⁻¹</button>
+      <button type="button" data-sci="acos">cos⁻¹</button>
+      <button type="button" data-sci="atan">tan⁻¹</button>
+      <button type="button" data-sci="square">x²</button>
+
+      <button type="button" data-sci="log">log</button>
+      <button type="button" data-sci="ln">ln</button>
+      <button type="button" data-sci="exp">eˣ</button>
+      <button type="button" data-sci="power">xʸ</button>
+
+      <button type="button" data-sci="pi">π</button>
+      <button type="button" data-sci="e">e</button>
+      <button type="button" data-sci="open">(</button>
+      <button type="button" data-sci="close">)</button>
+
+      <button type="button" data-sci="7">7</button>
+      <button type="button" data-sci="8">8</button>
+      <button type="button" data-sci="9">9</button>
+      <button type="button" data-sci="/">÷</button>
+
+      <button type="button" data-sci="4">4</button>
+      <button type="button" data-sci="5">5</button>
+      <button type="button" data-sci="6">6</button>
+      <button type="button" data-sci="*">×</button>
+
+      <button type="button" data-sci="1">1</button>
+      <button type="button" data-sci="2">2</button>
+      <button type="button" data-sci="3">3</button>
+      <button type="button" data-sci="-">−</button>
+
+      <button type="button" data-sci="0">0</button>
+      <button type="button" data-sci=".">.</button>
+      <button type="button" data-sci="clear">AC</button>
+      <button type="button" data-sci="+">+</button>
+
+      <button class="sci-equals"
+              type="button"
+              data-sci="=">
+        =
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- PERCENTAGE CALCULATOR -->
+
+<section id="percentage"
+         class="calculator-card">
+
+  <div class="card-heading">
+    <div>
+      <span class="card-number">03</span>
+      <h2>Percentage Calculator</h2>
+      <p>Calculate percentages, increases, decreases and discounts.</p>
+    </div>
+  </div>
+
+  <div class="form-stack">
+
+    <div class="calc-form">
+
+      <h3>What is X% of Y?</h3>
+
+      <label>
+        Percentage
+        <input id="percentX"
+               type="number"
+               step="any"
+               inputmode="decimal"
+               placeholder="25">
+      </label>
+
+      <label>
+        Number
+        <input id="percentY"
+               type="number"
+               step="any"
+               inputmode="decimal"
+               placeholder="200">
+      </label>
+
+      <button class="primary-btn full"
+              id="percentOfBtn"
+              type="button">
+        Calculate
+      </button>
+
+      <div class="result"
+           id="percentOfResult"
+           aria-live="polite">
+        Result: —
+      </div>
+
+    </div>
+
+
+    <div class="calc-form">
+
+      <h3>Percentage Increase / Decrease</h3>
+
+      <label>
+        Original value
+        <input id="originalValue"
+               type="number"
+               step="any"
+               inputmode="decimal"
+               placeholder="100">
+      </label>
+
+      <label>
+        New value
+        <input id="newValue"
+               type="number"
+               step="any"
+               inputmode="decimal"
+               placeholder="125">
+      </label>
+
+      <button class="primary-btn full"
+              id="changeBtn"
+              type="button">
+        Calculate
+      </button>
+
+      <div class="result"
+           id="changeResult"
+           aria-live="polite">
+        Result: —
+      </div>
+
+    </div>
+
+
+    <div class="calc-form">
+
+      <h3>Discount Calculator</h3>
+
+      <label>
+        Original price
+        <input id="price"
+               type="number"
+               step="any"
+               inputmode="decimal"
+               placeholder="1000">
+      </label>
+
+      <label>
+        Discount %
+        <input id="discount"
+               type="number"
+               step="any"
+               inputmode="decimal"
+               placeholder="20">
+      </label>
+
+      <button class="primary-btn full"
+              id="discountBtn"
+              type="button">
+        Calculate
+      </button>
+
+      <div class="result"
+           id="discountResult"
+           aria-live="polite">
+        Result: —
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- AGE CALCULATOR -->
+
+<section id="age"
+         class="calculator-card">
+
+  <div class="card-heading">
+    <div>
+      <span class="card-number">04</span>
+      <h2>Age Calculator</h2>
+      <p>Calculate your exact age from your date of birth.</p>
+    </div>
+  </div>
+
+  <div class="age-form">
+
+    <label>
+      Date of birth
+      <input id="birthDate"
+             type="date">
+    </label>
+
+    <label>
+      Calculate age on
+      <input id="ageDate"
+             type="date">
+    </label>
+
+    <button id="ageBtn"
+            class="primary-btn full"
+            type="button">
+      Calculate Age
+    </button>
+
+  </div>
+
+  <div id="ageResult"
+       class="large-result"
+       aria-live="polite">
+    Enter your date of birth.
+  </div>
+
+</section>
+
+
+<!-- BMI CALCULATOR -->
+
+<section id="bmi"
+         class="calculator-card">
+
+  <div class="card-heading">
+    <div>
+      <span class="card-number">05</span>
+      <h2>BMI Calculator</h2>
+      <p>Calculate BMI using metric or imperial units.</p>
+    </div>
+  </div>
+
+  <div class="unit-tabs">
+
+    <button class="unit-tab active"
+            type="button"
+            data-unit="metric">
+      Metric
+    </button>
+
+    <button class="unit-tab"
+            type="button"
+            data-unit="imperial">
+      Imperial
+    </button>
+
+  </div>
+
+
+  <div id="metricFields"
+       class="bmi-fields">
+
+    <label>
+      Height (cm)
+      <input id="heightCm"
+             type="number"
+             step="any"
+             inputmode="decimal"
+             placeholder="170">
+    </label>
+
+    <label>
+      Weight (kg)
+      <input id="weightKg"
+             type="number"
+             step="any"
+             inputmode="decimal"
+             placeholder="65">
+    </label>
+
+  </div>
+
+
+  <div id="imperialFields"
+       class="bmi-fields hidden">
+
+    <label>
+      Height (inches)
+      <input id="heightIn"
+             type="number"
+             step="any"
+             inputmode="decimal"
+             placeholder="67">
+    </label>
+
+    <label>
+      Weight (lb)
+      <input id="weightLb"
+             type="number"
+             step="any"
+             inputmode="decimal"
+             placeholder="143">
+    </label>
+
+  </div>
+
+  <button id="bmiBtn"
+          class="primary-btn full"
+          type="button">
+    Calculate BMI
+  </button>
+
+  <div id="bmiResult"
+       class="large-result"
+       aria-live="polite">
+    Enter your height and weight.
+  </div>
+
+  <p class="disclaimer">
+    BMI is a general screening measure and is not a diagnosis.
+    For health decisions, consult a qualified healthcare professional.
+  </p>
+
+</section>
+
+  </section>  <!-- SEO CONTENT -->  <section class="content-section"><h2>Free Online Calculators</h2>
+
+<p>
+  CalcHub provides free online calculation tools in one place.
+  Use the basic calculator for everyday arithmetic, the scientific
+  calculator for advanced mathematics, the percentage calculator
+  for percentage problems and discounts, the age calculator for
+  calculating age from dates, and the BMI calculator for calculating
+  body mass index.
+</p>
+
+
+<h2>How to use the calculators</h2>
+
+<div class="info-grid">
+
+  <article>
+    <h3>Basic Calculator</h3>
+    <p>
+      Perform addition, subtraction, multiplication, division,
+      brackets, percentages and powers.
+    </p>
+  </article>
+
+  <article>
+    <h3>Scientific Calculator</h3>
+    <p>
+      Perform trigonometric functions, logarithms, square roots,
+      powers, constants and scientific calculations.
+    </p>
+  </article>
+
+  <article>
+    <h3>Percentage Calculator</h3>
+    <p>
+      Find a percentage of a number, calculate percentage changes,
+      and calculate discounts.
+    </p>
+  </article>
+
+  <article>
+    <h3>Age Calculator</h3>
+    <p>
+      Enter a date of birth and calculate age in years, months,
+      days and total days.
+    </p>
+  </article>
+
+  <article>
+    <h3>BMI Calculator</h3>
+    <p>
+      Enter height and weight to calculate BMI using metric or
+      imperial measurements.
+    </p>
+  </article>
+
+</div>
+
+  </section>  <!-- FAQ -->  <section class="faq-section"><h2>Frequently Asked Questions</h2>
+
+<details>
+  <summary>Are these calculators free?</summary>
+  <p>
+    Yes. CalcHub calculators are designed to work directly
+    in your browser without requiring payment.
+  </p>
+</details>
+
+<details>
+  <summary>Does CalcHub work on mobile phones and tablets?</summary>
+  <p>
+    Yes. The interface is responsive and designed for phones,
+    tablets and desktop browsers.
+  </p>
+</details>
+
+<details>
+  <summary>Can I use the scientific calculator for trigonometry?</summary>
+  <p>
+    Yes. It supports sine, cosine, tangent and inverse trigonometric
+    functions, with degree and radian modes.
+  </p>
+</details>
+
+<details>
+  <summary>How is BMI calculated?</summary>
+  <p>
+    Metric BMI is calculated by dividing weight in kilograms by
+    height in metres squared.
+  </p>
+</details>
+
+  </section></main><footer class="site-footer">  <div>
+    <strong>CalcHub</strong>
+    <p>Simple online calculation tools.</p>
+  </div>  <p>
+    © <span id="year"></span> CalcHub
+  </p></footer><script src="script.js"></script></body>
+</html>
