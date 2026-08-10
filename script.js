@@ -2,336 +2,191 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-/* =====================================================
-HELPERS
-===================================================== */
+  /* =====================================================
+     HELPERS
+  ===================================================== */
 
-const $ = (id) => document.getElementById(id);
+  const $ = (id) => document.getElementById(id);
 
-function formatNumber(value) {
-if (!Number.isFinite(value)) return "Error";
+  const $$ = (selector) =>
+    document.querySelectorAll(selector);
 
-return Number(value.toPrecision(12)).toLocaleString(
-  undefined,
-  { maximumFractionDigits: 10 }
-);
+  function formatNumber(value) {
+    if (!Number.isFinite(value)) return "Error";
 
-}
+    return Number(value.toPrecision(12)).toLocaleString(
+      undefined,
+      {
+        maximumFractionDigits: 10
+      }
+    );
+  }
 
-/* =====================================================
-DARK MODE
-===================================================== */
 
-const themeBtn = $("themeBtn");
+  /* =====================================================
+     THEME
+  ===================================================== */
 
-if (themeBtn) {
+  const themeBtn = $("themeBtn");
 
-const savedTheme =
-  localStorage.getItem("calculator-theme");
+  function applyTheme(theme) {
 
-if (savedTheme === "dark") {
-  document.body.classList.add("dark");
-}
+    document.body.classList.toggle(
+      "dark",
+      theme === "dark"
+    );
 
-themeBtn.addEventListener("click", () => {
+    if (themeBtn) {
 
-  document.body.classList.toggle("dark");
+      themeBtn.textContent =
+        theme === "dark" ? "☀" : "◐";
 
-  localStorage.setItem(
-    "calculator-theme",
-    document.body.classList.contains("dark")
+      themeBtn.setAttribute(
+        "aria-label",
+        theme === "dark"
+          ? "Switch to light mode"
+          : "Switch to dark mode"
+      );
+    }
+  }
+
+  const savedTheme =
+    localStorage.getItem("numvero-theme");
+
+  applyTheme(
+    savedTheme === "dark"
       ? "dark"
       : "light"
   );
 
-});
+  if (themeBtn) {
 
-}
+    themeBtn.addEventListener(
+      "click",
+      () => {
 
-/* =====================================================
-BASIC CALCULATOR
-===================================================== */
+        const newTheme =
+          document.body.classList.contains("dark")
+            ? "light"
+            : "dark";
 
-const basicDisplay = $("basicDisplay");
+        localStorage.setItem(
+          "numvero-theme",
+          newTheme
+        );
 
-if (basicDisplay) {
+        applyTheme(newTheme);
 
-document
-  .querySelectorAll("[data-basic]")
-  .forEach(button => {
-
-    button.addEventListener("click", () => {
-
-      const value = button.dataset.basic;
-
-      if (basicDisplay.value === "Error") {
-        basicDisplay.value = "";
       }
-
-      if (value === "clear") {
-        basicDisplay.value = "";
-        return;
-      }
-
-      if (value === "backspace") {
-        basicDisplay.value =
-          basicDisplay.value.slice(0, -1);
-        return;
-      }
-
-      if (value === "=") {
-        calculateBasic();
-        return;
-      }
-
-      basicDisplay.value += value;
-
-    });
-
-  });
-
-
-function calculateBasic() {
-
-  let expression =
-    basicDisplay.value.trim();
-
-  if (!expression) return;
-
-  if (
-    !/^[0-9+\-*/().^%\s]+$/.test(expression)
-  ) {
-    basicDisplay.value = "Error";
-    return;
+    );
   }
 
-  try {
 
-    expression =
-      expression.replace(/\^/g, "**");
+  /* =====================================================
+     CALCULATOR NAVIGATION
+  ===================================================== */
 
-    expression =
-      expression.replace(
-        /(\d+(?:\.\d+)?)%/g,
-        "($1/100)"
+  const menu =
+    document.querySelector(".calculator-menu");
+
+  const views =
+    $$(".calculator-view");
+
+  const openButtons =
+    $$(".open-calculator");
+
+  const backButtons =
+    $$("[data-back]");
+
+
+  function hideAllCalculators() {
+
+    views.forEach(view => {
+
+      view.classList.remove("active");
+
+      view.setAttribute(
+        "aria-hidden",
+        "true"
       );
 
-    const result =
-      Function(
-        `"use strict"; return (${expression})`
-      )();
-
-    if (!Number.isFinite(result)) {
-      throw new Error();
-    }
-
-    basicDisplay.value =
-      formatNumber(result);
-
-  } catch {
-
-    basicDisplay.value = "Error";
-
+    });
   }
 
-}
 
+  function showMenu() {
 
-basicDisplay.addEventListener(
-  "keydown",
-  event => {
+    hideAllCalculators();
 
-    if (event.key === "Enter") {
-      event.preventDefault();
-      calculateBasic();
+    if (menu) {
+      menu.classList.remove("hidden");
     }
 
-    if (event.key === "Escape") {
-      basicDisplay.value = "";
-    }
-
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
   }
-);
 
-}
 
-/* =====================================================
-SCIENTIFIC CALCULATOR
-===================================================== */
+  function showCalculator(name, updateURL = true) {
 
-const scientificDisplay =
-$("scientificDisplay");
+    const target =
+      $(`view-${name}`);
 
-let angleMode = "DEG";
+    if (!target) {
+      showMenu();
+      return;
+    }
 
-if (scientificDisplay) {
+    if (menu) {
+      menu.classList.add("hidden");
+    }
 
-const angleButton = $("angleMode");
+    hideAllCalculators();
 
-if (angleButton) {
+    target.classList.add("active");
 
-  angleButton.addEventListener(
-    "click",
-    () => {
+    target.setAttribute(
+      "aria-hidden",
+      "false"
+    );
 
-      angleMode =
-        angleMode === "DEG"
-          ? "RAD"
-          : "DEG";
+    if (updateURL) {
 
-      angleButton.textContent =
-        angleMode;
+      const newURL =
+        `${window.location.pathname}` +
+        `${window.location.search}` +
+        `#${name}`;
+
+      history.pushState(
+        { calculator: name },
+        "",
+        newURL
+      );
 
     }
-  );
 
-}
-
-
-const clearButton =
-  $("scientificClear");
-
-if (clearButton) {
-
-  clearButton.addEventListener(
-    "click",
-    () => {
-      scientificDisplay.value = "";
-    }
-  );
-
-}
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
 
 
-document
-  .querySelectorAll("[data-sci]")
-  .forEach(button => {
+  openButtons.forEach(button => {
 
     button.addEventListener(
       "click",
       () => {
 
-        const value =
-          button.dataset.sci;
+        const calculator =
+          button.dataset.open;
 
-        if (
-          scientificDisplay.value === "Error"
-        ) {
-          scientificDisplay.value = "";
-        }
-
-        if (value === "clear") {
-          scientificDisplay.value = "";
-          return;
-        }
-
-        if (value === "=") {
-          calculateScientific();
-          return;
-        }
-
-        if (value === "sin") {
-          applyScientificFunction(
-            Math.sin,
-            true
-          );
-          return;
-        }
-
-        if (value === "cos") {
-          applyScientificFunction(
-            Math.cos,
-            true
-          );
-          return;
-        }
-
-        if (value === "tan") {
-          applyScientificFunction(
-            Math.tan,
-            true
-          );
-          return;
-        }
-
-        if (value === "asin") {
-          applyInverseTrig(Math.asin);
-          return;
-        }
-
-        if (value === "acos") {
-          applyInverseTrig(Math.acos);
-          return;
-        }
-
-        if (value === "atan") {
-          applyInverseTrig(Math.atan);
-          return;
-        }
-
-        if (value === "sqrt") {
-          applyScientificFunction(
-            Math.sqrt,
-            false
-          );
-          return;
-        }
-
-        if (value === "square") {
-          scientificDisplay.value += "^2";
-          return;
-        }
-
-        if (value === "log") {
-          applyScientificFunction(
-            Math.log10,
-            false
-          );
-          return;
-        }
-
-        if (value === "ln") {
-          applyScientificFunction(
-            Math.log,
-            false
-          );
-          return;
-        }
-
-        if (value === "exp") {
-          applyScientificFunction(
-            Math.exp,
-            false
-          );
-          return;
-        }
-
-        if (value === "power") {
-          scientificDisplay.value += "^";
-          return;
-        }
-
-        if (value === "pi") {
-          scientificDisplay.value += "π";
-          return;
-        }
-
-        if (value === "e") {
-          scientificDisplay.value += "e";
-          return;
-        }
-
-        if (value === "open") {
-          scientificDisplay.value += "(";
-          return;
-        }
-
-        if (value === "close") {
-          scientificDisplay.value += ")";
-          return;
-        }
-
-        scientificDisplay.value += value;
+        showCalculator(
+          calculator,
+          true
+        );
 
       }
     );
@@ -339,569 +194,1116 @@ document
   });
 
 
-function getNumber() {
+  backButtons.forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        if (window.location.hash) {
+          history.pushState(
+            {},
+            "",
+            window.location.pathname +
+            window.location.search
+          );
+        }
+
+        showMenu();
 
-  const value =
-    Number(scientificDisplay.value);
-
-  if (!Number.isFinite(value)) {
-    throw new Error();
-  }
-
-  return value;
-
-}
-
-
-function toRadians(value) {
-
-  return angleMode === "DEG"
-    ? value * Math.PI / 180
-    : value;
-
-}
-
-
-function fromRadians(value) {
-
-  return angleMode === "DEG"
-    ? value * 180 / Math.PI
-    : value;
-
-}
-
-
-function applyScientificFunction(
-  fn,
-  usesAngle
-) {
-
-  try {
-
-    const value = getNumber();
-
-    const result =
-      fn(
-        usesAngle
-          ? toRadians(value)
-          : value
-      );
-
-    if (!Number.isFinite(result)) {
-      throw new Error();
-    }
-
-    scientificDisplay.value =
-      formatNumber(result);
-
-  } catch {
-
-    scientificDisplay.value = "Error";
-
-  }
-
-}
-
-
-function applyInverseTrig(fn) {
-
-  try {
-
-    const value = getNumber();
-
-    const result =
-      fromRadians(fn(value));
-
-    if (!Number.isFinite(result)) {
-      throw new Error();
-    }
-
-    scientificDisplay.value =
-      formatNumber(result);
-
-  } catch {
-
-    scientificDisplay.value = "Error";
-
-  }
-
-}
-
-
-function calculateScientific() {
-
-  let expression =
-    scientificDisplay.value.trim();
-
-  if (!expression) return;
-
-  try {
-
-    expression =
-      expression
-        .replace(/π/g, "Math.PI")
-        .replace(/\be\b/g, "Math.E")
-        .replace(/\^/g, "**");
-
-    if (
-      !/^[0-9+\-*/().\sA-Za-z]+$/.test(
-        expression
-      )
-    ) {
-      throw new Error();
-    }
-
-    const remaining =
-      expression
-        .replace(/Math\.PI/g, "")
-        .replace(/Math\.E/g, "");
-
-    if (/[A-Za-z]/.test(remaining)) {
-      throw new Error();
-    }
-
-    const result =
-      Function(
-        `"use strict"; return (${expression})`
-      )();
-
-    if (!Number.isFinite(result)) {
-      throw new Error();
-    }
-
-    scientificDisplay.value =
-      formatNumber(result);
-
-  } catch {
-
-    scientificDisplay.value = "Error";
-
-  }
-
-}
-
-
-scientificDisplay.addEventListener(
-  "keydown",
-  event => {
-
-    if (event.key === "Enter") {
-      event.preventDefault();
-      calculateScientific();
-    }
-
-    if (event.key === "Escape") {
-      scientificDisplay.value = "";
-    }
-
-  }
-);
-
-}
-
-/* =====================================================
-PERCENTAGE CALCULATOR
-===================================================== */
-
-const percentOfBtn =
-$("percentOfBtn");
-
-if (percentOfBtn) {
-
-percentOfBtn.addEventListener(
-  "click",
-  () => {
-
-    const percentage =
-      Number($("percentX").value);
-
-    const number =
-      Number($("percentY").value);
-
-    if (
-      !Number.isFinite(percentage) ||
-      !Number.isFinite(number)
-    ) {
-
-      $("percentOfResult").textContent =
-        "Please enter valid numbers.";
-
-      return;
-    }
-
-    const result =
-      percentage / 100 * number;
-
-    $("percentOfResult").textContent =
-      `${formatNumber(percentage)}% of ` +
-      `${formatNumber(number)} = ` +
-      `${formatNumber(result)}`;
-
-  }
-);
-
-}
-
-const changeBtn =
-$("changeBtn");
-
-if (changeBtn) {
-
-changeBtn.addEventListener(
-  "click",
-  () => {
-
-    const original =
-      Number($("originalValue").value);
-
-    const current =
-      Number($("newValue").value);
-
-    if (
-      !Number.isFinite(original) ||
-      !Number.isFinite(current) ||
-      original === 0
-    ) {
-
-      $("changeResult").textContent =
-        "Enter valid values. Original value cannot be zero.";
-
-      return;
-    }
-
-    const difference =
-      current - original;
-
-    const percentage =
-      difference /
-      Math.abs(original) *
-      100;
-
-    const direction =
-      difference > 0
-        ? "increase"
-        : difference < 0
-          ? "decrease"
-          : "no change";
-
-    $("changeResult").textContent =
-      `${formatNumber(
-        Math.abs(percentage)
-      )}% ${direction}`;
-
-  }
-);
-
-}
-
-const discountBtn =
-$("discountBtn");
-
-if (discountBtn) {
-
-discountBtn.addEventListener(
-  "click",
-  () => {
-
-    const price =
-      Number($("price").value);
-
-    const discount =
-      Number($("discount").value);
-
-    if (
-      !Number.isFinite(price) ||
-      !Number.isFinite(discount) ||
-      price < 0 ||
-      discount < 0 ||
-      discount > 100
-    ) {
-
-      $("discountResult").textContent =
-        "Enter a valid price and discount between 0% and 100%.";
-
-      return;
-    }
-
-    const saved =
-      price * discount / 100;
-
-    const finalPrice =
-      price - saved;
-
-    $("discountResult").textContent =
-      `You save ${formatNumber(saved)}. ` +
-      `Final price: ${formatNumber(finalPrice)}`;
-
-  }
-);
-
-}
-
-/* =====================================================
-AGE CALCULATOR
-===================================================== */
-
-const ageDate =
-$("ageDate");
-
-if (ageDate) {
-
-const today =
-  new Date();
-
-ageDate.value =
-  today.toISOString().split("T")[0];
-
-}
-
-const ageBtn =
-$("ageBtn");
-
-if (ageBtn) {
-
-ageBtn.addEventListener(
-  "click",
-  () => {
-
-    const birthInput =
-      $("birthDate").value;
-
-    const endInput =
-      $("ageDate").value;
-
-    if (
-      !birthInput ||
-      !endInput
-    ) {
-
-      $("ageResult").textContent =
-        "Please enter both dates.";
-
-      return;
-    }
-
-    const birth =
-      parseLocalDate(birthInput);
-
-    const end =
-      parseLocalDate(endInput);
-
-    if (birth > end) {
-
-      $("ageResult").textContent =
-        "Date of birth cannot be after the calculation date.";
-
-      return;
-    }
-
-    let years =
-      end.getFullYear() -
-      birth.getFullYear();
-
-    let months =
-      end.getMonth() -
-      birth.getMonth();
-
-    let days =
-      end.getDate() -
-      birth.getDate();
-
-    if (days < 0) {
-
-      months--;
-
-      const previousMonth =
-        new Date(
-          end.getFullYear(),
-          end.getMonth(),
-          0
-        );
-
-      days +=
-        previousMonth.getDate();
-
-    }
-
-    if (months < 0) {
-
-      years--;
-      months += 12;
-
-    }
-
-    const totalDays =
-      Math.floor(
-        (end - birth) /
-        86400000
-      );
-
-    $("ageResult").innerHTML =
-      `<strong>
-         ${years} years,
-         ${months} months,
-         ${days} days
-       </strong>
-       <br>
-       <small>
-         ${totalDays.toLocaleString()}
-         total days
-       </small>`;
-
-  }
-);
-
-}
-
-function parseLocalDate(value) {
-
-const [
-  year,
-  month,
-  day
-] =
-  value.split("-").map(Number);
-
-return new Date(
-  year,
-  month - 1,
-  day
-);
-
-}
-
-/* =====================================================
-BMI CALCULATOR
-===================================================== */
-
-let bmiUnit = "metric";
-
-document
-.querySelectorAll(".unit-tab")
-.forEach(button => {
-
-  button.addEventListener(
-    "click",
-    () => {
-
-      document
-        .querySelectorAll(".unit-tab")
-        .forEach(btn =>
-          btn.classList.remove("active")
-        );
-
-      button.classList.add("active");
-
-      bmiUnit =
-        button.dataset.unit;
-
-      $("metricFields")
-        .classList.toggle(
-          "hidden",
-          bmiUnit !== "metric"
-        );
-
-      $("imperialFields")
-        .classList.toggle(
-          "hidden",
-          bmiUnit !== "imperial"
-        );
-
-      $("bmiResult").textContent =
-        "Enter your height and weight.";
-
-    }
-  );
-
-});
-
-const bmiBtn =
-$("bmiBtn");
-
-if (bmiBtn) {
-
-bmiBtn.addEventListener(
-  "click",
-  () => {
-
-    let bmi;
-
-    if (bmiUnit === "metric") {
-
-      const heightCm =
-        Number($("heightCm").value);
-
-      const weightKg =
-        Number($("weightKg").value);
-
-      if (
-        !Number.isFinite(heightCm) ||
-        !Number.isFinite(weightKg) ||
-        heightCm <= 0 ||
-        weightKg <= 0
-      ) {
-
-        $("bmiResult").textContent =
-          "Enter valid height and weight.";
-
-        return;
       }
+    );
 
-      const heightM =
-        heightCm / 100;
+  });
 
-      bmi =
-        weightKg /
-        (heightM * heightM);
+
+  function loadFromHash() {
+
+    const hash =
+      window.location.hash
+        .replace("#", "")
+        .toLowerCase();
+
+    const validCalculators = [
+      "basic",
+      "scientific",
+      "percentage",
+      "age",
+      "bmi"
+    ];
+
+    if (
+      validCalculators.includes(hash)
+    ) {
+
+      showCalculator(
+        hash,
+        false
+      );
 
     } else {
 
-      const heightIn =
-        Number($("heightIn").value);
+      showMenu();
 
-      const weightLb =
-        Number($("weightLb").value);
+    }
+  }
+
+
+  window.addEventListener(
+    "popstate",
+    loadFromHash
+  );
+
+  window.addEventListener(
+    "hashchange",
+    loadFromHash
+  );
+
+  loadFromHash();
+
+
+  /* =====================================================
+     BASIC CALCULATOR
+  ===================================================== */
+
+  const basicDisplay =
+    $("basicDisplay");
+
+  if (basicDisplay) {
+
+    $$("[data-basic]")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const value =
+              button.dataset.basic;
+
+            if (
+              basicDisplay.value === "Error"
+            ) {
+              basicDisplay.value = "";
+            }
+
+            if (value === "clear") {
+
+              basicDisplay.value = "";
+
+              return;
+            }
+
+            if (value === "backspace") {
+
+              basicDisplay.value =
+                basicDisplay.value.slice(0, -1);
+
+              return;
+            }
+
+            if (value === "=") {
+
+              calculateBasic();
+
+              return;
+            }
+
+            basicDisplay.value += value;
+
+          }
+        );
+
+      });
+
+
+    function calculateBasic() {
+
+      let expression =
+        basicDisplay.value.trim();
+
+      if (!expression) return;
+
+
+      /*
+        Only permit calculator characters.
+        Function() is used only after this strict
+        whitelist is applied.
+      */
 
       if (
-        !Number.isFinite(heightIn) ||
-        !Number.isFinite(weightLb) ||
-        heightIn <= 0 ||
-        weightLb <= 0
+        !/^[0-9+\-*/().^%\s]+$/.test(
+          expression
+        )
       ) {
 
-        $("bmiResult").textContent =
-          "Enter valid height and weight.";
+        basicDisplay.value = "Error";
 
         return;
       }
 
-      bmi =
-        703 *
-        weightLb /
-        (heightIn * heightIn);
+
+      try {
+
+        expression =
+          expression.replace(
+            /\^/g,
+            "**"
+          );
+
+
+        expression =
+          expression.replace(
+            /(\d+(?:\.\d+)?)%/g,
+            "($1/100)"
+          );
+
+
+        const result =
+          Function(
+            `"use strict"; return (${expression})`
+          )();
+
+
+        if (
+          !Number.isFinite(result)
+        ) {
+          throw new Error();
+        }
+
+
+        basicDisplay.value =
+          formatNumber(result);
+
+      } catch {
+
+        basicDisplay.value =
+          "Error";
+
+      }
 
     }
 
-    $("bmiResult").innerHTML =
-      `<strong>
-         BMI: ${Number(bmi.toFixed(1))}
-       </strong>`;
+
+    basicDisplay.addEventListener(
+      "keydown",
+      event => {
+
+        if (event.key === "Enter") {
+
+          event.preventDefault();
+
+          calculateBasic();
+
+        }
+
+        if (event.key === "Escape") {
+
+          basicDisplay.value = "";
+
+        }
+
+      }
+    );
 
   }
-);
 
-}
 
-/* =====================================================
-FOOTER YEAR
-===================================================== */
+  /* =====================================================
+     SCIENTIFIC CALCULATOR
+  ===================================================== */
 
-const year =
-$("year");
+  const scientificDisplay =
+    $("scientificDisplay");
 
-if (year) {
-year.textContent =
-new Date().getFullYear();
-}
+  let angleMode = "DEG";
 
-});
+
+  if (scientificDisplay) {
+
+    const angleButton =
+      $("angleMode");
+
+
+    if (angleButton) {
+
+      angleButton.addEventListener(
+        "click",
+        () => {
+
+          angleMode =
+            angleMode === "DEG"
+              ? "RAD"
+              : "DEG";
+
+          angleButton.textContent =
+            angleMode;
+
+        }
+      );
+
+    }
+
+
+    const clearButton =
+      $("scientificClear");
+
+
+    if (clearButton) {
+
+      clearButton.addEventListener(
+        "click",
+        () => {
+
+          scientificDisplay.value = "";
+
+        }
+      );
+
+    }
+
+
+    $$("[data-sci]")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const value =
+              button.dataset.sci;
+
+
+            if (
+              scientificDisplay.value ===
+              "Error"
+            ) {
+
+              scientificDisplay.value = "";
+
+            }
+
+
+            if (value === "clear") {
+
+              scientificDisplay.value = "";
+
+              return;
+            }
+
+
+            if (value === "=") {
+
+              calculateScientific();
+
+              return;
+            }
+
+
+            if (value === "sin") {
+
+              applyScientificFunction(
+                Math.sin,
+                true
+              );
+
+              return;
+            }
+
+
+            if (value === "cos") {
+
+              applyScientificFunction(
+                Math.cos,
+                true
+              );
+
+              return;
+            }
+
+
+            if (value === "tan") {
+
+              applyScientificFunction(
+                Math.tan,
+                true
+              );
+
+              return;
+            }
+
+
+            if (value === "asin") {
+
+              applyInverseTrig(
+                Math.asin
+              );
+
+              return;
+            }
+
+
+            if (value === "acos") {
+
+              applyInverseTrig(
+                Math.acos
+              );
+
+              return;
+            }
+
+
+            if (value === "atan") {
+
+              applyInverseTrig(
+                Math.atan
+              );
+
+              return;
+            }
+
+
+            if (value === "sqrt") {
+
+              applyScientificFunction(
+                Math.sqrt,
+                false
+              );
+
+              return;
+            }
+
+
+            if (value === "square") {
+
+              scientificDisplay.value += "^2";
+
+              return;
+            }
+
+
+            if (value === "log") {
+
+              applyScientificFunction(
+                Math.log10,
+                false
+              );
+
+              return;
+            }
+
+
+            if (value === "ln") {
+
+              applyScientificFunction(
+                Math.log,
+                false
+              );
+
+              return;
+            }
+
+
+            if (value === "exp") {
+
+              applyScientificFunction(
+                Math.exp,
+                false
+              );
+
+              return;
+            }
+
+
+            if (value === "power") {
+
+              scientificDisplay.value += "^";
+
+              return;
+            }
+
+
+            if (value === "pi") {
+
+              scientificDisplay.value += "π";
+
+              return;
+            }
+
+
+            if (value === "e") {
+
+              scientificDisplay.value += "e";
+
+              return;
+            }
+
+
+            if (value === "open") {
+
+              scientificDisplay.value += "(";
+
+              return;
+            }
+
+
+            if (value === "close") {
+
+              scientificDisplay.value += ")";
+
+              return;
+            }
+
+
+            scientificDisplay.value += value;
+
+          }
+        );
+
+      });
+
+
+    function getNumber() {
+
+      const value =
+        Number(
+          scientificDisplay.value
+        );
+
+      if (
+        !Number.isFinite(value)
+      ) {
+
+        throw new Error();
+
+      }
+
+      return value;
+
+    }
+
+
+    function toRadians(value) {
+
+      return angleMode === "DEG"
+        ? value * Math.PI / 180
+        : value;
+
+    }
+
+
+    function fromRadians(value) {
+
+      return angleMode === "DEG"
+        ? value * 180 / Math.PI
+        : value;
+
+    }
+
+
+    function applyScientificFunction(
+      fn,
+      usesAngle
+    ) {
+
+      try {
+
+        const value =
+          getNumber();
+
+        const result =
+          fn(
+            usesAngle
+              ? toRadians(value)
+              : value
+          );
+
+
+        if (
+          !Number.isFinite(result)
+        ) {
+
+          throw new Error();
+
+        }
+
+
+        scientificDisplay.value =
+          formatNumber(result);
+
+      } catch {
+
+        scientificDisplay.value =
+          "Error";
+
+      }
+
+    }
+
+
+    function applyInverseTrig(fn) {
+
+      try {
+
+        const value =
+          getNumber();
+
+        const result =
+          fromRadians(
+            fn(value)
+          );
+
+
+        if (
+          !Number.isFinite(result)
+        ) {
+
+          throw new Error();
+
+        }
+
+
+        scientificDisplay.value =
+          formatNumber(result);
+
+      } catch {
+
+        scientificDisplay.value =
+          "Error";
+
+      }
+
+    }
+
+
+    function calculateScientific() {
+
+      let expression =
+        scientificDisplay.value.trim();
+
+      if (!expression) return;
+
+
+      try {
+
+        expression =
+          expression
+            .replace(
+              /π/g,
+              "Math.PI"
+            )
+            .replace(
+              /\be\b/g,
+              "Math.E"
+            )
+            .replace(
+              /\^/g,
+              "**"
+            );
+
+
+        if (
+          !/^[0-9+\-*/().\sA-Za-z]+$/.test(
+            expression
+          )
+        ) {
+
+          throw new Error();
+
+        }
+
+
+        const remaining =
+          expression
+            .replace(
+              /Math\.PI/g,
+              ""
+            )
+            .replace(
+              /Math\.E/g,
+              ""
+            );
+
+
+        if (
+          /[A-Za-z]/.test(
+            remaining
+          )
+        ) {
+
+          throw new Error();
+
+        }
+
+
+        const result =
+          Function(
+            `"use strict"; return (${expression})`
+          )();
+
+
+        if (
+          !Number.isFinite(result)
+        ) {
+
+          throw new Error();
+
+        }
+
+
+        scientificDisplay.value =
+          formatNumber(result);
+
+      } catch {
+
+        scientificDisplay.value =
+          "Error";
+
+      }
+
+    }
+
+
+    scientificDisplay.addEventListener(
+      "keydown",
+      event => {
+
+        if (event.key === "Enter") {
+
+          event.preventDefault();
+
+          calculateScientific();
+
+        }
+
+        if (event.key === "Escape") {
+
+          scientificDisplay.value = "";
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     PERCENTAGE CALCULATOR
+  ===================================================== */
+
+  const percentOfBtn =
+    $("percentOfBtn");
+
+
+  if (percentOfBtn) {
+
+    percentOfBtn.addEventListener(
+      "click",
+      () => {
+
+        const percentage =
+          Number(
+            $("percentX").value
+          );
+
+        const number =
+          Number(
+            $("percentY").value
+          );
+
+
+        if (
+          !Number.isFinite(percentage) ||
+          !Number.isFinite(number)
+        ) {
+
+          $("percentOfResult")
+            .textContent =
+            "Please enter valid numbers.";
+
+          return;
+        }
+
+
+        const result =
+          percentage / 100 * number;
+
+
+        $("percentOfResult")
+          .textContent =
+          `${formatNumber(percentage)}% of ` +
+          `${formatNumber(number)} = ` +
+          `${formatNumber(result)}`;
+
+      }
+    );
+
+  }
+
+
+  const changeBtn =
+    $("changeBtn");
+
+
+  if (changeBtn) {
+
+    changeBtn.addEventListener(
+      "click",
+      () => {
+
+        const original =
+          Number(
+            $("originalValue").value
+          );
+
+        const current =
+          Number(
+            $("newValue").value
+          );
+
+
+        if (
+          !Number.isFinite(original) ||
+          !Number.isFinite(current) ||
+          original === 0
+        ) {
+
+          $("changeResult")
+            .textContent =
+            "Enter valid values. Original value cannot be zero.";
+
+          return;
+        }
+
+
+        const difference =
+          current - original;
+
+
+        const percentage =
+          difference /
+          Math.abs(original) *
+          100;
+
+
+        const direction =
+          difference > 0
+            ? "increase"
+            : difference < 0
+              ? "decrease"
+              : "no change";
+
+
+        $("changeResult")
+          .textContent =
+          `${formatNumber(
+            Math.abs(percentage)
+          )}% ${direction}`;
+
+      }
+    );
+
+  }
+
+
+  const discountBtn =
+    $("discountBtn");
+
+
+  if (discountBtn) {
+
+    discountBtn.addEventListener(
+      "click",
+      () => {
+
+        const price =
+          Number(
+            $("price").value
+          );
+
+        const discount =
+          Number(
+            $("discount").value
+          );
+
+
+        if (
+          !Number.isFinite(price) ||
+          !Number.isFinite(discount) ||
+          price < 0 ||
+          discount < 0 ||
+          discount > 100
+        ) {
+
+          $("discountResult")
+            .textContent =
+            "Enter a valid price and discount between 0% and 100%.";
+
+          return;
+        }
+
+
+        const saved =
+          price * discount / 100;
+
+
+        const finalPrice =
+          price - saved;
+
+
+        $("discountResult")
+          .textContent =
+          `You save ${formatNumber(saved)}. ` +
+          `Final price: ${formatNumber(finalPrice)}`;
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     AGE CALCULATOR
+  ===================================================== */
+
+  const ageDate =
+    $("ageDate");
+
+
+  if (ageDate) {
+
+    const today =
+      new Date();
+
+
+    const localToday =
+      [
+        today.getFullYear(),
+        String(
+          today.getMonth() + 1
+        ).padStart(2, "0"),
+        String(
+          today.getDate()
+        ).padStart(2, "0")
+      ].join("-");
+
+
+    ageDate.value =
+      localToday;
+
+  }
+
+
+  const ageBtn =
+    $("ageBtn");
+
+
+  if (ageBtn) {
+
+    ageBtn.addEventListener(
+      "click",
+      () => {
+
+        const birthInput =
+          $("birthDate").value;
+
+        const endInput =
+          $("ageDate").value;
+
+
+        if (
+          !birthInput ||
+          !endInput
+        ) {
+
+          $("ageResult")
+            .textContent =
+            "Please enter both dates.";
+
+          return;
+        }
+
+
+        const birth =
+          parseLocalDate(
+            birthInput
+          );
+
+        const end =
+          parseLocalDate(
+            endInput
+          );
+
+
+        if (
+          birth > end
+        ) {
+
+          $("ageResult")
+            .textContent =
+            "Date of birth cannot be after the calculation date.";
+
+          return;
+        }
+
+
+        let years =
+          end.getFullYear() -
+          birth.getFullYear();
+
+
+        let months =
+          end.getMonth() -
+          birth.getMonth();
+
+
+        let days =
+          end.getDate() -
+          birth.getDate();
+
+
+        if (days < 0) {
+
+          months--;
+
+
+          const previousMonth =
+            new Date(
+              end.getFullYear(),
+              end.getMonth(),
+              0
+            );
+
+
+          days +=
+            previousMonth.getDate();
+
+        }
+
+
+        if (months < 0) {
+
+          years--;
+
+          months += 12;
+
+        }
+
+
+        const totalDays =
+          Math.floor(
+            (
+              end - birth
+            ) /
+            86400000
+          );
+
+
+        $("ageResult")
+          .innerHTML =
+          `<strong>
+             ${years} years,
+             ${months} months,
+             ${days} days
+           </strong>
+           <br>
+           <small>
+             ${totalDays.toLocaleString()}
+             total days
+           </small>`;
+
+      }
+    );
+
+  }
+
+
+  function parseLocalDate(value) {
+
+    const [
+      year,
+      month,
+      day
+    ] =
+      value
+        .split("-")
+        .map(Number);
+
+
+    return new Date(
+      year,
+      month - 1,
+      day
+    );
+
+  }
+
+
+  /* =====================================================
+     BMI CALCULATOR
+  ===================================================== */
+
+  let bmiUnit = "metric";
+
+
+  $$(".unit-tab")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          $$(".unit-tab")
+            .forEach(btn =>
+              btn.classList.remove(
+                "active"
+              )
+            );
+
+
+          button.classList.add(
+            "active"
+          );
+
+
+          bmiUnit =
+            button.dataset.unit;
+
+
+          const metricFields =
+            $("metricFields");
+
+          const imperialFields =
+            $("imperialFields");
+
+
+          if (metricFields) {
+
+            metricFields.classList.toggle(
+              "hidden",
+              bmiUnit !== "metric"
+            );
+
+          }
+
+
+          if (imperialFields) {
+
+            imperialFields.classList.toggle(
+              "hidden",
+              bmiUnit !== "imperial"
+            );
+
+          }
+
+
+          if ($("bmiResult")) {
+
+            $("bmiResult")
+              .textContent =
+              "Enter your height and weight.";
+
+          }
+
+      
