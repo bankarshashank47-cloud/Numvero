@@ -4,42 +4,110 @@
 content="width=device-width, initial-scale=1.0">
 
 <meta name="description"
-content="Free online calculators for arithmetic, scientific calculations, percentages, age, and BMI. Fast, accurate, mobile-friendly calculators.">
+content="Numvero offers free online calculators for everyday math, scientific calculations, percentages, age, and BMI. Fast, accurate, mobile-friendly tools.">
 
-  <meta name="robots" content="index, follow">  <meta name="theme-color" content="#176b45">  <link rel="canonical"
-        href="https://bankarshashank47-cloud.github.io/calchub/">  <title>Free Online Calculators — Basic, Scientific, Percentage, Age & BMI</title>  <!-- Open Graph --><meta property="og:title"
-content="Free Online Calculators">
+<meta name="robots"
+content="index, follow">
+
+<meta name="theme-color"
+content="#176b45">
+
+<meta name="color-scheme"
+content="light dark">
+
+  <link rel="canonical"
+        href="https://bankarshashank47-cloud.github.io/numvero/">  <!-- Open Graph --><meta property="og:title"
+content="Numvero — Free Online Calculators & Math Tools">
 
 <meta property="og:description"
-content="Free basic, scientific, percentage, age and BMI calculators. Fast, accurate and mobile-friendly.">
+content="Free basic, scientific, percentage, age and BMI calculators in one fast, mobile-friendly website.">
 
 <meta property="og:type"
 content="website">
 
 <meta property="og:url"
-content="https://bankarshashank47-cloud.github.io/calchub/">
+content="https://bankarshashank47-cloud.github.io/numvero/">
 
-  <!-- Calculator structured data -->  <script type="application/ld+json">
+<meta property="og:site_name"
+content="Numvero">
+
+  <!-- Twitter / social sharing --><meta name="twitter:card"
+content="summary">
+
+<meta name="twitter:title"
+content="Numvero — Free Online Calculators & Math Tools">
+
+<meta name="twitter:description"
+content="Free online calculators for everyday math, scientific calculations, percentages, age and BMI.">
+
+  <title>Numvero — Free Online Calculators & Math Tools</title>  <!--
+    Favicon:
+    Add favicon.svg to the repository later.
+    The site will still work without it.
+  -->  <link rel="icon"
+        href="favicon.svg"
+        type="image/svg+xml">  <!-- WebApplication structured data -->  <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "CalcHub",
-    "url": "https://bankarshashank47-cloud.github.io/calchub/",
+    "name": "Numvero",
+    "url": "https://bankarshashank47-cloud.github.io/numvero/",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "Any",
-    "description": "Free online basic, scientific, percentage, age and BMI calculators.",
+    "browserRequirements": "Requires JavaScript",
+    "description": "Free online calculators for everyday math, scientific calculations, percentages, age and BMI.",
+    "isAccessibleForFree": true,
     "offers": {
       "@type": "Offer",
       "price": "0",
       "priceCurrency": "USD"
     }
   }
-  </script>  <link rel="stylesheet" href="style.css">
-</head><body><header class="site-header">
-  <div class="header-inner"><a href="#home"
+  </script>  <!-- FAQ structured data -->  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Are Numvero calculators free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Numvero's calculators are free to use directly in a web browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Numvero work on phones and tablets?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The website is designed to work on phones, tablets and desktop browsers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use Numvero for scientific calculations?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The scientific calculator includes trigonometric functions, logarithms, roots, powers and scientific constants."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can Numvero calculate percentage increases and discounts?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The percentage calculator can calculate a percentage of a number, percentage increases and decreases, and discounts."
+        }
+      }
+    ]
+  }
+  </script>  <link rel="stylesheet"
+        href="style.css">
+</head><body><header class="site-header">  <div class="header-inner"><a href="#home"
    class="logo"
-   aria-label="CalcHub home">
-  Calc<span>Hub</span>
+   aria-label="Numvero home">
+  Num<span>vero</span>
 </a>
 
 <nav class="main-nav"
@@ -56,18 +124,19 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 <button id="themeBtn"
         class="theme-btn"
         type="button"
-        aria-label="Switch to dark mode">
+        aria-label="Toggle dark mode"
+        aria-pressed="false">
   ◐
 </button>
 
-  </div>
-</header><main id="home">  <!-- HERO -->  <section class="hero"><div class="hero-content">
+  </div></header><main id="home">  <!-- HERO -->  <section class="hero"
+           aria-labelledby="hero-title"><div class="hero-content">
 
   <p class="eyebrow">
-    FREE ONLINE TOOLS
+    FREE ONLINE MATH TOOLS
   </p>
 
-  <h1>
+  <h1 id="hero-title">
     Calculators for everyday math
   </h1>
 
@@ -85,7 +154,7 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 
     <a href="#all-calculators"
        class="secondary-btn">
-      View All
+      View All Tools
     </a>
 
   </div>
@@ -93,10 +162,12 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 </div>
 
   </section>  <!-- CALCULATORS -->  <section id="all-calculators"
-           class="calculator-grid"><!-- BASIC CALCULATOR -->
+           class="calculator-grid"
+           aria-label="Numvero calculators"><!-- BASIC CALCULATOR -->
 
 <section id="basic"
-         class="calculator-card">
+         class="calculator-card"
+         aria-labelledby="basic-title">
 
   <div class="card-heading">
 
@@ -106,7 +177,7 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
         01
       </span>
 
-      <h2>
+      <h2 id="basic-title">
         Basic Calculator
       </h2>
 
@@ -121,145 +192,162 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 
   <div class="basic-calculator">
 
+    <label class="sr-only"
+           for="basicDisplay">
+      Basic calculator display
+    </label>
+
     <input id="basicDisplay"
            class="display"
            type="text"
            inputmode="decimal"
            autocomplete="off"
            placeholder="0"
-           aria-label="Basic calculator display">
+           aria-label="Basic calculator display"
+           spellcheck="false">
 
 
-    <div class="keypad">
+    <div class="keypad"
+         aria-label="Basic calculator keypad">
 
       <button class="key function"
+              data-basic="clear"
               type="button"
-              data-basic="clear">
+              aria-label="Clear calculator">
         AC
       </button>
 
       <button class="key function"
+              data-basic="backspace"
               type="button"
-              data-basic="backspace">
+              aria-label="Delete last character">
         ⌫
       </button>
 
       <button class="key function"
+              data-basic="("
               type="button"
-              data-basic="(">
+              aria-label="Open bracket">
         (
       </button>
 
       <button class="key function"
+              data-basic=")"
               type="button"
-              data-basic=")">
+              aria-label="Close bracket">
         )
       </button>
 
 
       <button class="key"
-              type="button"
-              data-basic="7">
+              data-basic="7"
+              type="button">
         7
       </button>
 
       <button class="key"
-              type="button"
-              data-basic="8">
+              data-basic="8"
+              type="button">
         8
       </button>
 
       <button class="key"
-              type="button"
-              data-basic="9">
+              data-basic="9"
+              type="button">
         9
       </button>
 
       <button class="key operator"
+              data-basic="/"
               type="button"
-              data-basic="/">
+              aria-label="Divide">
         ÷
       </button>
 
 
       <button class="key"
-              type="button"
-              data-basic="4">
+              data-basic="4"
+              type="button">
         4
       </button>
 
       <button class="key"
-              type="button"
-              data-basic="5">
+              data-basic="5"
+              type="button">
         5
       </button>
 
       <button class="key"
-              type="button"
-              data-basic="6">
+              data-basic="6"
+              type="button">
         6
       </button>
 
       <button class="key operator"
+              data-basic="*"
               type="button"
-              data-basic="*">
+              aria-label="Multiply">
         ×
       </button>
 
 
       <button class="key"
-              type="button"
-              data-basic="1">
+              data-basic="1"
+              type="button">
         1
       </button>
 
       <button class="key"
-              type="button"
-              data-basic="2">
+              data-basic="2"
+              type="button">
         2
       </button>
 
       <button class="key"
-              type="button"
-              data-basic="3">
+              data-basic="3"
+              type="button">
         3
       </button>
 
       <button class="key operator"
+              data-basic="-"
               type="button"
-              data-basic="-">
+              aria-label="Subtract">
         −
       </button>
 
 
       <button class="key"
-              type="button"
-              data-basic="0">
+              data-basic="0"
+              type="button">
         0
       </button>
 
       <button class="key"
-              type="button"
-              data-basic=".">
+              data-basic="."
+              type="button">
         .
       </button>
 
       <button class="key operator"
+              data-basic="^"
               type="button"
-              data-basic="^">
+              aria-label="Power">
         xʸ
       </button>
 
       <button class="key operator"
+              data-basic="+"
               type="button"
-              data-basic="+">
+              aria-label="Add">
         +
       </button>
 
 
       <button class="key equals"
+              data-basic="="
               type="button"
-              data-basic="=">
+              aria-label="Calculate result">
         =
       </button>
 
@@ -273,7 +361,8 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 <!-- SCIENTIFIC CALCULATOR -->
 
 <section id="scientific"
-         class="calculator-card">
+         class="calculator-card"
+         aria-labelledby="scientific-title">
 
   <div class="card-heading">
 
@@ -283,7 +372,7 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
         02
       </span>
 
-      <h2>
+      <h2 id="scientific-title">
         Scientific Calculator
       </h2>
 
@@ -298,20 +387,27 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 
   <div class="scientific-calculator">
 
+    <label class="sr-only"
+           for="scientificDisplay">
+      Scientific calculator display
+    </label>
+
     <input id="scientificDisplay"
            class="display"
            type="text"
            inputmode="decimal"
            autocomplete="off"
            placeholder="0"
-           aria-label="Scientific calculator display">
+           aria-label="Scientific calculator display"
+           spellcheck="false">
 
 
     <div class="mode-row">
 
       <button id="angleMode"
               class="small-btn"
-              type="button">
+              type="button"
+              aria-label="Change angle mode">
         DEG
       </button>
 
@@ -326,49 +422,49 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 
     <div class="scientific-grid">
 
-      <button type="button" data-sci="sin">sin</button>
-      <button type="button" data-sci="cos">cos</button>
-      <button type="button" data-sci="tan">tan</button>
-      <button type="button" data-sci="sqrt">√</button>
+      <button data-sci="sin" type="button">sin</button>
+      <button data-sci="cos" type="button">cos</button>
+      <button data-sci="tan" type="button">tan</button>
+      <button data-sci="sqrt" type="button">√</button>
 
-      <button type="button" data-sci="asin">sin⁻¹</button>
-      <button type="button" data-sci="acos">cos⁻¹</button>
-      <button type="button" data-sci="atan">tan⁻¹</button>
-      <button type="button" data-sci="square">x²</button>
+      <button data-sci="asin" type="button">sin⁻¹</button>
+      <button data-sci="acos" type="button">cos⁻¹</button>
+      <button data-sci="atan" type="button">tan⁻¹</button>
+      <button data-sci="square" type="button">x²</button>
 
-      <button type="button" data-sci="log">log</button>
-      <button type="button" data-sci="ln">ln</button>
-      <button type="button" data-sci="exp">eˣ</button>
-      <button type="button" data-sci="power">xʸ</button>
+      <button data-sci="log" type="button">log</button>
+      <button data-sci="ln" type="button">ln</button>
+      <button data-sci="exp" type="button">eˣ</button>
+      <button data-sci="power" type="button">xʸ</button>
 
-      <button type="button" data-sci="pi">π</button>
-      <button type="button" data-sci="e">e</button>
-      <button type="button" data-sci="open">(</button>
-      <button type="button" data-sci="close">)</button>
+      <button data-sci="pi" type="button">π</button>
+      <button data-sci="e" type="button">e</button>
+      <button data-sci="open" type="button">(</button>
+      <button data-sci="close" type="button">)</button>
 
-      <button type="button" data-sci="7">7</button>
-      <button type="button" data-sci="8">8</button>
-      <button type="button" data-sci="9">9</button>
-      <button type="button" data-sci="/">÷</button>
+      <button data-sci="7" type="button">7</button>
+      <button data-sci="8" type="button">8</button>
+      <button data-sci="9" type="button">9</button>
+      <button data-sci="/" type="button">÷</button>
 
-      <button type="button" data-sci="4">4</button>
-      <button type="button" data-sci="5">5</button>
-      <button type="button" data-sci="6">6</button>
-      <button type="button" data-sci="*">×</button>
+      <button data-sci="4" type="button">4</button>
+      <button data-sci="5" type="button">5</button>
+      <button data-sci="6" type="button">6</button>
+      <button data-sci="*" type="button">×</button>
 
-      <button type="button" data-sci="1">1</button>
-      <button type="button" data-sci="2">2</button>
-      <button type="button" data-sci="3">3</button>
-      <button type="button" data-sci="-">−</button>
+      <button data-sci="1" type="button">1</button>
+      <button data-sci="2" type="button">2</button>
+      <button data-sci="3" type="button">3</button>
+      <button data-sci="-" type="button">−</button>
 
-      <button type="button" data-sci="0">0</button>
-      <button type="button" data-sci=".">.</button>
-      <button type="button" data-sci="clear">AC</button>
-      <button type="button" data-sci="+">+</button>
+      <button data-sci="0" type="button">0</button>
+      <button data-sci="." type="button">.</button>
+      <button data-sci="clear" type="button">AC</button>
+      <button data-sci="+" type="button">+</button>
 
       <button class="sci-equals"
-              type="button"
-              data-sci="=">
+              data-sci="="
+              type="button">
         =
       </button>
 
@@ -382,7 +478,8 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 <!-- PERCENTAGE CALCULATOR -->
 
 <section id="percentage"
-         class="calculator-card">
+         class="calculator-card"
+         aria-labelledby="percentage-title">
 
   <div class="card-heading">
 
@@ -392,7 +489,7 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
         03
       </span>
 
-      <h2>
+      <h2 id="percentage-title">
         Percentage Calculator
       </h2>
 
@@ -414,21 +511,23 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
         What is X% of Y?
       </h3>
 
-      <label>
+      <label for="percentX">
         Percentage
 
         <input id="percentX"
                type="number"
                step="any"
+               inputmode="decimal"
                placeholder="25">
       </label>
 
-      <label>
+      <label for="percentY">
         Number
 
         <input id="percentY"
                type="number"
                step="any"
+               inputmode="decimal"
                placeholder="200">
       </label>
 
@@ -439,7 +538,8 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
       </button>
 
       <div class="result"
-           id="percentOfResult">
+           id="percentOfResult"
+           aria-live="polite">
         Result: —
       </div>
 
@@ -452,21 +552,23 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
         Percentage Increase / Decrease
       </h3>
 
-      <label>
+      <label for="originalValue">
         Original value
 
         <input id="originalValue"
                type="number"
                step="any"
+               inputmode="decimal"
                placeholder="100">
       </label>
 
-      <label>
+      <label for="newValue">
         New value
 
         <input id="newValue"
                type="number"
                step="any"
+               inputmode="decimal"
                placeholder="125">
       </label>
 
@@ -477,7 +579,8 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
       </button>
 
       <div class="result"
-           id="changeResult">
+           id="changeResult"
+           aria-live="polite">
         Result: —
       </div>
 
@@ -490,21 +593,23 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
         Discount Calculator
       </h3>
 
-      <label>
+      <label for="price">
         Original price
 
         <input id="price"
                type="number"
                step="any"
+               inputmode="decimal"
                placeholder="1000">
       </label>
 
-      <label>
+      <label for="discount">
         Discount %
 
         <input id="discount"
                type="number"
                step="any"
+               inputmode="decimal"
                placeholder="20">
       </label>
 
@@ -515,7 +620,8 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
       </button>
 
       <div class="result"
-           id="discountResult">
+           id="discountResult"
+           aria-live="polite">
         Result: —
       </div>
 
@@ -529,7 +635,8 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 <!-- AGE CALCULATOR -->
 
 <section id="age"
-         class="calculator-card">
+         class="calculator-card"
+         aria-labelledby="age-title">
 
   <div class="card-heading">
 
@@ -539,7 +646,7 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
         04
       </span>
 
-      <h2>
+      <h2 id="age-title">
         Age Calculator
       </h2>
 
@@ -554,19 +661,21 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 
   <div class="age-form">
 
-    <label>
+    <label for="birthDate">
       Date of birth
 
       <input id="birthDate"
              type="date">
     </label>
 
-    <label>
+
+    <label for="ageDate">
       Calculate age on
 
       <input id="ageDate"
              type="date">
     </label>
+
 
     <button id="ageBtn"
             class="primary-btn full"
@@ -578,7 +687,8 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 
 
   <div id="ageResult"
-       class="large-result">
+       class="large-result"
+       aria-live="polite">
     Enter your date of birth.
   </div>
 
@@ -588,7 +698,8 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 <!-- BMI CALCULATOR -->
 
 <section id="bmi"
-         class="calculator-card">
+         class="calculator-card"
+         aria-labelledby="bmi-title">
 
   <div class="card-heading">
 
@@ -598,7 +709,7 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
         05
       </span>
 
-      <h2>
+      <h2 id="bmi-title">
         BMI Calculator
       </h2>
 
@@ -611,17 +722,23 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
   </div>
 
 
-  <div class="unit-tabs">
+  <div class="unit-tabs"
+       role="tablist"
+       aria-label="BMI units">
 
     <button class="unit-tab active"
+            data-unit="metric"
             type="button"
-            data-unit="metric">
+            role="tab"
+            aria-selected="true">
       Metric
     </button>
 
     <button class="unit-tab"
+            data-unit="imperial"
             type="button"
-            data-unit="imperial">
+            role="tab"
+            aria-selected="false">
       Imperial
     </button>
 
@@ -631,21 +748,23 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
   <div id="metricFields"
        class="bmi-fields">
 
-    <label>
+    <label for="heightCm">
       Height (cm)
 
       <input id="heightCm"
              type="number"
              step="any"
+             inputmode="decimal"
              placeholder="170">
     </label>
 
-    <label>
+    <label for="weightKg">
       Weight (kg)
 
       <input id="weightKg"
              type="number"
              step="any"
+             inputmode="decimal"
              placeholder="65">
     </label>
 
@@ -655,21 +774,23 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
   <div id="imperialFields"
        class="bmi-fields hidden">
 
-    <label>
+    <label for="heightIn">
       Height (inches)
 
       <input id="heightIn"
              type="number"
              step="any"
+             inputmode="decimal"
              placeholder="67">
     </label>
 
-    <label>
+    <label for="weightLb">
       Weight (lb)
 
       <input id="weightLb"
              type="number"
              step="any"
+             inputmode="decimal"
              placeholder="143">
     </label>
 
@@ -684,7 +805,8 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 
 
   <div id="bmiResult"
-       class="large-result">
+       class="large-result"
+       aria-live="polite">
     Enter your height and weight.
   </div>
 
@@ -696,12 +818,13 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 
 </section>
 
-  </section>  <!-- SEO CONTENT -->  <section class="content-section"><h2>
+  </section>  <!-- INFORMATION -->  <section class="content-section"
+           aria-labelledby="tools-title"><h2 id="tools-title">
   Free Online Calculators
 </h2>
 
 <p>
-  CalcHub provides useful online calculators in one place.
+  Numvero provides useful calculation tools in one place.
   Use the basic calculator for everyday arithmetic, the scientific
   calculator for advanced mathematics, the percentage calculator
   for percentage problems and discounts, the age calculator for
@@ -711,84 +834,64 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 
 
 <h2>
-  How to use the calculators
+  How to use Numvero
 </h2>
-
 
 <div class="info-grid">
 
   <article>
-
-    <h3>
-      Basic Calculator
-    </h3>
+    <h3>Basic Calculator</h3>
 
     <p>
       Perform addition, subtraction, multiplication, division,
-      brackets and powers.
+      brackets, powers and percentages.
     </p>
-
   </article>
 
 
   <article>
-
-    <h3>
-      Scientific Calculator
-    </h3>
+    <h3>Scientific Calculator</h3>
 
     <p>
       Perform trigonometric functions, logarithms, square roots,
       powers and scientific calculations.
     </p>
-
   </article>
 
 
   <article>
-
-    <h3>
-      Percentage Calculator
-    </h3>
+    <h3>Percentage Calculator</h3>
 
     <p>
-      Find a percentage of a number, calculate percentage changes
+      Find a percentage of a number, calculate percentage changes,
       and calculate discounts.
     </p>
-
   </article>
 
 
   <article>
-
-    <h3>
-      Age Calculator
-    </h3>
+    <h3>Age Calculator</h3>
 
     <p>
       Enter a date of birth and calculate age in years, months
       and days.
     </p>
-
   </article>
 
 
   <article>
-
-    <h3>
-      BMI Calculator
-    </h3>
+    <h3>BMI Calculator</h3>
 
     <p>
       Enter height and weight to calculate BMI using metric or
       imperial units.
     </p>
-
   </article>
 
 </div>
 
-  </section>  <!-- FAQ -->  <section class="faq-section"><h2>
+  </section>  <!-- FAQ -->  <section class="faq-section"
+           aria-labelledby="faq-title"><h2 id="faq-title">
   Frequently Asked Questions
 </h2>
 
@@ -800,7 +903,8 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
   </summary>
 
   <p>
-    Yes. The calculators are designed to work directly in your browser.
+    Yes. Numvero's calculators are free to use directly
+    in your browser.
   </p>
 
 </details>
@@ -809,7 +913,7 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 <details>
 
   <summary>
-    Does the calculator work on mobile phones?
+    Does Numvero work on mobile phones and tablets?
   </summary>
 
   <p>
@@ -837,25 +941,12 @@ content="https://bankarshashank47-cloud.github.io/calchub/">
 <details>
 
   <summary>
-    How is BMI calculated?
+    Can the percentage calculator calculate discounts?
   </summary>
 
   <p>
-    Metric BMI is calculated as weight in kilograms divided by
-    height in metres squared.
+    Yes. Enter the original price and discount percentage to
+    calculate the amount saved and the final price.
   </p>
 
-</details>
-
-  </section></main><!-- FOOTER --><footer class="site-footer">  <div><strong>
-  CalcHub
-</strong>
-
-<p>
-  Simple online calculation tools.
-</p>
-
-  </div>  <p>
-    © <span id="year"></span> CalcHub
-  </p></footer><script src="script.js"></script></body>
-    </html>
+</
