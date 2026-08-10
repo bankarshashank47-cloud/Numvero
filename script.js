@@ -2,32 +2,57 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  /* =====================================================
+     HELPERS
+  ===================================================== */
+
   const $ = id => document.getElementById(id);
-  const $$ = selector => document.querySelectorAll(selector);
 
-  const formatNumber = value => {
+  const $$ = selector =>
+    document.querySelectorAll(selector);
+
+  function formatNumber(value) {
     if (!Number.isFinite(value)) return "Error";
-    return Number(value.toPrecision(12)).toLocaleString(undefined, {
-      maximumFractionDigits: 10
-    });
-  };
 
-  const setText = (id, text) => {
-    const el = $(id);
-    if (el) el.textContent = text;
-  };
+    return Number(value.toPrecision(12)).toLocaleString(
+      undefined,
+      { maximumFractionDigits: 10 }
+    );
+  }
 
-  /* =========================
+  function setText(id, text) {
+    const element = $(id);
+    if (element) element.textContent = text;
+  }
+
+
+  /* =====================================================
+     CURRENT YEAR
+  ===================================================== */
+
+  const year = $("currentYear");
+
+  if (year) {
+    year.textContent = new Date().getFullYear();
+  }
+
+
+  /* =====================================================
      THEME
-  ========================= */
+  ===================================================== */
 
   const themeBtn = $("themeBtn");
 
   function applyTheme(theme) {
-    document.body.classList.toggle("dark", theme === "dark");
+    document.body.classList.toggle(
+      "dark",
+      theme === "dark"
+    );
 
     if (themeBtn) {
-      themeBtn.textContent = theme === "dark" ? "☀" : "◐";
+      themeBtn.textContent =
+        theme === "dark" ? "☀" : "◐";
+
       themeBtn.setAttribute(
         "aria-label",
         theme === "dark"
@@ -37,37 +62,73 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  const savedTheme = localStorage.getItem("numvero-theme");
-  applyTheme(savedTheme === "dark" ? "dark" : "light");
+  const savedTheme =
+    localStorage.getItem("numvero-theme");
 
-  themeBtn?.addEventListener("click", () => {
-    const theme = document.body.classList.contains("dark")
-      ? "light"
-      : "dark";
+  applyTheme(
+    savedTheme === "dark"
+      ? "dark"
+      : "light"
+  );
 
-    localStorage.setItem("numvero-theme", theme);
-    applyTheme(theme);
-  });
+  if (themeBtn) {
+    themeBtn.addEventListener("click", () => {
+      const newTheme =
+        document.body.classList.contains("dark")
+          ? "light"
+          : "dark";
+
+      localStorage.setItem(
+        "numvero-theme",
+        newTheme
+      );
+
+      applyTheme(newTheme);
+    });
+  }
 
 
-  /* =========================
+  /* =====================================================
      NAVIGATION
-  ========================= */
+  ===================================================== */
 
-  const menu = document.querySelector(".calculator-menu");
-  const views = $$(".calculator-view");
+  const menu =
+    document.querySelector(".calculator-menu");
 
-  function hideViews() {
+  const views =
+    $$(".calculator-view");
+
+  const openButtons =
+    $$(".open-calculator");
+
+  const backButtons =
+    $$("[data-back]");
+
+  function hideAllCalculators() {
     views.forEach(view => {
       view.classList.remove("active");
       view.setAttribute("aria-hidden", "true");
     });
   }
 
-  function showMenu() {
-    hideViews();
-    menu?.classList.remove("hidden");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  function showMenu(scroll = true) {
+    hideAllCalculators();
+
+    if (menu) {
+      menu.classList.remove("hidden");
+    }
+
+    if (scroll) {
+      const target =
+        document.getElementById("calculators");
+
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+    }
   }
 
   function showCalculator(name, updateURL = true) {
@@ -78,44 +139,61 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    menu?.classList.add("hidden");
-    hideViews();
+    if (menu) {
+      menu.classList.add("hidden");
+    }
+
+    hideAllCalculators();
 
     target.classList.add("active");
-    target.setAttribute("aria-hidden", "false");
+    target.setAttribute(
+      "aria-hidden",
+      "false"
+    );
 
     if (updateURL) {
       history.pushState(
         { calculator: name },
         "",
-        `${location.pathname}${location.search}#${name}`
+        `${window.location.pathname}` +
+        `${window.location.search}` +
+        `#${name}`
       );
     }
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
   }
 
-  $$(".open-calculator").forEach(button => {
+  openButtons.forEach(button => {
     button.addEventListener("click", () => {
-      showCalculator(button.dataset.open);
+      showCalculator(
+        button.dataset.open,
+        true
+      );
     });
   });
 
-  $$("[data-back]").forEach(button => {
+  backButtons.forEach(button => {
     button.addEventListener("click", () => {
-      if (location.hash) {
-        history.pushState(
-          {},
-          "",
-          location.pathname + location.search
-        );
-      }
+      history.pushState(
+        {},
+        "",
+        window.location.pathname +
+        window.location.search
+      );
+
       showMenu();
     });
   });
 
   function loadFromHash() {
-    const hash = location.hash.replace("#", "").toLowerCase();
+    const hash =
+      window.location.hash
+        .replace("#", "")
+        .toLowerCase();
 
     const valid = [
       "basic",
@@ -125,47 +203,70 @@ document.addEventListener("DOMContentLoaded", () => {
       "bmi"
     ];
 
-    valid.includes(hash)
-      ? showCalculator(hash, false)
-      : showMenu();
+    if (valid.includes(hash)) {
+      showCalculator(hash, false);
+    } else {
+      showMenu(false);
+    }
   }
 
-  addEventListener("popstate", loadFromHash);
-  addEventListener("hashchange", loadFromHash);
+  window.addEventListener(
+    "popstate",
+    loadFromHash
+  );
+
+  window.addEventListener(
+    "hashchange",
+    loadFromHash
+  );
 
   loadFromHash();
 
 
-  /* =========================
+  /* =====================================================
      BASIC CALCULATOR
-  ========================= */
+  ===================================================== */
 
-  const basicDisplay = $("basicDisplay");
+  const basicDisplay =
+    $("basicDisplay");
 
   if (basicDisplay) {
 
     function calculateBasic() {
-      let expression = basicDisplay.value.trim();
+      let expression =
+        basicDisplay.value.trim();
 
       if (!expression) return;
 
-      if (!/^[0-9+\-*/().^%\s]+$/.test(expression)) {
+      if (
+        !/^[0-9+\-*/().^%\s]+$/.test(
+          expression
+        )
+      ) {
         basicDisplay.value = "Error";
         return;
       }
 
       try {
-        expression = expression
-          .replace(/\^/g, "**")
-          .replace(/(\d+(?:\.\d+)?)%/g, "($1/100)");
+        expression =
+          expression
+            .replace(/\^/g, "**")
+            .replace(
+              /(\d+(?:\.\d+)?)%/g,
+              "($1/100)"
+            );
 
-        const result = Function(
-          `"use strict";return(${expression})`
-        )();
+        const result =
+          Function(
+            `"use strict";return (${expression})`
+          )();
 
-        if (!Number.isFinite(result)) throw new Error();
+        if (!Number.isFinite(result)) {
+          throw new Error();
+        }
 
-        basicDisplay.value = formatNumber(result);
+        basicDisplay.value =
+          formatNumber(result);
 
       } catch {
         basicDisplay.value = "Error";
@@ -175,10 +276,12 @@ document.addEventListener("DOMContentLoaded", () => {
     $$("[data-basic]").forEach(button => {
       button.addEventListener("click", () => {
 
-        const value = button.dataset.basic;
+        const value =
+          button.dataset.basic;
 
-        if (basicDisplay.value === "Error")
+        if (basicDisplay.value === "Error") {
           basicDisplay.value = "";
+        }
 
         if (value === "clear") {
           basicDisplay.value = "";
@@ -200,576 +303,725 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    basicDisplay.addEventListener("keydown", event => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        calculateBasic();
-      }
+    basicDisplay.addEventListener(
+      "keydown",
+      event => {
 
-      if (event.key === "Escape")
-        basicDisplay.value = "";
-    });
+        if (event.key === "Enter") {
+          event.preventDefault();
+          calculateBasic();
+        }
+
+        if (event.key === "Escape") {
+          basicDisplay.value = "";
+        }
+      }
+    );
   }
 
 
-  /* =========================
+  /* =====================================================
      SCIENTIFIC CALCULATOR
-  ========================= */
+  ===================================================== */
 
-  const sciDisplay = $("scientificDisplay");
+  const scientificDisplay =
+    $("scientificDisplay");
+
   let angleMode = "DEG";
 
-  if (sciDisplay) {
+  if (scientificDisplay) {
 
-    const angleButton = $("angleMode");
+    const angleButton =
+      $("angleMode");
 
-    angleButton?.addEventListener("click", () => {
-      angleMode = angleMode === "DEG" ? "RAD" : "DEG";
-      angleButton.textContent = angleMode;
-    });
+    const clearButton =
+      $("scientificClear");
 
-    $("scientificClear")?.addEventListener("click", () => {
-      sciDisplay.value = "";
-    });
+    function getScientificNumber() {
+      const value =
+        Number(scientificDisplay.value);
 
-    const getNumber = () => {
-      const n = Number(sciDisplay.value);
-      if (!Number.isFinite(n)) throw new Error();
-      return n;
-    };
+      if (!Number.isFinite(value)) {
+        throw new Error();
+      }
 
-    const toRad = n =>
-      angleMode === "DEG" ? n * Math.PI / 180 : n;
+      return value;
+    }
 
-    const fromRad = n =>
-      angleMode === "DEG" ? n * 180 / Math.PI : n;
+    function toRadians(value) {
+      return angleMode === "DEG"
+        ? value * Math.PI / 180
+        : value;
+    }
 
-    function applyFunction(fn, angle = false) {
+    function fromRadians(value) {
+      return angleMode === "DEG"
+        ? value * 180 / Math.PI
+        : value;
+    }
+
+    function applyFunction(fn, usesAngle = false) {
       try {
-        const value = getNumber();
-        const result = fn(angle ? toRad(value) : value);
+        const value =
+          getScientificNumber();
 
-        if (!Number.isFinite(result)) throw new Error();
+        const result =
+          fn(
+            usesAngle
+              ? toRadians(value)
+              : value
+          );
 
-        sciDisplay.value = formatNumber(result);
+        if (!Number.isFinite(result)) {
+          throw new Error();
+        }
+
+        scientificDisplay.value =
+          formatNumber(result);
 
       } catch {
-        sciDisplay.value = "Error";
+        scientificDisplay.value = "Error";
       }
     }
 
-    function inverseTrig(fn) {
+    function applyInverseTrig(fn) {
       try {
-        const result = fromRad(fn(getNumber()));
+        const value =
+          getScientificNumber();
 
-        if (!Number.isFinite(result)) throw new Error();
+        const result =
+          fromRadians(fn(value));
 
-        sciDisplay.value = formatNumber(result);
+        if (!Number.isFinite(result)) {
+          throw new Error();
+        }
+
+        scientificDisplay.value =
+          formatNumber(result);
 
       } catch {
-        sciDisplay.value = "Error";
+        scientificDisplay.value = "Error";
       }
     }
 
     function calculateScientific() {
-      let expression = sciDisplay.value.trim();
+      let expression =
+        scientificDisplay.value.trim();
 
       if (!expression) return;
 
       try {
-        expression = expression
-          .replace(/π/g, "Math.PI")
-          .replace(/\be\b/g, "Math.E")
-          .replace(/\^/g, "**");
 
-        if (!/^[0-9+\-*/().\sA-Za-z]+$/.test(expression))
+        expression =
+          expression
+            .replace(/π/g, "Math.PI")
+            .replace(/\be\b/g, "Math.E")
+            .replace(/\^/g, "**");
+
+        if (
+          !/^[0-9+\-*/().\sA-Za-z]+$/.test(
+            expression
+          )
+        ) {
           throw new Error();
+        }
 
-        const remaining = expression
-          .replace(/Math\.PI/g, "")
-          .replace(/Math\.E/g, "");
+        const remaining =
+          expression
+            .replace(/Math\.PI/g, "")
+            .replace(/Math\.E/g, "");
 
-        if (/[A-Za-z]/.test(remaining))
+        if (/[A-Za-z]/.test(remaining)) {
           throw new Error();
+        }
 
-        const result = Function(
-          `"use strict";return(${expression})`
-        )();
+        const result =
+          Function(
+            `"use strict";return (${expression})`
+          )();
 
-        if (!Number.isFinite(result))
+        if (!Number.isFinite(result)) {
           throw new Error();
+        }
 
-        sciDisplay.value = formatNumber(result);
+        scientificDisplay.value =
+          formatNumber(result);
 
       } catch {
-        sciDisplay.value = "Error";
+        scientificDisplay.value = "Error";
       }
+    }
+
+    if (angleButton) {
+      angleButton.addEventListener("click", () => {
+        angleMode =
+          angleMode === "DEG"
+            ? "RAD"
+            : "DEG";
+
+        angleButton.textContent =
+          angleMode;
+      });
+    }
+
+    if (clearButton) {
+      clearButton.addEventListener(
+        "click",
+        () => {
+          scientificDisplay.value = "";
+        }
+      );
     }
 
     $$("[data-sci]").forEach(button => {
+
       button.addEventListener("click", () => {
 
-        const value = button.dataset.sci;
+        const value =
+          button.dataset.sci;
 
-        if (sciDisplay.value === "Error")
-          sciDisplay.value = "";
-
-        if (value === "clear") {
-          sciDisplay.value = "";
-          return;
+        if (scientificDisplay.value === "Error") {
+          scientificDisplay.value = "";
         }
 
-        if (value === "=") {
-          calculateScientific();
-          return;
-        }
+        switch (value) {
 
-        if (value === "sin") {
-          applyFunction(Math.sin, true);
-          return;
-        }
+          case "clear":
+            scientificDisplay.value = "";
+            break;
 
-        if (value === "cos") {
-          applyFunction(Math.cos, true);
-          return;
-        }
+          case "=":
+            calculateScientific();
+            break;
 
-        if (value === "tan") {
-          applyFunction(Math.tan, true);
-          return;
-        }
+          case "sin":
+            applyFunction(Math.sin, true);
+            break;
 
-        if (value === "asin") {
-          inverseTrig(Math.asin);
-          return;
-        }
+          case "cos":
+            applyFunction(Math.cos, true);
+            break;
 
-        if (value === "acos") {
-          inverseTrig(Math.acos);
-          return;
-        }
+          case "tan":
+            applyFunction(Math.tan, true);
+            break;
 
-        if (value === "atan") {
-          inverseTrig(Math.atan);
-          return;
-        }
+          case "asin":
+            applyInverseTrig(Math.asin);
+            break;
 
-        if (value === "sqrt") {
-          applyFunction(Math.sqrt);
-          return;
-        }
+          case "acos":
+            applyInverseTrig(Math.acos);
+            break;
 
-        if (value === "square") {
-          sciDisplay.value += "^2";
-          return;
-        }
+          case "atan":
+            applyInverseTrig(Math.atan);
+            break;
 
-        if (value === "log") {
-          applyFunction(Math.log10);
-          return;
-        }
+          case "sqrt":
+            applyFunction(Math.sqrt);
+            break;
 
-        if (value === "ln") {
-          applyFunction(Math.log);
-          return;
-        }
+          case "log":
+            applyFunction(Math.log10);
+            break;
 
-        if (value === "exp") {
-          applyFunction(Math.exp);
-          return;
-        }
+          case "ln":
+            applyFunction(Math.log);
+            break;
 
-        if (value === "power") {
-          sciDisplay.value += "^";
-          return;
-        }
+          case "exp":
+            applyFunction(Math.exp);
+            break;
 
-        if (value === "pi") {
-          sciDisplay.value += "π";
-          return;
-        }
+          case "square":
+            scientificDisplay.value += "^2";
+            break;
 
-        if (value === "e") {
-          sciDisplay.value += "e";
-          return;
-        }
+          case "power":
+            scientificDisplay.value += "^";
+            break;
 
-        if (value === "open") {
-          sciDisplay.value += "(";
-          return;
-        }
+          case "pi":
+            scientificDisplay.value += "π";
+            break;
 
-        if (value === "close") {
-          sciDisplay.value += ")";
-          return;
-        }
+          case "e":
+            scientificDisplay.value += "e";
+            break;
 
-        sciDisplay.value += value;
+          case "open":
+            scientificDisplay.value += "(";
+            break;
+
+          case "close":
+            scientificDisplay.value += ")";
+            break;
+
+          default:
+            scientificDisplay.value += value;
+        }
       });
     });
 
-    sciDisplay.addEventListener("keydown", event => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        calculateScientific();
-      }
+    scientificDisplay.addEventListener(
+      "keydown",
+      event => {
 
-      if (event.key === "Escape")
-        sciDisplay.value = "";
-    });
+        if (event.key === "Enter") {
+          event.preventDefault();
+          calculateScientific();
+        }
+
+        if (event.key === "Escape") {
+          scientificDisplay.value = "";
+        }
+      }
+    );
+    }
+  
+  /* =====================================================
+     PERCENTAGE CALCULATOR
+  ===================================================== */
+
+  const percentOfBtn =
+    $("percentOfBtn");
+
+  if (percentOfBtn) {
+    percentOfBtn.addEventListener(
+      "click",
+      () => {
+
+        const percentage =
+          Number($("percentX").value);
+
+        const number =
+          Number($("percentY").value);
+
+        if (
+          !Number.isFinite(percentage) ||
+          !Number.isFinite(number)
+        ) {
+          setText(
+            "percentOfResult",
+            "Please enter valid numbers."
+          );
+          return;
+        }
+
+        const result =
+          percentage / 100 * number;
+
+        setText(
+          "percentOfResult",
+          `${formatNumber(percentage)}% of ` +
+          `${formatNumber(number)} = ` +
+          `${formatNumber(result)}`
+        );
+      }
+    );
   }
 
 
-  /* =========================
-     PERCENTAGE
-  ========================= */
+  /* =====================================================
+     PERCENTAGE CHANGE
+  ===================================================== */
 
-  $("percentOfBtn")?.addEventListener("click", () => {
+  const changeBtn =
+    $("changeBtn");
 
-    const x = Number($("percentX")?.value);
-    const y = Number($("percentY")?.value);
+  if (changeBtn) {
+    changeBtn.addEventListener(
+      "click",
+      () => {
 
-    if (!Number.isFinite(x) || !Number.isFinite(y)) {
-      setText("percentOfResult", "Please enter valid numbers.");
-      return;
-    }
+        const original =
+          Number($("originalValue").value);
 
-    setText(
-      "percentOfResult",
-      `${formatNumber(x)}% of ${formatNumber(y)} = ${formatNumber(x * y / 100)}`
+        const current =
+          Number($("newValue").value);
+
+        if (
+          !Number.isFinite(original) ||
+          !Number.isFinite(current) ||
+          original === 0
+        ) {
+          setText(
+            "changeResult",
+            "Enter valid values. Original value cannot be zero."
+          );
+          return;
+        }
+
+        const difference =
+          current - original;
+
+        const percentage =
+          difference /
+          Math.abs(original) *
+          100;
+
+        const direction =
+          difference > 0
+            ? "increase"
+            : difference < 0
+              ? "decrease"
+              : "no change";
+
+        setText(
+          "changeResult",
+          `${formatNumber(
+            Math.abs(percentage)
+          )}% ${direction}`
+        );
+      }
     );
-  });
+  }
 
 
-  $("changeBtn")?.addEventListener("click", () => {
+  /* =====================================================
+     DISCOUNT CALCULATOR
+  ===================================================== */
 
-    const original = Number($("originalValue")?.value);
-    const current = Number($("newValue")?.value);
+  const discountBtn =
+    $("discountBtn");
 
-    if (
-      !Number.isFinite(original) ||
-      !Number.isFinite(current) ||
-      original === 0
-    ) {
-      setText(
-        "changeResult",
-        "Enter valid values. Original value cannot be zero."
-      );
-      return;
-    }
+  if (discountBtn) {
+    discountBtn.addEventListener(
+      "click",
+      () => {
 
-    const difference = current - original;
-    const percentage =
-      difference / Math.abs(original) * 100;
+        const price =
+          Number($("price").value);
 
-    const direction =
-      difference > 0
-        ? "increase"
-        : difference < 0
-          ? "decrease"
-          : "no change";
+        const discount =
+          Number($("discount").value);
 
-    setText(
-      "changeResult",
-      `${formatNumber(Math.abs(percentage))}% ${direction}`
+        if (
+          !Number.isFinite(price) ||
+          !Number.isFinite(discount) ||
+          price < 0 ||
+          discount < 0 ||
+          discount > 100
+        ) {
+          setText(
+            "discountResult",
+            "Enter a valid price and discount between 0% and 100%."
+          );
+          return;
+        }
+
+        const saved =
+          price * discount / 100;
+
+        const finalPrice =
+          price - saved;
+
+        setText(
+          "discountResult",
+          `You save ${formatNumber(saved)}. ` +
+          `Final price: ${formatNumber(finalPrice)}`
+        );
+      }
     );
-  });
+  }
 
 
-  $("discountBtn")?.addEventListener("click", () => {
-
-    const price = Number($("price")?.value);
-    const discount = Number($("discount")?.value);
-
-    if (
-      !Number.isFinite(price) ||
-      !Number.isFinite(discount) ||
-      price < 0 ||
-      discount < 0 ||
-      discount > 100
-    ) {
-      setText(
-        "discountResult",
-        "Enter a valid price and discount between 0% and 100%."
-      );
-      return;
-    }
-
-    const saved = price * discount / 100;
-    const finalPrice = price - saved;
-
-    setText(
-      "discountResult",
-      `You save ${formatNumber(saved)}. Final price: ${formatNumber(finalPrice)}`
-    );
-  });
-
-
-  /* =========================
+  /* =====================================================
      AGE CALCULATOR
-  ========================= */
+  ===================================================== */
 
   function parseLocalDate(value) {
-    const [year, month, day] = value.split("-").map(Number);
-    return new Date(year, month - 1, day);
-  }
+    const parts =
+      value.split("-").map(Number);
 
-  const ageDate = $("ageDate");
-
-  if (ageDate) {
-    const today = new Date();
-
-    ageDate.value = [
-      today.getFullYear(),
-      String(today.getMonth() + 1).padStart(2, "0"),
-      String(today.getDate()).padStart(2, "0")
-    ].join("-");
-  }
-
-  $("ageBtn")?.addEventListener("click", () => {
-
-    const birthInput = $("birthDate")?.value;
-    const endInput = $("ageDate")?.value;
-
-    if (!birthInput || !endInput) {
-      setText("ageResult", "Please enter both dates.");
-      return;
+    if (parts.length !== 3) {
+      return new Date(NaN);
     }
 
-    const birth = parseLocalDate(birthInput);
-    const end = parseLocalDate(endInput);
+    const [year, month, day] = parts;
+
+    const date =
+      new Date(year, month - 1, day);
 
     if (
-      Number.isNaN(birth.getTime()) ||
-      Number.isNaN(end.getTime())
+      date.getFullYear() !== year ||
+      date.getMonth() !== month - 1 ||
+      date.getDate() !== day
     ) {
-      setText("ageResult", "Please enter valid dates.");
-      return;
+      return new Date(NaN);
     }
 
-    if (birth > end) {
-      setText(
-        "ageResult",
-        "Date of birth cannot be after the calculation date."
-      );
-      return;
-    }
+    return date;
+  }
 
-    let years =
-      end.getFullYear() - birth.getFullYear();
-
-    let months =
-      end.getMonth() - birth.getMonth();
-
-    let days =
-      end.getDate() - birth.getDate();
-
-    if (days < 0) {
-      months--;
-
-      const previousMonth = new Date(
-        end.getFullYear(),
-        end.getMonth(),
-        0
-      );
-
-      days += previousMonth.getDate();
-    }
-
-    if (months < 0) {
-      years--;
-      months += 12;
-    }
-
-    const totalDays = Math.floor(
-      (end - birth) / 86400000
+  function dateToUTC(date) {
+    return Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
     );
+  }
 
-    const result = $("ageResult");
+  const ageDate =
+    $("ageDate");
 
-    if (result) {
-      result.innerHTML =
-        `<strong>${years} years, ${months} months, ${days} days</strong>` +
-        `<br><small>${totalDays.toLocaleString()} total days</small>`;
-    }
-  });
+  if (ageDate) {
+    const today =
+      new Date();
+
+    ageDate.value =
+      [
+        today.getFullYear(),
+        String(
+          today.getMonth() + 1
+        ).padStart(2, "0"),
+        String(
+          today.getDate()
+        ).padStart(2, "0")
+      ].join("-");
+  }
+
+  const ageBtn =
+    $("ageBtn");
+
+  if (ageBtn) {
+    ageBtn.addEventListener(
+      "click",
+      () => {
+
+        const birthInput =
+          $("birthDate").value;
+
+        const endInput =
+          $("ageDate").value;
+
+        if (!birthInput || !endInput) {
+          setText(
+            "ageResult",
+            "Please enter both dates."
+          );
+          return;
+        }
+
+        const birth =
+          parseLocalDate(birthInput);
+
+        const end =
+          parseLocalDate(endInput);
+
+        if (
+          Number.isNaN(birth.getTime()) ||
+          Number.isNaN(end.getTime())
+        ) {
+          setText(
+            "ageResult",
+            "Please enter valid dates."
+          );
+          return;
+        }
+
+        if (birth > end) {
+          setText(
+            "ageResult",
+            "Date of birth cannot be after the calculation date."
+          );
+          return;
+        }
+
+        let years =
+          end.getFullYear() -
+          birth.getFullYear();
+
+        let months =
+          end.getMonth() -
+          birth.getMonth();
+
+        let days =
+          end.getDate() -
+          birth.getDate();
+
+        if (days < 0) {
+          months--;
+
+          const previousMonth =
+            new Date(
+              end.getFullYear(),
+              end.getMonth(),
+              0
+            );
+
+          days +=
+            previousMonth.getDate();
+        }
+
+        if (months < 0) {
+          years--;
+          months += 12;
+        }
+
+        const totalDays =
+          Math.floor(
+            (
+              dateToUTC(end) -
+              dateToUTC(birth)
+            ) /
+            86400000
+          );
+
+        const result =
+          $("ageResult");
+
+        if (result) {
+          result.innerHTML =
+            `<strong>${years} years, ` +
+            `${months} months, ` +
+            `${days} days</strong>` +
+            `<br>` +
+            `<small>${totalDays.toLocaleString()} total days</small>`;
+        }
+      }
+    );
+  }
 
 
-  /* =========================================================
-     PART 2 STARTS HERE
-  ========================================================= */  /* =========================
+  /* =====================================================
      BMI CALCULATOR
-  ========================= */
+  ===================================================== */
 
   let bmiUnit = "metric";
 
-  const bmiResult = $("bmiResult");
-  const metricFields = $("metricFields");
-  const imperialFields = $("imperialFields");
+  const unitTabs =
+    $$(".unit-tab");
 
-  function updateBMIFields() {
-    metricFields?.classList.toggle(
-      "hidden",
-      bmiUnit !== "metric"
+  const metricFields =
+    $("metricFields");
+
+  const imperialFields =
+    $("imperialFields");
+
+  unitTabs.forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        bmiUnit =
+          button.dataset.unit;
+
+        unitTabs.forEach(tab => {
+          tab.classList.toggle(
+            "active",
+            tab === button
+          );
+        });
+
+        if (metricFields) {
+          metricFields.classList.toggle(
+            "hidden",
+            bmiUnit !== "metric"
+          );
+        }
+
+        if (imperialFields) {
+          imperialFields.classList.toggle(
+            "hidden",
+            bmiUnit !== "imperial"
+          );
+        }
+
+        setText(
+          "bmiResult",
+          "Enter your height and weight."
+        );
+      }
     );
+  });
 
-    imperialFields?.classList.toggle(
-      "hidden",
-      bmiUnit !== "imperial"
+
+  const bmiBtn =
+    $("bmiBtn");
+
+  if (bmiBtn) {
+    bmiBtn.addEventListener(
+      "click",
+      () => {
+
+        let bmi;
+
+        if (bmiUnit === "metric") {
+
+          const heightCm =
+            Number($("heightCm").value);
+
+          const weightKg =
+            Number($("weightKg").value);
+
+          if (
+            !Number.isFinite(heightCm) ||
+            !Number.isFinite(weightKg) ||
+            heightCm <= 0 ||
+            weightKg <= 0
+          ) {
+            setText(
+              "bmiResult",
+              "Enter a valid height and weight."
+            );
+            return;
+          }
+
+          const heightM =
+            heightCm / 100;
+
+          bmi =
+            weightKg /
+            (heightM * heightM);
+
+        } else {
+
+          const heightIn =
+            Number($("heightIn").value);
+
+          const weightLb =
+            Number($("weightLb").value);
+
+          if (
+            !Number.isFinite(heightIn) ||
+            !Number.isFinite(weightLb) ||
+            heightIn <= 0 ||
+            weightLb <= 0
+          ) {
+            setText(
+              "bmiResult",
+              "Enter a valid height and weight."
+            );
+            return;
+          }
+
+          bmi =
+            703 *
+            weightLb /
+            (heightIn * heightIn);
+        }
+
+        let category;
+
+        if (bmi < 18.5) {
+          category = "Below the standard adult BMI range";
+        } else if (bmi < 25) {
+          category = "Within the standard adult BMI range";
+        } else if (bmi < 30) {
+          category = "Above the standard adult BMI range";
+        } else {
+          category = "High BMI range";
+        }
+
+        setText(
+          "bmiResult",
+          `BMI: ${formatNumber(bmi)} — ${category}`
+        );
+      }
     );
   }
-
-  $$(".unit-tab").forEach(button => {
-
-    button.addEventListener("click", () => {
-
-      $$(".unit-tab").forEach(btn =>
-        btn.classList.remove("active")
-      );
-
-      button.classList.add("active");
-
-      bmiUnit = button.dataset.unit || "metric";
-
-      updateBMIFields();
-
-      if (bmiResult) {
-        bmiResult.textContent =
-          "Enter your height and weight.";
-      }
-    });
-  });
-
-  updateBMIFields();
-
-
-  $("bmiBtn")?.addEventListener("click", () => {
-
-    let height;
-    let weight;
-    let bmi;
-
-    if (bmiUnit === "metric") {
-
-      height = Number($("heightCm")?.value);
-      weight = Number($("weightKg")?.value);
-
-      if (
-        !Number.isFinite(height) ||
-        !Number.isFinite(weight) ||
-        height <= 0 ||
-        weight <= 0
-      ) {
-        setText(
-          "bmiResult",
-          "Enter valid height and weight."
-        );
-        return;
-      }
-
-      bmi =
-        weight /
-        Math.pow(height / 100, 2);
-
-    } else {
-
-      const feet =
-        Number($("heightFeet")?.value);
-
-      const inches =
-        Number($("heightInches")?.value);
-
-      weight =
-        Number($("weightLbs")?.value);
-
-      if (
-        !Number.isFinite(feet) ||
-        !Number.isFinite(inches) ||
-        !Number.isFinite(weight) ||
-        feet < 0 ||
-        inches < 0 ||
-        weight <= 0 ||
-        (feet === 0 && inches <= 0)
-      ) {
-        setText(
-          "bmiResult",
-          "Enter valid height and weight."
-        );
-        return;
-      }
-
-      const totalInches =
-        feet * 12 + inches;
-
-      bmi =
-        703 *
-        weight /
-        Math.pow(totalInches, 2);
-    }
-
-    if (!Number.isFinite(bmi)) {
-      setText(
-        "bmiResult",
-        "Unable to calculate BMI."
-      );
-      return;
-    }
-
-    let category;
-
-    if (bmi < 18.5) {
-      category = "Underweight";
-    } else if (bmi < 25) {
-      category = "Normal range";
-    } else if (bmi < 30) {
-      category = "Overweight";
-    } else {
-      category = "Obesity range";
-    }
-
-    if (bmiResult) {
-      bmiResult.innerHTML =
-        `<strong>BMI: ${formatNumber(bmi)}</strong>` +
-        `<br><small>${category}</small>`;
-    }
-  });
-
-
-  /* =========================
-     ENTER KEY SUPPORT
-  ========================= */
-
-  $$("input[type='number']").forEach(input => {
-
-    input.addEventListener("keydown", event => {
-
-      if (event.key !== "Enter") return;
-
-      const calculator =
-        input.closest(".calculator-view");
-
-      if (!calculator) return;
-
-      const button =
-        calculator.querySelector(
-          "button.primary-btn:not(.back-btn), button[data-calculate]"
-        );
-
-      button?.click();
-    });
-  });
-
-
-  /* =========================
-     INITIAL ARIA STATE
-  ========================= */
-
-  views.forEach(view => {
-
-    if (!view.classList.contains("active")) {
-      view.setAttribute("aria-hidden", "true");
-    }
-
-  });
 
 });
