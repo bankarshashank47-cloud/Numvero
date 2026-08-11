@@ -19,7 +19,7 @@
         content="index, follow">
 
   <link rel="canonical"
-        href="https://bankarshashank47-cloud.github.io/numvero/">
+        href="https://bankarshashank47-cloud.github.io/Numvero/">
 
   <meta property="og:title"
         content="Numvero — Free Online Calculators">
@@ -31,18 +31,17 @@
         content="website">
 
   <meta property="og:url"
-        content="https://bankarshashank47-cloud.github.io/numvero/">
+        content="https://bankarshashank47-cloud.github.io/Numvero/">
 
   <meta name="theme-color"
         content="#176b45">
 
-  <!-- Numvero Logo / Favicon -->
   <link rel="icon"
-        type="image/png"
-        href="numvero-icon.png">
+        type="image/jpeg"
+        href="numvero-icon.jpg">
 
   <link rel="apple-touch-icon"
-        href="numvero-icon.png">
+        href="numvero-icon.jpg">
 
   <title>Numvero — Free Online Calculators</title>
 
@@ -58,11 +57,13 @@
        class="logo"
        aria-label="Numvero home">
 
-      <img src="numvero-icon.png"
-           alt="Numvero"
+      <img src="numvero-icon.jpg"
+           alt="Numvero logo"
            class="logo-icon">
 
-      <span>Num<span>vero</span></span>
+      <span class="logo-text">
+        Num<span>vero</span>
+      </span>
 
     </a>
 
@@ -84,17 +85,11 @@
 
 <main>
 
-<!-- =====================================================
-     HOME
-===================================================== -->
-
 <section id="home" class="hero">
 
   <div class="hero-content">
 
-    <p class="eyebrow">
-      FREE ONLINE MATH TOOLS
-    </p>
+    <p class="eyebrow">FREE ONLINE MATH TOOLS</p>
 
     <h1>
       Calculate anything.<br>
@@ -107,12 +102,9 @@
     </p>
 
     <div class="hero-buttons">
-
-      <a href="#calculators"
-         class="primary-btn">
+      <a href="#calculators" class="primary-btn">
         Explore Calculators
       </a>
-
     </div>
 
   </div>
@@ -120,26 +112,15 @@
 </section>
 
 
-<!-- =====================================================
-     CALCULATOR MENU
-===================================================== -->
-
-<section id="calculators"
-         class="calculator-menu">
+<section id="calculators" class="calculator-menu">
 
   <div class="section-heading">
 
-    <p class="eyebrow">
-      NUMVERO TOOLS
-    </p>
+    <p class="eyebrow">NUMVERO TOOLS</p>
 
-    <h2>
-      Choose a calculator
-    </h2>
+    <h2>Choose a calculator</h2>
 
-    <p>
-      Select the tool you need.
-    </p>
+    <p>Select the tool you need.</p>
 
   </div>
 
@@ -275,41 +256,28 @@
 </section>
 
 
-<!-- =====================================================
-     CALCULATOR VIEWS
-===================================================== -->
-
-<section id="calculatorViews"
-         class="calculator-views">
+<section id="calculatorViews" class="calculator-views">
 
 
-<!-- =====================================================
-     BASIC
-===================================================== -->
+<!-- BASIC -->
 
 <div id="view-basic"
      class="calculator-view"
      data-calculator="basic"
      aria-hidden="true">
 
-  <button class="back-btn"
-          type="button"
-          data-back>
+  <button class="back-btn" type="button" data-back>
     ← Back to calculators
   </button>
 
   <div class="calculator-card">
 
     <div class="card-heading">
-
       <div>
         <span class="card-number">01</span>
-
         <h2>Basic Calculator</h2>
-
         <p>Everyday arithmetic</p>
       </div>
-
     </div>
 
     <input id="basicDisplay"
@@ -347,46 +315,33 @@
       <button class="key operator" type="button" data-basic="%">%</button>
       <button class="key operator" type="button" data-basic="+">+</button>
 
-      <button class="key equals"
-              type="button"
-              data-basic="=">
-        =
-      </button>
+      <button class="key equals" type="button" data-basic="=">=</button>
 
     </div>
 
   </div>
-
 </div>
 
 
-<!-- =====================================================
-     SCIENTIFIC
-===================================================== -->
+<!-- SCIENTIFIC -->
 
 <div id="view-scientific"
      class="calculator-view"
      data-calculator="scientific"
      aria-hidden="true">
 
-  <button class="back-btn"
-          type="button"
-          data-back>
+  <button class="back-btn" type="button" data-back>
     ← Back to calculators
   </button>
 
   <div class="calculator-card">
 
     <div class="card-heading">
-
       <div>
         <span class="card-number">02</span>
-
         <h2>Scientific Calculator</h2>
-
         <p>Advanced mathematics</p>
       </div>
-
     </div>
 
     <input id="scientificDisplay"
@@ -412,7 +367,6 @@
       </button>
 
     </div>
-
 
     <div class="scientific-grid">
 
@@ -465,22 +419,17 @@
     </div>
 
   </div>
-
 </div>
 
 
-<!-- =====================================================
-     PERCENTAGE
-===================================================== -->
+<!-- PERCENTAGE -->
 
 <div id="view-percentage"
      class="calculator-view"
      data-calculator="percentage"
      aria-hidden="true">
 
-  <button class="back-btn"
-          type="button"
-          data-back>
+  <button class="back-btn" type="button" data-back>
     ← Back to calculators
   </button>
 
@@ -493,7 +442,6 @@
         <p>Percentages, changes and discounts</p>
       </div>
     </div>
-
 
     <div class="form-stack">
 
@@ -600,22 +548,17 @@
     </div>
 
   </div>
-
 </div>
 
 
-<!-- =====================================================
-     AGE
-===================================================== -->
+<!-- AGE -->
 
 <div id="view-age"
      class="calculator-view"
      data-calculator="age"
      aria-hidden="true">
 
-  <button class="back-btn"
-          type="button"
-          data-back>
+  <button class="back-btn" type="button" data-back>
     ← Back to calculators
   </button>
 
@@ -635,14 +578,12 @@
 
         <label>
           Date of birth
-          <input id="birthDate"
-                 type="date">
+          <input id="birthDate" type="date">
         </label>
 
         <label>
           Calculate age on
-          <input id="ageDate"
-                 type="date">
+          <input id="ageDate" type="date">
         </label>
 
         <button id="ageBtn"
@@ -662,22 +603,17 @@
     </div>
 
   </div>
-
 </div>
 
 
-<!-- =====================================================
-     BMI
-===================================================== -->
+<!-- BMI -->
 
 <div id="view-bmi"
      class="calculator-view"
      data-calculator="bmi"
      aria-hidden="true">
 
-  <button class="back-btn"
-          type="button"
-          data-back>
+  <button class="back-btn" type="button" data-back>
     ← Back to calculators
   </button>
 
@@ -710,8 +646,7 @@
       </div>
 
 
-      <div id="metricFields"
-           class="bmi-fields">
+      <div id="metricFields" class="bmi-fields">
 
         <label>
           Height (cm)
@@ -774,27 +709,18 @@
     </div>
 
   </div>
-
 </div>
 
 </section>
 
 
-<!-- =====================================================
-     INFORMATION
-===================================================== -->
-
 <section class="content-section">
 
   <div class="section-heading">
 
-    <p class="eyebrow">
-      ABOUT NUMVERO
-    </p>
+    <p class="eyebrow">ABOUT NUMVERO</p>
 
-    <h2>
-      Simple tools for everyday math
-    </h2>
+    <h2>Simple tools for everyday math</h2>
 
     <p>
       Useful calculators without unnecessary complexity.
@@ -837,19 +763,13 @@
 </section>
 
 
-<!-- =====================================================
-     FAQ
-===================================================== -->
-
 <section class="faq-section">
 
   <div class="section-heading">
 
     <p class="eyebrow">FAQ</p>
 
-    <h2>
-      Frequently asked questions
-    </h2>
+    <h2>Frequently asked questions</h2>
 
   </div>
 
@@ -879,10 +799,6 @@
 </main>
 
 
-<!-- =====================================================
-     FOOTER
-===================================================== -->
-
 <footer class="site-footer">
 
   <div>
@@ -900,4 +816,4 @@
 <script src="script.js" defer></script>
 
 </body>
-    </html>
+  </html>
