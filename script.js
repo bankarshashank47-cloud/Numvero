@@ -1,930 +1,914 @@
-:root {
-  --green: #176b45;
-  --green-dark: #0f4d32;
-  --green-light: #e8f4ee;
-
-  --bg: #f7faf8;
-  --surface: #ffffff;
-  --surface-2: #f0f5f2;
-
-  --text: #172019;
-  --muted: #66736b;
-  --border: #dce5df;
-
-  --shadow: 0 10px 30px rgba(23, 32, 25, 0.08);
-
-  --radius: 18px;
-  --transition: 0.25s ease;
-}
-
-body.dark {
-  --bg: #101613;
-  --surface: #17201b;
-  --surface-2: #202a24;
-
-  --text: #f0f5f2;
-  --muted: #a8b5ad;
-  --border: #2d3a32;
-
-  --green-light: #193a2a;
-
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-
-  background: var(--bg);
-  color: var(--text);
-
-  line-height: 1.6;
-
-  transition:
-    background var(--transition),
-    color var(--transition);
-}
-
-button,
-input {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
+"use strict";
 
 
 /* =========================
-   HEADER
+   THEME
 ========================= */
 
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
+const themeBtn = document.getElementById("themeBtn");
 
-  background: color-mix(
-    in srgb,
-    var(--surface) 92%,
-    transparent
+function updateThemeButton() {
+  if (document.body.classList.contains("dark")) {
+    themeBtn.textContent = "☀";
+    themeBtn.setAttribute(
+      "aria-label",
+      "Switch to light mode"
+    );
+  } else {
+    themeBtn.textContent = "◐";
+    themeBtn.setAttribute(
+      "aria-label",
+      "Switch to dark mode"
+    );
+  }
+}
+
+const savedTheme = localStorage.getItem("numvero-theme");
+
+if (savedTheme === "dark") {
+  document.body.classList.add("dark");
+}
+
+updateThemeButton();
+
+themeBtn.addEventListener("click", () => {
+
+  document.body.classList.toggle("dark");
+
+  localStorage.setItem(
+    "numvero-theme",
+    document.body.classList.contains("dark")
+      ? "dark"
+      : "light"
   );
 
-  backdrop-filter: blur(12px);
-
-  border-bottom: 1px solid var(--border);
-}
-
-.header-inner {
-  width: min(1120px, calc(100% - 32px));
-  margin: auto;
-
-  min-height: 72px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 20px;
-}
-
-
-/* Logo */
-
-.logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-
-  font-size: 1.35rem;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-
-  flex-shrink: 0;
-}
-
-.logo-icon {
-  width: 40px;
-  height: 40px;
-
-  object-fit: cover;
-
-  border-radius: 50%;
-
-  display: block;
-}
-
-.logo-text span {
-  color: var(--green);
-}
-
-
-/* Navigation */
-
-.main-nav {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-
-  margin-left: auto;
-}
-
-.main-nav a {
-  color: var(--muted);
-  font-weight: 600;
-
-  transition:
-    color var(--transition);
-}
-
-.main-nav a:hover {
-  color: var(--green);
-}
-
-
-/* Theme */
-
-.theme-btn {
-  width: 42px;
-  height: 42px;
-
-  border: 1px solid var(--border);
-  border-radius: 50%;
-
-  background: var(--surface);
-  color: var(--text);
-
-  display: grid;
-  place-items: center;
-
-  transition:
-    transform var(--transition),
-    background var(--transition);
-}
-
-.theme-btn:hover {
-  transform: rotate(15deg);
-}
+  updateThemeButton();
+});
 
 
 /* =========================
-   GENERAL
+   NAVIGATION
 ========================= */
 
-main {
-  overflow: hidden;
+const calculatorViews =
+  document.querySelectorAll(".calculator-view");
+
+const calculatorMenu =
+  document.getElementById("calculators");
+
+function openCalculator(name) {
+
+  calculatorViews.forEach(view => {
+    view.classList.remove("active");
+    view.setAttribute("aria-hidden", "true");
+  });
+
+  const target =
+    document.getElementById(`view-${name}`);
+
+  if (!target) return;
+
+  target.classList.add("active");
+  target.setAttribute("aria-hidden", "false");
+
+  target.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
 }
 
-section {
-  width: min(1120px, calc(100% - 32px));
-  margin-inline: auto;
+function closeCalculator() {
+
+  calculatorViews.forEach(view => {
+    view.classList.remove("active");
+    view.setAttribute("aria-hidden", "true");
+  });
+
+  calculatorMenu.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
 }
 
-.eyebrow {
-  margin: 0 0 10px;
+document
+  .querySelectorAll(".open-calculator")
+  .forEach(button => {
 
-  color: var(--green);
+    button.addEventListener("click", () => {
+      openCalculator(button.dataset.open);
+    });
 
-  font-size: 0.78rem;
-  font-weight: 800;
+  });
 
-  letter-spacing: 0.14em;
-}
+document
+  .querySelectorAll("[data-back]")
+  .forEach(button => {
 
-.section-heading {
-  margin-bottom: 40px;
-}
+    button.addEventListener("click", closeCalculator);
 
-.section-heading h2 {
-  margin: 0 0 8px;
-
-  font-size: clamp(2rem, 5vw, 3rem);
-
-  line-height: 1.1;
-  letter-spacing: -0.04em;
-}
-
-.section-heading > p:last-child {
-  margin: 0;
-  color: var(--muted);
-}
-
-
-/* =========================
-   HERO
-========================= */
-
-.hero {
-  min-height: 600px;
-
-  display: grid;
-  place-items: center;
-
-  text-align: center;
-
-  padding-block: 80px;
-}
-
-.hero-content {
-  max-width: 760px;
-}
-
-.hero h1 {
-  margin: 0;
-
-  font-size: clamp(3rem, 9vw, 6rem);
-
-  line-height: 0.98;
-
-  letter-spacing: -0.07em;
-}
-
-.hero h1 span {
-  color: var(--green);
-}
-
-.hero-text {
-  max-width: 580px;
-
-  margin: 28px auto 0;
-
-  color: var(--muted);
-
-  font-size: 1.1rem;
-}
-
-.hero-buttons {
-  margin-top: 32px;
-}
-
-
-/* =========================
-   BUTTONS
-========================= */
-
-.primary-btn {
-  display: inline-flex;
-
-  align-items: center;
-  justify-content: center;
-
-  min-height: 48px;
-
-  padding: 0 22px;
-
-  border: 0;
-  border-radius: 12px;
-
-  background: var(--green);
-  color: #ffffff;
-
-  font-weight: 750;
-
-  transition:
-    transform var(--transition),
-    background var(--transition),
-    box-shadow var(--transition);
-}
-
-.primary-btn:hover {
-  background: var(--green-dark);
-
-  transform: translateY(-2px);
-
-  box-shadow:
-    0 8px 20px rgba(23, 107, 69, 0.2);
-}
-
-.full {
-  width: 100%;
-}
-
-
-/* =========================
-   CALCULATOR MENU
-========================= */
-
-.calculator-menu {
-  padding-block: 90px;
-}
-
-.calculator-cards {
-  display: grid;
-
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
-
-  gap: 20px;
-}
-
-.calculator-choice {
-  display: flex;
-
-  gap: 22px;
-
-  padding: 26px;
-
-  background: var(--surface);
-
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-
-  box-shadow: var(--shadow);
-
-  transition:
-    transform var(--transition),
-    border-color var(--transition);
-}
-
-.calculator-choice:hover {
-  transform: translateY(-4px);
-  border-color: var(--green);
-}
-
-.choice-icon {
-  width: 58px;
-  height: 58px;
-
-  flex-shrink: 0;
-
-  display: grid;
-  place-items: center;
-
-  border-radius: 16px;
-
-  background: var(--green-light);
-  color: var(--green);
-
-  font-size: 1.35rem;
-  font-weight: 800;
-}
-
-.choice-content {
-  flex: 1;
-}
-
-.card-number {
-  display: inline-block;
-
-  color: var(--green);
-
-  font-size: 0.75rem;
-  font-weight: 800;
-
-  letter-spacing: 0.08em;
-}
-
-.choice-content h3 {
-  margin: 5px 0 8px;
-
-  font-size: 1.35rem;
-}
-
-.choice-content p {
-  margin: 0 0 18px;
-
-  color: var(--muted);
-}
-
-
-/* =========================
-   CALCULATOR VIEWS
-========================= */
-
-.calculator-views {
-  width: min(800px, calc(100% - 32px));
-
-  margin-inline: auto;
-}
-
-.calculator-view {
-  display: none;
-
-  padding-block: 40px;
-}
-
-.calculator-view.active {
-  display: block;
-}
-
-.back-btn {
-  margin-bottom: 18px;
-
-  border: 0;
-  background: transparent;
-
-  color: var(--green);
-
-  font-weight: 700;
-}
-
-.calculator-card {
-  padding: 30px;
-
-  background: var(--surface);
-
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-
-  box-shadow: var(--shadow);
-}
-
-.card-heading {
-  margin-bottom: 25px;
-}
-
-.card-heading h2 {
-  margin: 4px 0 3px;
-
-  font-size: 1.8rem;
-
-  line-height: 1.2;
-}
-
-.card-heading p {
-  margin: 0;
-  color: var(--muted);
-}
+  });
 
 
 /* =========================
    BASIC CALCULATOR
 ========================= */
 
-.display {
-  width: 100%;
+const basicDisplay =
+  document.getElementById("basicDisplay");
 
-  min-height: 78px;
+let basicExpression = "";
 
-  margin-bottom: 18px;
+function updateBasicDisplay() {
 
-  padding: 14px 18px;
+  basicDisplay.value =
+    basicExpression || "";
 
-  border: 1px solid var(--border);
-  border-radius: 14px;
-
-  background: var(--surface-2);
-  color: var(--text);
-
-  font-size: 2rem;
-  font-weight: 650;
-
-  text-align: right;
-
-  outline: none;
 }
 
-.display:focus {
-  border-color: var(--green);
-}
-
-.keypad {
-  display: grid;
-
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
-
-  gap: 10px;
-}
-
-.key {
-  min-height: 60px;
-
-  border: 1px solid var(--border);
-  border-radius: 12px;
-
-  background: var(--surface-2);
-  color: var(--text);
-
-  font-size: 1.1rem;
-  font-weight: 700;
-
-  transition:
-    transform 0.12s ease,
-    background var(--transition);
-}
-
-.key:hover {
-  background: var(--green-light);
-}
-
-.key:active {
-  transform: scale(0.96);
-}
-
-.key.operator,
-.key.function {
-  color: var(--green);
-}
-
-.key.equals {
-  grid-column: 1 / -1;
-
-  background: var(--green);
-  color: white;
-
-  border-color: var(--green);
-}
-
-
-/* =========================
-   SCIENTIFIC
-========================= */
-
-.mode-row {
-  display: flex;
-  gap: 10px;
-
-  margin-bottom: 15px;
-}
-
-.small-btn {
-  padding: 9px 14px;
-
-  border: 1px solid var(--border);
-  border-radius: 10px;
-
-  background: var(--surface-2);
-  color: var(--text);
-
-  font-weight: 700;
-}
-
-.scientific-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
-
-  gap: 9px;
-}
-
-.scientific-grid button {
-  min-height: 52px;
-
-  border: 1px solid var(--border);
-  border-radius: 10px;
-
-  background: var(--surface-2);
-  color: var(--text);
-
-  font-weight: 700;
-}
-
-.scientific-grid button:hover {
-  background: var(--green-light);
-}
-
-.scientific-grid .sci-equals {
-  grid-column: 1 / -1;
-
-  background: var(--green);
-  color: white;
-
-  border-color: var(--green);
-}
-
-
-/* =========================
-   FORMS
-========================= */
-
-.form-stack {
-  display: grid;
-  gap: 20px;
-}
-
-.calc-form {
-  padding: 22px;
-
-  border: 1px solid var(--border);
-  border-radius: 15px;
-
-  background: var(--surface-2);
-}
-
-.calc-form h3 {
-  margin-top: 0;
-}
-
-label {
-  display: grid;
-  gap: 7px;
-
-  margin-bottom: 15px;
-
-  font-weight: 700;
-}
-
-label input {
-  width: 100%;
-
-  min-height: 48px;
-
-  padding: 10px 13px;
-
-  border: 1px solid var(--border);
-  border-radius: 10px;
-
-  background: var(--surface);
-  color: var(--text);
-
-  outline: none;
-}
-
-label input:focus {
-  border-color: var(--green);
-}
-
-.result,
-.large-result {
-  margin-top: 15px;
-
-  padding: 15px;
-
-  border-radius: 10px;
-
-  background: var(--green-light);
-
-  color: var(--text);
-
-  font-weight: 650;
-}
-
-.large-result {
-  font-size: 1.15rem;
-}
-
-.age-form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-
-  gap: 15px;
-}
-
-.age-form .primary-btn {
-  grid-column: 1 / -1;
-}
-
-.unit-tabs {
-  display: flex;
-  gap: 8px;
-
-  margin-bottom: 18px;
-}
-
-.unit-tab {
-  flex: 1;
-
-  min-height: 44px;
-
-  border: 1px solid var(--border);
-  border-radius: 10px;
-
-  background: var(--surface);
-  color: var(--text);
-
-  font-weight: 700;
-}
-
-.unit-tab.active {
-  background: var(--green);
-  color: white;
-
-  border-color: var(--green);
-}
-
-.hidden {
-  display: none !important;
-}
-
-.disclaimer {
-  color: var(--muted);
-
-  font-size: 0.82rem;
-}
-
-
-/* =========================
-   INFORMATION
-========================= */
-
-.content-section {
-  padding-block: 90px;
-}
-
-.info-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
-
-  gap: 15px;
-}
-
-.info-grid article {
-  padding: 22px;
-
-  background: var(--surface);
-
-  border: 1px solid var(--border);
-  border-radius: 15px;
-}
-
-.info-grid h3 {
-  margin-top: 0;
-}
-
-.info-grid p {
-  margin-bottom: 0;
-  color: var(--muted);
-}
-
-
-/* =========================
-   FAQ
-========================= */
-
-.faq-section {
-  padding-block: 70px 100px;
-}
-
-.faq-section details {
-  padding: 18px 0;
-
-  border-bottom: 1px solid var(--border);
-}
-
-.faq-section summary {
-  cursor: pointer;
-
-  font-weight: 750;
-}
-
-.faq-section details p {
-  color: var(--muted);
-}
-
-
-/* =========================
-   FOOTER
-========================= */
-
-.site-footer {
-  width: min(1120px, calc(100% - 32px));
-
-  margin-inline: auto;
-
-  padding: 35px 0;
-
-  display: flex;
-
-  justify-content: space-between;
-  align-items: center;
-
-  gap: 20px;
-
-  border-top: 1px solid var(--border);
-
-  color: var(--muted);
-}
-
-.site-footer strong {
-  color: var(--text);
-}
-
-.site-footer p {
-  margin: 4px 0;
-}
-
-
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 760px) {
-
-  .header-inner {
-    min-height: 64px;
+function basicCalculate() {
+
+  if (!basicExpression.trim()) return;
+
+  let expression =
+    basicExpression
+      .replace(/×/g, "*")
+      .replace(/÷/g, "/")
+      .replace(/−/g, "-");
+
+  /*
+    Percentage handling:
+    50% -> 50 / 100
+  */
+  expression =
+    expression.replace(
+      /(\d+(?:\.\d+)?)%/g,
+      "($1/100)"
+    );
+
+  /*
+    Only permit calculator characters.
+    This prevents arbitrary JavaScript
+    from being evaluated.
+  */
+  if (!/^[0-9+\-*/().\s]+$/.test(expression)) {
+    basicDisplay.value = "Error";
+    basicExpression = "";
+    return;
   }
 
-  .logo-icon {
-    width: 34px;
-    height: 34px;
-  }
+  try {
 
-  .main-nav {
-    gap: 14px;
-  }
+    const result = Function(
+      `"use strict"; return (${expression})`
+    )();
 
-  .main-nav a {
-    font-size: 0.9rem;
-  }
-
-  .hero {
-    min-height: 500px;
-
-    padding-block: 60px;
-  }
-
-  .hero h1 {
-    font-size: clamp(2.7rem, 14vw, 4.5rem);
-  }
-
-  .calculator-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .info-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-  }
-
-  .age-form {
-    grid-template-columns: 1fr;
-  }
-
-  .calculator-card {
-    padding: 20px;
-  }
-}
-
-
-@media (max-width: 500px) {
-
-  .header-inner {
-    width: min(100% - 20px, 1120px);
-    gap: 10px;
-  }
-
-  .logo-text {
-    font-size: 1.15rem;
-  }
-
-  .main-nav {
-    gap: 10px;
-  }
-
-  .main-nav a {
-    font-size: 0.78rem;
-  }
-
-  .theme-btn {
-    width: 38px;
-    height: 38px;
-  }
-
-  section {
-    width: min(100% - 20px, 1120px);
-  }
-
-  .calculator-views {
-    width: min(100% - 20px, 800px);
-  }
-
-  .calculator-choice {
-    padding: 20px;
-  }
-
-  .choice-icon {
-    width: 50px;
-    height: 50px;
-  }
-
-  .key {
-    min-height: 54px;
-  }
-
-  .scientific-grid button {
-    min-height: 48px;
-    font-size: 0.9rem;
-  }
-
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .site-footer {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+    if (
+      typeof result !== "number" ||
+      !Number.isFinite(result)
+    ) {
+      throw new Error("Invalid result");
     }
+
+    basicExpression =
+      Number.isInteger(result)
+        ? String(result)
+        : String(Number(result.toFixed(12)));
+
+    updateBasicDisplay();
+
+  } catch {
+
+    basicDisplay.value = "Error";
+    basicExpression = "";
+
+  }
+}
+
+document
+  .querySelectorAll("[data-basic]")
+  .forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      const value = button.dataset.basic;
+
+      if (value === "clear") {
+
+        basicExpression = "";
+        updateBasicDisplay();
+        return;
+
+      }
+
+      if (value === "backspace") {
+
+        basicExpression =
+          basicExpression.slice(0, -1);
+
+        updateBasicDisplay();
+        return;
+
+      }
+
+      if (value === "=") {
+
+        basicCalculate();
+        return;
+
+      }
+
+      basicExpression += value;
+
+      updateBasicDisplay();
+
+    });
+
+  });
+
+
+/* =========================
+   BASIC KEYBOARD SUPPORT
+========================= */
+
+basicDisplay.addEventListener("input", () => {
+
+  const cleaned =
+    basicDisplay.value.replace(
+      /[^0-9+\-*/().%]/g,
+      ""
+    );
+
+  basicExpression = cleaned;
+
+  basicDisplay.value = cleaned;
+});
+
+basicDisplay.addEventListener("keydown", event => {
+
+  if (event.key === "Enter") {
+    event.preventDefault();
+    basicCalculate();
+  }
+
+  if (event.key === "Escape") {
+    basicExpression = "";
+    updateBasicDisplay();
+  }
+
+});
+
+
+/* =========================
+   SCIENTIFIC CALCULATOR
+========================= */
+
+const scientificDisplay =
+  document.getElementById("scientificDisplay");
+
+const angleMode =
+  document.getElementById("angleMode");
+
+const scientificClear =
+  document.getElementById("scientificClear");
+
+let scientificExpression = "";
+let degreesMode = true;
+
+function updateScientificDisplay() {
+
+  scientificDisplay.value =
+    scientificExpression;
+
+}
+
+function toRadians(value) {
+  return value * Math.PI / 180;
+}
+
+function fromRadians(value) {
+  return value * 180 / Math.PI;
+}
+
+function scientificCalculate() {
+
+  if (!scientificExpression.trim()) return;
+
+  let expression =
+    scientificExpression;
+
+  expression =
+    expression.replace(/×/g, "*")
+              .replace(/÷/g, "/")
+              .replace(/−/g, "-")
+              .replace(/π/g, "Math.PI")
+              .replace(/\be\b/g, "Math.E");
+
+  expression =
+    expression.replace(
+      /(\d+(?:\.\d+)?)%/g,
+      "($1/100)"
+    );
+
+  /*
+    Basic scientific operators.
+  */
+
+  expression =
+    expression.replace(
+      /sqrt\(/g,
+      "Math.sqrt("
+    );
+
+  expression =
+    expression.replace(
+      /square\(([^()]*)\)/g,
+      "($1)**2"
+    );
+
+  expression =
+    expression.replace(
+      /log\(/g,
+      "Math.log10("
+    );
+
+  expression =
+    expression.replace(
+      /ln\(/g,
+      "Math.log("
+    );
+
+  expression =
+    expression.replace(
+      /exp\(/g,
+      "Math.exp("
+    );
+
+  expression =
+    expression.replace(
+      /sin\(/g,
+      degreesMode
+        ? "Math.sin(toRadians("
+        : "Math.sin("
+    );
+
+  expression =
+    expression.replace(
+      /cos\(/g,
+      degreesMode
+        ? "Math.cos(toRadians("
+        : "Math.cos("
+    );
+
+  expression =
+    expression.replace(
+      /tan\(/g,
+      degreesMode
+        ? "Math.tan(toRadians("
+        : "Math.tan("
+    );
+
+  /*
+    Inverse functions.
+  */
+
+  expression =
+    expression.replace(
+      /asin\(/g,
+      degreesMode
+        ? "fromRadians(Math.asin("
+        : "Math.asin("
+    );
+
+  expression =
+    expression.replace(
+      /acos\(/g,
+      degreesMode
+        ? "fromRadians(Math.acos("
+        : "Math.acos("
+    );
+
+  expression =
+    expression.replace(
+      /atan\(/g,
+      degreesMode
+        ? "fromRadians(Math.atan("
+        : "Math.atan("
+    );
+
+  /*
+    The generated expression may contain
+    nested function calls. The calculator
+    buttons are intentionally limited to
+    controlled mathematical input.
+  */
+
+  try {
+
+    if (!/^[0-9+\-*/().,\sA-Za-z]+$/.test(expression)) {
+      throw new Error("Invalid input");
+    }
+
+    const result = Function(
+      "toRadians",
+      "fromRadians",
+      `"use strict"; return (${expression})`
+    )(toRadians, fromRadians);
+
+    if (
+      typeof result !== "number" ||
+      !Number.isFinite(result)
+    ) {
+      throw new Error("Invalid result");
+    }
+
+    scientificExpression =
+      Number.isInteger(result)
+        ? String(result)
+        : String(Number(result.toFixed(12)));
+
+    updateScientificDisplay();
+
+  } catch {
+
+    scientificDisplay.value = "Error";
+    scientificExpression = "";
+
+  }
+}
+
+
+document
+  .querySelectorAll("[data-sci]")
+  .forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      const value = button.dataset.sci;
+
+      if (value === "clear") {
+
+        scientificExpression = "";
+        updateScientificDisplay();
+        return;
+
+      }
+
+      if (value === "=") {
+
+        scientificCalculate();
+        return;
+
+      }
+
+      if (value === "sqrt") {
+        scientificExpression += "sqrt(";
+        updateScientificDisplay();
+        return;
+      }
+
+      if (value === "square") {
+        scientificExpression += "square(";
+        updateScientificDisplay();
+        return;
+      }
+
+      if (value === "power") {
+        scientificExpression += "**";
+        updateScientificDisplay();
+        return;
+      }
+
+      if (value === "open") {
+        scientificExpression += "(";
+        updateScientificDisplay();
+        return;
+      }
+
+      if (value === "close") {
+        scientificExpression += ")";
+        updateScientificDisplay();
+        return;
+      }
+
+      if (
+        [
+          "sin",
+          "cos",
+          "tan",
+          "asin",
+          "acos",
+          "atan",
+          "log",
+          "ln",
+          "exp"
+        ].includes(value)
+      ) {
+
+        scientificExpression += `${value}(`;
+        updateScientificDisplay();
+        return;
+      }
+
+      if (value === "pi") {
+        scientificExpression += "π";
+        updateScientificDisplay();
+        return;
+      }
+
+      if (value === "e") {
+        scientificExpression += "e";
+        updateScientificDisplay();
+        return;
+      }
+
+      scientificExpression += value;
+
+      updateScientificDisplay();
+
+    });
+
+  });
+
+
+angleMode.addEventListener("click", () => {
+
+  degreesMode = !degreesMode;
+
+  angleMode.textContent =
+    degreesMode ? "DEG" : "RAD";
+
+});
+
+
+scientificClear.addEventListener("click", () => {
+
+  scientificExpression = "";
+  updateScientificDisplay();
+
+});
+
+
+/* =========================
+   PERCENTAGE CALCULATOR
+========================= */
+
+const percentX =
+  document.getElementById("percentX");
+
+const percentY =
+  document.getElementById("percentY");
+
+const percentOfResult =
+  document.getElementById("percentOfResult");
+
+document
+  .getElementById("percentOfBtn")
+  .addEventListener("click", () => {
+
+    const x = Number(percentX.value);
+    const y = Number(percentY.value);
+
+    if (
+      percentX.value === "" ||
+      percentY.value === "" ||
+      !Number.isFinite(x) ||
+      !Number.isFinite(y)
+    ) {
+
+      percentOfResult.textContent =
+        "Enter valid values.";
+
+      return;
+    }
+
+    const result = (x / 100) * y;
+
+    percentOfResult.textContent =
+      `${x}% of ${y} = ${result}`;
+
+  });
+
+
+const originalValue =
+  document.getElementById("originalValue");
+
+const newValue =
+  document.getElementById("newValue");
+
+const changeResult =
+  document.getElementById("changeResult");
+
+document
+  .getElementById("changeBtn")
+  .addEventListener("click", () => {
+
+    const original = Number(originalValue.value);
+    const current = Number(newValue.value);
+
+    if (
+      originalValue.value === "" ||
+      newValue.value === "" ||
+      !Number.isFinite(original) ||
+      !Number.isFinite(current)
+    ) {
+
+      changeResult.textContent =
+        "Enter valid values.";
+
+      return;
+    }
+
+    if (original === 0) {
+
+      changeResult.textContent =
+        "Percentage change cannot be calculated from zero.";
+
+      return;
+    }
+
+    const difference =
+      current - original;
+
+    const percentage =
+      (difference / original) * 100;
+
+    const type =
+      difference >= 0
+        ? "increase"
+        : "decrease";
+
+    changeResult.textContent =
+      `${Math.abs(percentage).toFixed(2)}% ${type}.`;
+
+  });
+
+
+const price =
+  document.getElementById("price");
+
+const discount =
+  document.getElementById("discount");
+
+const discountResult =
+  document.getElementById("discountResult");
+
+document
+  .getElementById("discountBtn")
+  .addEventListener("click", () => {
+
+    const originalPrice =
+      Number(price.value);
+
+    const discountPercent =
+      Number(discount.value);
+
+    if (
+      price.value === "" ||
+      discount.value === "" ||
+      !Number.isFinite(originalPrice) ||
+      !Number.isFinite(discountPercent)
+    ) {
+
+      discountResult.textContent =
+        "Enter valid values.";
+
+      return;
+    }
+
+    const savings =
+      originalPrice *
+      (discountPercent / 100);
+
+    const finalPrice =
+      originalPrice - savings;
+
+    discountResult.textContent =
+      `Savings: ${savings.toFixed(2)} | Final price: ${finalPrice.toFixed(2)}`;
+
+  });
+
+
+/* =========================
+   AGE CALCULATOR
+========================= */
+
+const birthDate =
+  document.getElementById("birthDate");
+
+const ageDate =
+  document.getElementById("ageDate");
+
+const ageResult =
+  document.getElementById("ageResult");
+
+function calculateAge() {
+
+  if (!birthDate.value || !ageDate.value) {
+
+    ageResult.textContent =
+      "Enter both dates.";
+
+    return;
+  }
+
+  const birth =
+    new Date(`${birthDate.value}T00:00:00`);
+
+  const end =
+    new Date(`${ageDate.value}T00:00:00`);
+
+  if (birth > end) {
+
+    ageResult.textContent =
+      "The date of birth cannot be after the calculation date.";
+
+    return;
+  }
+
+  let years =
+    end.getFullYear() -
+    birth.getFullYear();
+
+  let months =
+    end.getMonth() -
+    birth.getMonth();
+
+  let days =
+    end.getDate() -
+    birth.getDate();
+
+  if (days < 0) {
+
+    months--;
+
+    const previousMonth =
+      new Date(
+        end.getFullYear(),
+        end.getMonth(),
+        0
+      );
+
+    days +=
+      previousMonth.getDate();
+  }
+
+  if (months < 0) {
+
+    years--;
+    months += 12;
+
+  }
+
+  ageResult.textContent =
+    `${years} year${years === 1 ? "" : "s"}, ` +
+    `${months} month${months === 1 ? "" : "s"}, ` +
+    `${days} day${days === 1 ? "" : "s"}.`;
+
+}
+
+
+document
+  .getElementById("ageBtn")
+  .addEventListener("click", calculateAge);
+
+
+/* =========================
+   BMI CALCULATOR
+========================= */
+
+const unitTabs =
+  document.querySelectorAll(".unit-tab");
+
+const metricFields =
+  document.getElementById("metricFields");
+
+const imperialFields =
+  document.getElementById("imperialFields");
+
+let bmiUnit = "metric";
+
+
+unitTabs.forEach(tab => {
+
+  tab.addEventListener("click", () => {
+
+    unitTabs.forEach(item =>
+      item.classList.remove("active")
+    );
+
+    tab.classList.add("active");
+
+    bmiUnit =
+      tab.dataset.unit;
+
+    if (bmiUnit === "metric") {
+
+      metricFields.classList.remove("hidden");
+      imperialFields.classList.add("hidden");
+
+    } else {
+
+      metricFields.classList.add("hidden");
+      imperialFields.classList.remove("hidden");
+
+    }
+
+  });
+
+});
+
+
+document
+  .getElementById("bmiBtn")
+  .addEventListener("click", () => {
+
+    const result =
+      document.getElementById("bmiResult");
+
+    let bmi;
+
+    if (bmiUnit === "metric") {
+
+      const height =
+        Number(
+          document.getElementById("heightCm").value
+        );
+
+      const weight =
+        Number(
+          document.getElementById("weightKg").value
+        );
+
+      if (
+        !Number.isFinite(height) ||
+        !Number.isFinite(weight) ||
+        height <= 0 ||
+        weight <= 0
+      ) {
+
+        result.textContent =
+          "Enter valid height and weight.";
+
+        return;
+      }
+
+      const heightMeters =
+        height / 100;
+
+      bmi =
+        weight /
+        (heightMeters * heightMeters);
+
+    } else {
+
+      const height =
+        Number(
+          document.getElementById("heightIn").value
+        );
+
+      const weight =
+        Number(
+          document.getElementById("weightLb").value
+        );
+
+      if (
+        !Number.isFinite(height) ||
+        !Number.isFinite(weight) ||
+        height <= 0 ||
+        weight <= 0
+      ) {
+
+        result.textContent =
+          "Enter valid height and weight.";
+
+        return;
+      }
+
+      bmi =
+        (weight / (height * height)) *
+        703;
+
+    }
+
+    result.textContent =
+      `BMI: ${bmi.toFixed(1)}`;
+
+  });
+
+
+/* =========================
+   CURRENT YEAR
+========================= */
+
+document.getElementById("currentYear").textContent =
+  new Date().getFullYear();
+
+
+/* =========================
+   INITIAL PAGE STATE
+========================= */
+
+calculatorViews.forEach(view => {
+  view.classList.remove("active");
+  view.setAttribute("aria-hidden", "true");
+});
