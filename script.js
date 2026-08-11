@@ -1,1027 +1,930 @@
-"use strict";
+:root {
+  --green: #176b45;
+  --green-dark: #0f4d32;
+  --green-light: #e8f4ee;
 
-document.addEventListener("DOMContentLoaded", () => {
+  --bg: #f7faf8;
+  --surface: #ffffff;
+  --surface-2: #f0f5f2;
 
-  /* =====================================================
-     HELPERS
-  ===================================================== */
+  --text: #172019;
+  --muted: #66736b;
+  --border: #dce5df;
 
-  const $ = id => document.getElementById(id);
+  --shadow: 0 10px 30px rgba(23, 32, 25, 0.08);
 
-  const $$ = selector =>
-    document.querySelectorAll(selector);
+  --radius: 18px;
+  --transition: 0.25s ease;
+}
 
-  function formatNumber(value) {
-    if (!Number.isFinite(value)) return "Error";
+body.dark {
+  --bg: #101613;
+  --surface: #17201b;
+  --surface-2: #202a24;
 
-    return Number(value.toPrecision(12)).toLocaleString(
-      undefined,
-      { maximumFractionDigits: 10 }
-    );
-  }
+  --text: #f0f5f2;
+  --muted: #a8b5ad;
+  --border: #2d3a32;
 
-  function setText(id, text) {
-    const element = $(id);
-    if (element) element.textContent = text;
-  }
+  --green-light: #193a2a;
+
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  background: var(--bg);
+  color: var(--text);
+
+  line-height: 1.6;
+
+  transition:
+    background var(--transition),
+    color var(--transition);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
 
-  /* =====================================================
-     CURRENT YEAR
-  ===================================================== */
+/* =========================
+   HEADER
+========================= */
 
-  const year = $("currentYear");
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
 
-  if (year) {
-    year.textContent = new Date().getFullYear();
-  }
-
-
-  /* =====================================================
-     THEME
-  ===================================================== */
-
-  const themeBtn = $("themeBtn");
-
-  function applyTheme(theme) {
-    document.body.classList.toggle(
-      "dark",
-      theme === "dark"
-    );
-
-    if (themeBtn) {
-      themeBtn.textContent =
-        theme === "dark" ? "☀" : "◐";
-
-      themeBtn.setAttribute(
-        "aria-label",
-        theme === "dark"
-          ? "Switch to light mode"
-          : "Switch to dark mode"
-      );
-    }
-  }
-
-  const savedTheme =
-    localStorage.getItem("numvero-theme");
-
-  applyTheme(
-    savedTheme === "dark"
-      ? "dark"
-      : "light"
+  background: color-mix(
+    in srgb,
+    var(--surface) 92%,
+    transparent
   );
 
-  if (themeBtn) {
-    themeBtn.addEventListener("click", () => {
-      const newTheme =
-        document.body.classList.contains("dark")
-          ? "light"
-          : "dark";
+  backdrop-filter: blur(12px);
 
-      localStorage.setItem(
-        "numvero-theme",
-        newTheme
-      );
+  border-bottom: 1px solid var(--border);
+}
 
-      applyTheme(newTheme);
-    });
+.header-inner {
+  width: min(1120px, calc(100% - 32px));
+  margin: auto;
+
+  min-height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+
+/* Logo */
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  display: block;
+}
+
+.logo-text span {
+  color: var(--green);
+}
+
+
+/* Navigation */
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+
+  margin-left: auto;
+}
+
+.main-nav a {
+  color: var(--muted);
+  font-weight: 600;
+
+  transition:
+    color var(--transition);
+}
+
+.main-nav a:hover {
+  color: var(--green);
+}
+
+
+/* Theme */
+
+.theme-btn {
+  width: 42px;
+  height: 42px;
+
+  border: 1px solid var(--border);
+  border-radius: 50%;
+
+  background: var(--surface);
+  color: var(--text);
+
+  display: grid;
+  place-items: center;
+
+  transition:
+    transform var(--transition),
+    background var(--transition);
+}
+
+.theme-btn:hover {
+  transform: rotate(15deg);
+}
+
+
+/* =========================
+   GENERAL
+========================= */
+
+main {
+  overflow: hidden;
+}
+
+section {
+  width: min(1120px, calc(100% - 32px));
+  margin-inline: auto;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+
+  color: var(--green);
+
+  font-size: 0.78rem;
+  font-weight: 800;
+
+  letter-spacing: 0.14em;
+}
+
+.section-heading {
+  margin-bottom: 40px;
+}
+
+.section-heading h2 {
+  margin: 0 0 8px;
+
+  font-size: clamp(2rem, 5vw, 3rem);
+
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.section-heading > p:last-child {
+  margin: 0;
+  color: var(--muted);
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  min-height: 600px;
+
+  display: grid;
+  place-items: center;
+
+  text-align: center;
+
+  padding-block: 80px;
+}
+
+.hero-content {
+  max-width: 760px;
+}
+
+.hero h1 {
+  margin: 0;
+
+  font-size: clamp(3rem, 9vw, 6rem);
+
+  line-height: 0.98;
+
+  letter-spacing: -0.07em;
+}
+
+.hero h1 span {
+  color: var(--green);
+}
+
+.hero-text {
+  max-width: 580px;
+
+  margin: 28px auto 0;
+
+  color: var(--muted);
+
+  font-size: 1.1rem;
+}
+
+.hero-buttons {
+  margin-top: 32px;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.primary-btn {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 48px;
+
+  padding: 0 22px;
+
+  border: 0;
+  border-radius: 12px;
+
+  background: var(--green);
+  color: #ffffff;
+
+  font-weight: 750;
+
+  transition:
+    transform var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
+}
+
+.primary-btn:hover {
+  background: var(--green-dark);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 20px rgba(23, 107, 69, 0.2);
+}
+
+.full {
+  width: 100%;
+}
+
+
+/* =========================
+   CALCULATOR MENU
+========================= */
+
+.calculator-menu {
+  padding-block: 90px;
+}
+
+.calculator-cards {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
+.calculator-choice {
+  display: flex;
+
+  gap: 22px;
+
+  padding: 26px;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  box-shadow: var(--shadow);
+
+  transition:
+    transform var(--transition),
+    border-color var(--transition);
+}
+
+.calculator-choice:hover {
+  transform: translateY(-4px);
+  border-color: var(--green);
+}
+
+.choice-icon {
+  width: 58px;
+  height: 58px;
+
+  flex-shrink: 0;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 16px;
+
+  background: var(--green-light);
+  color: var(--green);
+
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.choice-content {
+  flex: 1;
+}
+
+.card-number {
+  display: inline-block;
+
+  color: var(--green);
+
+  font-size: 0.75rem;
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+}
+
+.choice-content h3 {
+  margin: 5px 0 8px;
+
+  font-size: 1.35rem;
+}
+
+.choice-content p {
+  margin: 0 0 18px;
+
+  color: var(--muted);
+}
+
+
+/* =========================
+   CALCULATOR VIEWS
+========================= */
+
+.calculator-views {
+  width: min(800px, calc(100% - 32px));
+
+  margin-inline: auto;
+}
+
+.calculator-view {
+  display: none;
+
+  padding-block: 40px;
+}
+
+.calculator-view.active {
+  display: block;
+}
+
+.back-btn {
+  margin-bottom: 18px;
+
+  border: 0;
+  background: transparent;
+
+  color: var(--green);
+
+  font-weight: 700;
+}
+
+.calculator-card {
+  padding: 30px;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  box-shadow: var(--shadow);
+}
+
+.card-heading {
+  margin-bottom: 25px;
+}
+
+.card-heading h2 {
+  margin: 4px 0 3px;
+
+  font-size: 1.8rem;
+
+  line-height: 1.2;
+}
+
+.card-heading p {
+  margin: 0;
+  color: var(--muted);
+}
+
+
+/* =========================
+   BASIC CALCULATOR
+========================= */
+
+.display {
+  width: 100%;
+
+  min-height: 78px;
+
+  margin-bottom: 18px;
+
+  padding: 14px 18px;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  background: var(--surface-2);
+  color: var(--text);
+
+  font-size: 2rem;
+  font-weight: 650;
+
+  text-align: right;
+
+  outline: none;
+}
+
+.display:focus {
+  border-color: var(--green);
+}
+
+.keypad {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 10px;
+}
+
+.key {
+  min-height: 60px;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background: var(--surface-2);
+  color: var(--text);
+
+  font-size: 1.1rem;
+  font-weight: 700;
+
+  transition:
+    transform 0.12s ease,
+    background var(--transition);
+}
+
+.key:hover {
+  background: var(--green-light);
+}
+
+.key:active {
+  transform: scale(0.96);
+}
+
+.key.operator,
+.key.function {
+  color: var(--green);
+}
+
+.key.equals {
+  grid-column: 1 / -1;
+
+  background: var(--green);
+  color: white;
+
+  border-color: var(--green);
+}
+
+
+/* =========================
+   SCIENTIFIC
+========================= */
+
+.mode-row {
+  display: flex;
+  gap: 10px;
+
+  margin-bottom: 15px;
+}
+
+.small-btn {
+  padding: 9px 14px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: var(--surface-2);
+  color: var(--text);
+
+  font-weight: 700;
+}
+
+.scientific-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 9px;
+}
+
+.scientific-grid button {
+  min-height: 52px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: var(--surface-2);
+  color: var(--text);
+
+  font-weight: 700;
+}
+
+.scientific-grid button:hover {
+  background: var(--green-light);
+}
+
+.scientific-grid .sci-equals {
+  grid-column: 1 / -1;
+
+  background: var(--green);
+  color: white;
+
+  border-color: var(--green);
+}
+
+
+/* =========================
+   FORMS
+========================= */
+
+.form-stack {
+  display: grid;
+  gap: 20px;
+}
+
+.calc-form {
+  padding: 22px;
+
+  border: 1px solid var(--border);
+  border-radius: 15px;
+
+  background: var(--surface-2);
+}
+
+.calc-form h3 {
+  margin-top: 0;
+}
+
+label {
+  display: grid;
+  gap: 7px;
+
+  margin-bottom: 15px;
+
+  font-weight: 700;
+}
+
+label input {
+  width: 100%;
+
+  min-height: 48px;
+
+  padding: 10px 13px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: var(--surface);
+  color: var(--text);
+
+  outline: none;
+}
+
+label input:focus {
+  border-color: var(--green);
+}
+
+.result,
+.large-result {
+  margin-top: 15px;
+
+  padding: 15px;
+
+  border-radius: 10px;
+
+  background: var(--green-light);
+
+  color: var(--text);
+
+  font-weight: 650;
+}
+
+.large-result {
+  font-size: 1.15rem;
+}
+
+.age-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 15px;
+}
+
+.age-form .primary-btn {
+  grid-column: 1 / -1;
+}
+
+.unit-tabs {
+  display: flex;
+  gap: 8px;
+
+  margin-bottom: 18px;
+}
+
+.unit-tab {
+  flex: 1;
+
+  min-height: 44px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: var(--surface);
+  color: var(--text);
+
+  font-weight: 700;
+}
+
+.unit-tab.active {
+  background: var(--green);
+  color: white;
+
+  border-color: var(--green);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.disclaimer {
+  color: var(--muted);
+
+  font-size: 0.82rem;
+}
+
+
+/* =========================
+   INFORMATION
+========================= */
+
+.content-section {
+  padding-block: 90px;
+}
+
+.info-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 15px;
+}
+
+.info-grid article {
+  padding: 22px;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: 15px;
+}
+
+.info-grid h3 {
+  margin-top: 0;
+}
+
+.info-grid p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+
+/* =========================
+   FAQ
+========================= */
+
+.faq-section {
+  padding-block: 70px 100px;
+}
+
+.faq-section details {
+  padding: 18px 0;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.faq-section summary {
+  cursor: pointer;
+
+  font-weight: 750;
+}
+
+.faq-section details p {
+  color: var(--muted);
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.site-footer {
+  width: min(1120px, calc(100% - 32px));
+
+  margin-inline: auto;
+
+  padding: 35px 0;
+
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 20px;
+
+  border-top: 1px solid var(--border);
+
+  color: var(--muted);
+}
+
+.site-footer strong {
+  color: var(--text);
+}
+
+.site-footer p {
+  margin: 4px 0;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 760px) {
+
+  .header-inner {
+    min-height: 64px;
   }
 
-
-  /* =====================================================
-     NAVIGATION
-  ===================================================== */
-
-  const menu =
-    document.querySelector(".calculator-menu");
-
-  const views =
-    $$(".calculator-view");
-
-  const openButtons =
-    $$(".open-calculator");
-
-  const backButtons =
-    $$("[data-back]");
-
-  function hideAllCalculators() {
-    views.forEach(view => {
-      view.classList.remove("active");
-      view.setAttribute("aria-hidden", "true");
-    });
+  .logo-icon {
+    width: 34px;
+    height: 34px;
   }
 
-  function showMenu(scroll = true) {
-    hideAllCalculators();
-
-    if (menu) {
-      menu.classList.remove("hidden");
-    }
-
-    if (scroll) {
-      const target =
-        document.getElementById("calculators");
-
-      if (target) {
-        target.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-      }
-    }
+  .main-nav {
+    gap: 14px;
   }
 
-  function showCalculator(name, updateURL = true) {
-    const target = $(`view-${name}`);
-
-    if (!target) {
-      showMenu();
-      return;
-    }
-
-    if (menu) {
-      menu.classList.add("hidden");
-    }
-
-    hideAllCalculators();
-
-    target.classList.add("active");
-    target.setAttribute(
-      "aria-hidden",
-      "false"
-    );
-
-    if (updateURL) {
-      history.pushState(
-        { calculator: name },
-        "",
-        `${window.location.pathname}` +
-        `${window.location.search}` +
-        `#${name}`
-      );
-    }
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
+  .main-nav a {
+    font-size: 0.9rem;
   }
 
-  openButtons.forEach(button => {
-    button.addEventListener("click", () => {
-      showCalculator(
-        button.dataset.open,
-        true
-      );
-    });
-  });
+  .hero {
+    min-height: 500px;
 
-  backButtons.forEach(button => {
-    button.addEventListener("click", () => {
-      history.pushState(
-        {},
-        "",
-        window.location.pathname +
-        window.location.search
-      );
-
-      showMenu();
-    });
-  });
-
-  function loadFromHash() {
-    const hash =
-      window.location.hash
-        .replace("#", "")
-        .toLowerCase();
-
-    const valid = [
-      "basic",
-      "scientific",
-      "percentage",
-      "age",
-      "bmi"
-    ];
-
-    if (valid.includes(hash)) {
-      showCalculator(hash, false);
-    } else {
-      showMenu(false);
-    }
+    padding-block: 60px;
   }
 
-  window.addEventListener(
-    "popstate",
-    loadFromHash
-  );
-
-  window.addEventListener(
-    "hashchange",
-    loadFromHash
-  );
-
-  loadFromHash();
-
-
-  /* =====================================================
-     BASIC CALCULATOR
-  ===================================================== */
-
-  const basicDisplay =
-    $("basicDisplay");
-
-  if (basicDisplay) {
-
-    function calculateBasic() {
-      let expression =
-        basicDisplay.value.trim();
-
-      if (!expression) return;
-
-      if (
-        !/^[0-9+\-*/().^%\s]+$/.test(
-          expression
-        )
-      ) {
-        basicDisplay.value = "Error";
-        return;
-      }
-
-      try {
-        expression =
-          expression
-            .replace(/\^/g, "**")
-            .replace(
-              /(\d+(?:\.\d+)?)%/g,
-              "($1/100)"
-            );
-
-        const result =
-          Function(
-            `"use strict";return (${expression})`
-          )();
-
-        if (!Number.isFinite(result)) {
-          throw new Error();
-        }
-
-        basicDisplay.value =
-          formatNumber(result);
-
-      } catch {
-        basicDisplay.value = "Error";
-      }
-    }
-
-    $$("[data-basic]").forEach(button => {
-      button.addEventListener("click", () => {
-
-        const value =
-          button.dataset.basic;
-
-        if (basicDisplay.value === "Error") {
-          basicDisplay.value = "";
-        }
-
-        if (value === "clear") {
-          basicDisplay.value = "";
-          return;
-        }
-
-        if (value === "backspace") {
-          basicDisplay.value =
-            basicDisplay.value.slice(0, -1);
-          return;
-        }
-
-        if (value === "=") {
-          calculateBasic();
-          return;
-        }
-
-        basicDisplay.value += value;
-      });
-    });
-
-    basicDisplay.addEventListener(
-      "keydown",
-      event => {
-
-        if (event.key === "Enter") {
-          event.preventDefault();
-          calculateBasic();
-        }
-
-        if (event.key === "Escape") {
-          basicDisplay.value = "";
-        }
-      }
-    );
+  .hero h1 {
+    font-size: clamp(2.7rem, 14vw, 4.5rem);
   }
 
-
-  /* =====================================================
-     SCIENTIFIC CALCULATOR
-  ===================================================== */
-
-  const scientificDisplay =
-    $("scientificDisplay");
-
-  let angleMode = "DEG";
-
-  if (scientificDisplay) {
-
-    const angleButton =
-      $("angleMode");
-
-    const clearButton =
-      $("scientificClear");
-
-    function getScientificNumber() {
-      const value =
-        Number(scientificDisplay.value);
-
-      if (!Number.isFinite(value)) {
-        throw new Error();
-      }
-
-      return value;
-    }
-
-    function toRadians(value) {
-      return angleMode === "DEG"
-        ? value * Math.PI / 180
-        : value;
-    }
-
-    function fromRadians(value) {
-      return angleMode === "DEG"
-        ? value * 180 / Math.PI
-        : value;
-    }
-
-    function applyFunction(fn, usesAngle = false) {
-      try {
-        const value =
-          getScientificNumber();
-
-        const result =
-          fn(
-            usesAngle
-              ? toRadians(value)
-              : value
-          );
-
-        if (!Number.isFinite(result)) {
-          throw new Error();
-        }
-
-        scientificDisplay.value =
-          formatNumber(result);
-
-      } catch {
-        scientificDisplay.value = "Error";
-      }
-    }
-
-    function applyInverseTrig(fn) {
-      try {
-        const value =
-          getScientificNumber();
-
-        const result =
-          fromRadians(fn(value));
-
-        if (!Number.isFinite(result)) {
-          throw new Error();
-        }
-
-        scientificDisplay.value =
-          formatNumber(result);
-
-      } catch {
-        scientificDisplay.value = "Error";
-      }
-    }
-
-    function calculateScientific() {
-      let expression =
-        scientificDisplay.value.trim();
-
-      if (!expression) return;
-
-      try {
-
-        expression =
-          expression
-            .replace(/π/g, "Math.PI")
-            .replace(/\be\b/g, "Math.E")
-            .replace(/\^/g, "**");
-
-        if (
-          !/^[0-9+\-*/().\sA-Za-z]+$/.test(
-            expression
-          )
-        ) {
-          throw new Error();
-        }
-
-        const remaining =
-          expression
-            .replace(/Math\.PI/g, "")
-            .replace(/Math\.E/g, "");
-
-        if (/[A-Za-z]/.test(remaining)) {
-          throw new Error();
-        }
-
-        const result =
-          Function(
-            `"use strict";return (${expression})`
-          )();
-
-        if (!Number.isFinite(result)) {
-          throw new Error();
-        }
-
-        scientificDisplay.value =
-          formatNumber(result);
-
-      } catch {
-        scientificDisplay.value = "Error";
-      }
-    }
-
-    if (angleButton) {
-      angleButton.addEventListener("click", () => {
-        angleMode =
-          angleMode === "DEG"
-            ? "RAD"
-            : "DEG";
-
-        angleButton.textContent =
-          angleMode;
-      });
-    }
-
-    if (clearButton) {
-      clearButton.addEventListener(
-        "click",
-        () => {
-          scientificDisplay.value = "";
-        }
-      );
-    }
-
-    $$("[data-sci]").forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        const value =
-          button.dataset.sci;
-
-        if (scientificDisplay.value === "Error") {
-          scientificDisplay.value = "";
-        }
-
-        switch (value) {
-
-          case "clear":
-            scientificDisplay.value = "";
-            break;
-
-          case "=":
-            calculateScientific();
-            break;
-
-          case "sin":
-            applyFunction(Math.sin, true);
-            break;
-
-          case "cos":
-            applyFunction(Math.cos, true);
-            break;
-
-          case "tan":
-            applyFunction(Math.tan, true);
-            break;
-
-          case "asin":
-            applyInverseTrig(Math.asin);
-            break;
-
-          case "acos":
-            applyInverseTrig(Math.acos);
-            break;
-
-          case "atan":
-            applyInverseTrig(Math.atan);
-            break;
-
-          case "sqrt":
-            applyFunction(Math.sqrt);
-            break;
-
-          case "log":
-            applyFunction(Math.log10);
-            break;
-
-          case "ln":
-            applyFunction(Math.log);
-            break;
-
-          case "exp":
-            applyFunction(Math.exp);
-            break;
-
-          case "square":
-            scientificDisplay.value += "^2";
-            break;
-
-          case "power":
-            scientificDisplay.value += "^";
-            break;
-
-          case "pi":
-            scientificDisplay.value += "π";
-            break;
-
-          case "e":
-            scientificDisplay.value += "e";
-            break;
-
-          case "open":
-            scientificDisplay.value += "(";
-            break;
-
-          case "close":
-            scientificDisplay.value += ")";
-            break;
-
-          default:
-            scientificDisplay.value += value;
-        }
-      });
-    });
-
-    scientificDisplay.addEventListener(
-      "keydown",
-      event => {
-
-        if (event.key === "Enter") {
-          event.preventDefault();
-          calculateScientific();
-        }
-
-        if (event.key === "Escape") {
-          scientificDisplay.value = "";
-        }
-      }
-    );
-    }
-  
-  /* =====================================================
-     PERCENTAGE CALCULATOR
-  ===================================================== */
-
-  const percentOfBtn =
-    $("percentOfBtn");
-
-  if (percentOfBtn) {
-    percentOfBtn.addEventListener(
-      "click",
-      () => {
-
-        const percentage =
-          Number($("percentX").value);
-
-        const number =
-          Number($("percentY").value);
-
-        if (
-          !Number.isFinite(percentage) ||
-          !Number.isFinite(number)
-        ) {
-          setText(
-            "percentOfResult",
-            "Please enter valid numbers."
-          );
-          return;
-        }
-
-        const result =
-          percentage / 100 * number;
-
-        setText(
-          "percentOfResult",
-          `${formatNumber(percentage)}% of ` +
-          `${formatNumber(number)} = ` +
-          `${formatNumber(result)}`
-        );
-      }
-    );
+  .calculator-cards {
+    grid-template-columns: 1fr;
   }
 
-
-  /* =====================================================
-     PERCENTAGE CHANGE
-  ===================================================== */
-
-  const changeBtn =
-    $("changeBtn");
-
-  if (changeBtn) {
-    changeBtn.addEventListener(
-      "click",
-      () => {
-
-        const original =
-          Number($("originalValue").value);
-
-        const current =
-          Number($("newValue").value);
-
-        if (
-          !Number.isFinite(original) ||
-          !Number.isFinite(current) ||
-          original === 0
-        ) {
-          setText(
-            "changeResult",
-            "Enter valid values. Original value cannot be zero."
-          );
-          return;
-        }
-
-        const difference =
-          current - original;
-
-        const percentage =
-          difference /
-          Math.abs(original) *
-          100;
-
-        const direction =
-          difference > 0
-            ? "increase"
-            : difference < 0
-              ? "decrease"
-              : "no change";
-
-        setText(
-          "changeResult",
-          `${formatNumber(
-            Math.abs(percentage)
-          )}% ${direction}`
-        );
-      }
-    );
+  .info-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
 
-
-  /* =====================================================
-     DISCOUNT CALCULATOR
-  ===================================================== */
-
-  const discountBtn =
-    $("discountBtn");
-
-  if (discountBtn) {
-    discountBtn.addEventListener(
-      "click",
-      () => {
-
-        const price =
-          Number($("price").value);
-
-        const discount =
-          Number($("discount").value);
-
-        if (
-          !Number.isFinite(price) ||
-          !Number.isFinite(discount) ||
-          price < 0 ||
-          discount < 0 ||
-          discount > 100
-        ) {
-          setText(
-            "discountResult",
-            "Enter a valid price and discount between 0% and 100%."
-          );
-          return;
-        }
-
-        const saved =
-          price * discount / 100;
-
-        const finalPrice =
-          price - saved;
-
-        setText(
-          "discountResult",
-          `You save ${formatNumber(saved)}. ` +
-          `Final price: ${formatNumber(finalPrice)}`
-        );
-      }
-    );
+  .age-form {
+    grid-template-columns: 1fr;
   }
 
+  .calculator-card {
+    padding: 20px;
+  }
+}
 
-  /* =====================================================
-     AGE CALCULATOR
-  ===================================================== */
 
-  function parseLocalDate(value) {
-    const parts =
-      value.split("-").map(Number);
+@media (max-width: 500px) {
 
-    if (parts.length !== 3) {
-      return new Date(NaN);
+  .header-inner {
+    width: min(100% - 20px, 1120px);
+    gap: 10px;
+  }
+
+  .logo-text {
+    font-size: 1.15rem;
+  }
+
+  .main-nav {
+    gap: 10px;
+  }
+
+  .main-nav a {
+    font-size: 0.78rem;
+  }
+
+  .theme-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  section {
+    width: min(100% - 20px, 1120px);
+  }
+
+  .calculator-views {
+    width: min(100% - 20px, 800px);
+  }
+
+  .calculator-choice {
+    padding: 20px;
+  }
+
+  .choice-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .key {
+    min-height: 54px;
+  }
+
+  .scientific-grid button {
+    min-height: 48px;
+    font-size: 0.9rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .site-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
     }
-
-    const [year, month, day] = parts;
-
-    const date =
-      new Date(year, month - 1, day);
-
-    if (
-      date.getFullYear() !== year ||
-      date.getMonth() !== month - 1 ||
-      date.getDate() !== day
-    ) {
-      return new Date(NaN);
-    }
-
-    return date;
-  }
-
-  function dateToUTC(date) {
-    return Date.UTC(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate()
-    );
-  }
-
-  const ageDate =
-    $("ageDate");
-
-  if (ageDate) {
-    const today =
-      new Date();
-
-    ageDate.value =
-      [
-        today.getFullYear(),
-        String(
-          today.getMonth() + 1
-        ).padStart(2, "0"),
-        String(
-          today.getDate()
-        ).padStart(2, "0")
-      ].join("-");
-  }
-
-  const ageBtn =
-    $("ageBtn");
-
-  if (ageBtn) {
-    ageBtn.addEventListener(
-      "click",
-      () => {
-
-        const birthInput =
-          $("birthDate").value;
-
-        const endInput =
-          $("ageDate").value;
-
-        if (!birthInput || !endInput) {
-          setText(
-            "ageResult",
-            "Please enter both dates."
-          );
-          return;
-        }
-
-        const birth =
-          parseLocalDate(birthInput);
-
-        const end =
-          parseLocalDate(endInput);
-
-        if (
-          Number.isNaN(birth.getTime()) ||
-          Number.isNaN(end.getTime())
-        ) {
-          setText(
-            "ageResult",
-            "Please enter valid dates."
-          );
-          return;
-        }
-
-        if (birth > end) {
-          setText(
-            "ageResult",
-            "Date of birth cannot be after the calculation date."
-          );
-          return;
-        }
-
-        let years =
-          end.getFullYear() -
-          birth.getFullYear();
-
-        let months =
-          end.getMonth() -
-          birth.getMonth();
-
-        let days =
-          end.getDate() -
-          birth.getDate();
-
-        if (days < 0) {
-          months--;
-
-          const previousMonth =
-            new Date(
-              end.getFullYear(),
-              end.getMonth(),
-              0
-            );
-
-          days +=
-            previousMonth.getDate();
-        }
-
-        if (months < 0) {
-          years--;
-          months += 12;
-        }
-
-        const totalDays =
-          Math.floor(
-            (
-              dateToUTC(end) -
-              dateToUTC(birth)
-            ) /
-            86400000
-          );
-
-        const result =
-          $("ageResult");
-
-        if (result) {
-          result.innerHTML =
-            `<strong>${years} years, ` +
-            `${months} months, ` +
-            `${days} days</strong>` +
-            `<br>` +
-            `<small>${totalDays.toLocaleString()} total days</small>`;
-        }
-      }
-    );
-  }
-
-
-  /* =====================================================
-     BMI CALCULATOR
-  ===================================================== */
-
-  let bmiUnit = "metric";
-
-  const unitTabs =
-    $$(".unit-tab");
-
-  const metricFields =
-    $("metricFields");
-
-  const imperialFields =
-    $("imperialFields");
-
-  unitTabs.forEach(button => {
-
-    button.addEventListener(
-      "click",
-      () => {
-
-        bmiUnit =
-          button.dataset.unit;
-
-        unitTabs.forEach(tab => {
-          tab.classList.toggle(
-            "active",
-            tab === button
-          );
-        });
-
-        if (metricFields) {
-          metricFields.classList.toggle(
-            "hidden",
-            bmiUnit !== "metric"
-          );
-        }
-
-        if (imperialFields) {
-          imperialFields.classList.toggle(
-            "hidden",
-            bmiUnit !== "imperial"
-          );
-        }
-
-        setText(
-          "bmiResult",
-          "Enter your height and weight."
-        );
-      }
-    );
-  });
-
-
-  const bmiBtn =
-    $("bmiBtn");
-
-  if (bmiBtn) {
-    bmiBtn.addEventListener(
-      "click",
-      () => {
-
-        let bmi;
-
-        if (bmiUnit === "metric") {
-
-          const heightCm =
-            Number($("heightCm").value);
-
-          const weightKg =
-            Number($("weightKg").value);
-
-          if (
-            !Number.isFinite(heightCm) ||
-            !Number.isFinite(weightKg) ||
-            heightCm <= 0 ||
-            weightKg <= 0
-          ) {
-            setText(
-              "bmiResult",
-              "Enter a valid height and weight."
-            );
-            return;
-          }
-
-          const heightM =
-            heightCm / 100;
-
-          bmi =
-            weightKg /
-            (heightM * heightM);
-
-        } else {
-
-          const heightIn =
-            Number($("heightIn").value);
-
-          const weightLb =
-            Number($("weightLb").value);
-
-          if (
-            !Number.isFinite(heightIn) ||
-            !Number.isFinite(weightLb) ||
-            heightIn <= 0 ||
-            weightLb <= 0
-          ) {
-            setText(
-              "bmiResult",
-              "Enter a valid height and weight."
-            );
-            return;
-          }
-
-          bmi =
-            703 *
-            weightLb /
-            (heightIn * heightIn);
-        }
-
-        let category;
-
-        if (bmi < 18.5) {
-          category = "Below the standard adult BMI range";
-        } else if (bmi < 25) {
-          category = "Within the standard adult BMI range";
-        } else if (bmi < 30) {
-          category = "Above the standard adult BMI range";
-        } else {
-          category = "High BMI range";
-        }
-
-        setText(
-          "bmiResult",
-          `BMI: ${formatNumber(bmi)} — ${category}`
-        );
-      }
-    );
-  }
-
-});
