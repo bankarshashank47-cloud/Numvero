@@ -1,34 +1,35 @@
-/* =========================================================
-   NUMVERO — GLOBAL
-========================================================= */
-
 :root {
-  --bg: #f5f7f6;
+  --green: #176b45;
+  --green-dark: #0f4d32;
+  --green-light: #e8f4ee;
+
+  --bg: #f7faf8;
   --surface: #ffffff;
-  --surface-2: #eef3f0;
-  --text: #17211c;
-  --muted: #68736d;
+  --surface-2: #f0f5f2;
 
-  --primary: #176b45;
-  --primary-dark: #0f5033;
-
+  --text: #172019;
+  --muted: #66736b;
   --border: #dce5df;
 
-  --shadow:
-    0 10px 35px rgba(20, 40, 30, 0.08);
+  --shadow: 0 10px 30px rgba(23, 32, 25, 0.08);
 
-  --shadow-hover:
-    0 16px 42px rgba(20, 40, 30, 0.13);
-
-  --radius: 20px;
-
-  --transition: 0.2s ease;
+  --radius: 18px;
+  --transition: 0.25s ease;
 }
 
+body.dark {
+  --bg: #101613;
+  --surface: #17201b;
+  --surface-2: #202a24;
 
-/* =========================================================
-   RESET
-========================================================= */
+  --text: #f0f5f2;
+  --muted: #a8b5ad;
+  --border: #2d3a32;
+
+  --green-light: #193a2a;
+
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
 
 * {
   box-sizing: border-box;
@@ -36,12 +37,10 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 80px;
 }
 
 body {
   margin: 0;
-
   font-family:
     Inter,
     system-ui,
@@ -55,8 +54,9 @@ body {
 
   line-height: 1.6;
 
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  transition:
+    background var(--transition),
+    color var(--transition);
 }
 
 button,
@@ -66,119 +66,106 @@ input {
 
 button {
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
 
 a {
   color: inherit;
   text-decoration: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-summary:focus-visible {
-  outline: 3px solid rgba(23, 107, 69, 0.28);
-  outline-offset: 3px;
 }
 
 
-/* =========================================================
+/* =========================
    HEADER
-========================================================= */
+========================= */
 
 .site-header {
   position: sticky;
   top: 0;
   z-index: 100;
 
-  background: rgba(255, 255, 255, 0.94);
+  background: color-mix(
+    in srgb,
+    var(--surface) 92%,
+    transparent
+  );
 
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(12px);
 
   border-bottom: 1px solid var(--border);
 }
 
 .header-inner {
-  width: 100%;
-  max-width: 1180px;
-
-  min-height: 68px;
-
+  width: min(1120px, calc(100% - 32px));
   margin: auto;
-  padding: 0 20px;
+
+  min-height: 72px;
 
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
-  gap: 25px;
+  gap: 20px;
 }
 
 
-/* =========================================================
-   LOGO
-========================================================= */
+/* Logo */
 
 .logo {
-  font-size: 1.4rem;
-  font-weight: 900;
-  letter-spacing: -0.6px;
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+
+  flex-shrink: 0;
 }
 
-.logo span {
-  color: var(--primary);
+.logo-icon {
+  width: 40px;
+  height: 40px;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  display: block;
+}
+
+.logo-text span {
+  color: var(--green);
 }
 
 
-/* =========================================================
-   NAV
-========================================================= */
+/* Navigation */
 
 .main-nav {
   display: flex;
   align-items: center;
-
-  gap: 5px;
+  gap: 28px;
 
   margin-left: auto;
 }
 
 .main-nav a {
-  padding: 8px 11px;
-
   color: var(--muted);
-
-  font-size: 0.9rem;
-  font-weight: 700;
-
-  border-radius: 10px;
+  font-weight: 600;
 
   transition:
-    background var(--transition),
     color var(--transition);
 }
 
 .main-nav a:hover {
-  background: var(--surface-2);
-  color: var(--primary);
+  color: var(--green);
 }
 
 
-/* =========================================================
-   THEME
-========================================================= */
+/* Theme */
 
 .theme-btn {
-  width: 40px;
-  height: 40px;
-
-  flex: 0 0 40px;
-
-  display: grid;
-  place-items: center;
+  width: 42px;
+  height: 42px;
 
   border: 1px solid var(--border);
   border-radius: 50%;
@@ -186,7 +173,8 @@ summary:focus-visible {
   background: var(--surface);
   color: var(--text);
 
-  font-size: 1rem;
+  display: grid;
+  place-items: center;
 
   transition:
     transform var(--transition),
@@ -194,140 +182,136 @@ summary:focus-visible {
 }
 
 .theme-btn:hover {
-  background: var(--surface-2);
-}
-
-.theme-btn:active {
-  transform: scale(0.92);
+  transform: rotate(15deg);
 }
 
 
-/* =========================================================
-   HERO
-========================================================= */
+/* =========================
+   GENERAL
+========================= */
 
-.hero {
-  padding: 100px 20px 75px;
-
-  background:
-    radial-gradient(
-      circle at 80% 15%,
-      rgba(23, 107, 69, 0.13),
-      transparent 38%
-    );
-
-  border-bottom: 1px solid rgba(220, 229, 223, 0.55);
+main {
+  overflow: hidden;
 }
 
-.hero-content {
-  max-width: 900px;
-  margin: auto;
-  text-align: center;
+section {
+  width: min(1120px, calc(100% - 32px));
+  margin-inline: auto;
 }
 
 .eyebrow {
   margin: 0 0 10px;
 
-  color: var(--primary);
+  color: var(--green);
 
   font-size: 0.78rem;
-  font-weight: 850;
+  font-weight: 800;
 
-  letter-spacing: 2px;
+  letter-spacing: 0.14em;
+}
+
+.section-heading {
+  margin-bottom: 40px;
+}
+
+.section-heading h2 {
+  margin: 0 0 8px;
+
+  font-size: clamp(2rem, 5vw, 3rem);
+
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.section-heading > p:last-child {
+  margin: 0;
+  color: var(--muted);
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  min-height: 600px;
+
+  display: grid;
+  place-items: center;
+
+  text-align: center;
+
+  padding-block: 80px;
+}
+
+.hero-content {
+  max-width: 760px;
 }
 
 .hero h1 {
   margin: 0;
 
-  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  font-size: clamp(3rem, 9vw, 6rem);
 
-  line-height: 1.04;
-  letter-spacing: -2.5px;
+  line-height: 0.98;
+
+  letter-spacing: -0.07em;
 }
 
 .hero h1 span {
-  color: var(--primary);
+  color: var(--green);
 }
 
 .hero-text {
-  max-width: 650px;
+  max-width: 580px;
 
-  margin: 22px auto 28px;
+  margin: 28px auto 0;
 
   color: var(--muted);
 
-  font-size: clamp(1rem, 2vw, 1.1rem);
+  font-size: 1.1rem;
 }
 
 .hero-buttons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  gap: 12px;
-  flex-wrap: wrap;
+  margin-top: 32px;
 }
 
 
-/* =========================================================
+/* =========================
    BUTTONS
-========================================================= */
+========================= */
 
-.primary-btn,
-.secondary-btn {
+.primary-btn {
   display: inline-flex;
 
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 
-  min-height: 46px;
+  min-height: 48px;
 
-  padding: 0 20px;
+  padding: 0 22px;
 
+  border: 0;
   border-radius: 12px;
+
+  background: var(--green);
+  color: #ffffff;
 
   font-weight: 750;
 
-  border: 1px solid transparent;
-
   transition:
     transform var(--transition),
-    box-shadow var(--transition),
-    background var(--transition);
-}
-
-.primary-btn {
-  background: var(--primary);
-  color: #ffffff;
-  border-color: var(--primary);
+    background var(--transition),
+    box-shadow var(--transition);
 }
 
 .primary-btn:hover {
-  background: var(--primary-dark);
-  border-color: var(--primary-dark);
+  background: var(--green-dark);
 
   transform: translateY(-2px);
 
   box-shadow:
-    0 7px 20px rgba(23, 107, 69, 0.2);
-}
-
-.primary-btn:active,
-.secondary-btn:active {
-  transform: scale(0.97);
-}
-
-.secondary-btn {
-  background: var(--surface);
-
-  border-color: var(--border);
-
-  color: var(--text);
-}
-
-.secondary-btn:hover {
-  background: var(--surface-2);
-  transform: translateY(-1px);
+    0 8px 20px rgba(23, 107, 69, 0.2);
 }
 
 .full {
@@ -335,45 +319,13 @@ summary:focus-visible {
 }
 
 
-/* =========================================================
-   MENU
-========================================================= */
+/* =========================
+   CALCULATOR MENU
+========================= */
 
 .calculator-menu {
-  width: 100%;
-  max-width: 1180px;
-
-  margin: auto;
-
-  padding: 75px 20px 90px;
+  padding-block: 90px;
 }
-
-.section-heading {
-  max-width: 700px;
-
-  margin: 0 auto 35px;
-
-  text-align: center;
-}
-
-.section-heading h2 {
-  margin: 0 0 8px;
-
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-
-  line-height: 1.2;
-  letter-spacing: -0.8px;
-}
-
-.section-heading > p:not(.eyebrow) {
-  margin: 0;
-  color: var(--muted);
-}
-
-
-/* =========================================================
-   CARDS
-========================================================= */
 
 .calculator-cards {
   display: grid;
@@ -385,788 +337,473 @@ summary:focus-visible {
 }
 
 .calculator-choice {
-  position: relative;
-
-  min-width: 0;
-
   display: flex;
 
-  gap: 20px;
+  gap: 22px;
 
-  padding: 25px;
+  padding: 26px;
 
   background: var(--surface);
 
   border: 1px solid var(--border);
-
   border-radius: var(--radius);
 
   box-shadow: var(--shadow);
 
-  overflow: hidden;
-
   transition:
     transform var(--transition),
-    box-shadow var(--transition),
     border-color var(--transition);
-}
-
-.calculator-choice::before {
-  content: "";
-
-  position: absolute;
-
-  left: 0;
-  top: 0;
-  bottom: 0;
-
-  width: 4px;
-
-  background: var(--primary);
-
-  transform: scaleY(0);
-
-  transform-origin: center;
-
-  transition: transform var(--transition);
 }
 
 .calculator-choice:hover {
   transform: translateY(-4px);
-
-  box-shadow: var(--shadow-hover);
-
-  border-color:
-    rgba(23, 107, 69, 0.25);
+  border-color: var(--green);
 }
-
-.calculator-choice:hover::before {
-  transform: scaleY(1);
-}
-
-
-/* =========================================================
-   ICON
-========================================================= */
 
 .choice-icon {
   width: 58px;
   height: 58px;
 
-  flex: 0 0 58px;
+  flex-shrink: 0;
 
   display: grid;
   place-items: center;
 
   border-radius: 16px;
 
-  background: var(--surface-2);
+  background: var(--green-light);
+  color: var(--green);
 
-  color: var(--primary);
-
-  font-size: 1.25rem;
-  font-weight: 900;
-
-  transition:
-    transform var(--transition),
-    background var(--transition);
+  font-size: 1.35rem;
+  font-weight: 800;
 }
-
-.calculator-choice:hover .choice-icon {
-  transform: scale(1.06);
-
-  background:
-    rgba(23, 107, 69, 0.12);
-}
-
-
-/* =========================================================
-   CARD CONTENT
-========================================================= */
 
 .choice-content {
-  min-width: 0;
   flex: 1;
 }
 
 .card-number {
-  display: block;
+  display: inline-block;
 
-  margin-bottom: 2px;
+  color: var(--green);
 
-  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 800;
 
-  font-size: 0.72rem;
-  font-weight: 850;
-
-  letter-spacing: 1px;
+  letter-spacing: 0.08em;
 }
 
 .choice-content h3 {
-  margin: 0 0 5px;
+  margin: 5px 0 8px;
 
-  font-size: 1.25rem;
-  line-height: 1.25;
+  font-size: 1.35rem;
 }
 
 .choice-content p {
   margin: 0 0 18px;
 
   color: var(--muted);
-
-  font-size: 0.9rem;
-}
-
-.choice-content .primary-btn {
-  min-height: 42px;
-
-  padding: 0 15px;
-
-  font-size: 0.86rem;
 }
 
 
-/* =========================================================
-   HIDDEN
-========================================================= */
-
-.hidden {
-  display: none !important;
-}
-
-
-/* =========================================================
+/* =========================
    CALCULATOR VIEWS
-========================================================= */
+========================= */
 
 .calculator-views {
-  width: 100%;
+  width: min(800px, calc(100% - 32px));
 
-  padding: 25px 20px 80px;
+  margin-inline: auto;
 }
 
 .calculator-view {
-  width: 100%;
-  max-width: 760px;
-
-  margin: 0 auto;
-
   display: none;
+
+  padding-block: 40px;
 }
 
 .calculator-view.active {
   display: block;
-
-  animation:
-    calculatorEnter 0.25s ease;
 }
-
-@keyframes calculatorEnter {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
-/* =========================================================
-   BACK
-========================================================= */
 
 .back-btn {
-  display: inline-flex;
+  margin-bottom: 18px;
 
-  align-items: center;
+  border: 0;
+  background: transparent;
 
-  min-height: 42px;
+  color: var(--green);
 
-  margin: 0 0 16px;
-
-  padding: 0 14px;
-
-  border: 1px solid var(--border);
-
-  border-radius: 10px;
-
-  background: var(--surface);
-
-  color: var(--text);
-
-  font-size: 0.88rem;
-  font-weight: 750;
-
-  transition:
-    background var(--transition),
-    transform var(--transition);
+  font-weight: 700;
 }
-
-.back-btn:hover {
-  background: var(--surface-2);
-  transform: translateX(-2px);
-}
-
-.back-btn:active {
-  transform: scale(0.97);
-}
-
-
-/* =========================================================
-   CALCULATOR CARD
-========================================================= */
 
 .calculator-card {
-  min-width: 0;
-
-  padding: 27px;
+  padding: 30px;
 
   background: var(--surface);
 
   border: 1px solid var(--border);
-
   border-radius: var(--radius);
 
   box-shadow: var(--shadow);
 }
 
 .card-heading {
-  display: flex;
-
-  justify-content: space-between;
-
-  margin-bottom: 22px;
+  margin-bottom: 25px;
 }
 
 .card-heading h2 {
-  margin: 2px 0 3px;
+  margin: 4px 0 3px;
 
-  font-size: 1.5rem;
-  line-height: 1.25;
+  font-size: 1.8rem;
+
+  line-height: 1.2;
 }
 
 .card-heading p {
   margin: 0;
-
   color: var(--muted);
-
-  font-size: 0.9rem;
 }
 
 
-/* =========================================================
-   DISPLAY
-========================================================= */
+/* =========================
+   BASIC CALCULATOR
+========================= */
 
 .display {
   width: 100%;
-  height: 70px;
+
+  min-height: 78px;
+
+  margin-bottom: 18px;
+
+  padding: 14px 18px;
 
   border: 1px solid var(--border);
-
-  border-radius: 13px;
+  border-radius: 14px;
 
   background: var(--surface-2);
   color: var(--text);
 
-  padding: 10px 15px;
-
-  font-size: 1.7rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 650;
 
   text-align: right;
 
   outline: none;
-
-  transition:
-    border-color var(--transition),
-    box-shadow var(--transition);
-}
-
-.display::placeholder {
-  color: var(--muted);
-  opacity: 0.7;
 }
 
 .display:focus {
-  border-color: var(--primary);
-
-  box-shadow:
-    0 0 0 3px rgba(23, 107, 69, 0.1);
+  border-color: var(--green);
 }
 
-
-/* =========================================================
-   BASIC
-========================================================= */
-
 .keypad {
-  margin-top: 12px;
-
   display: grid;
 
   grid-template-columns:
-    repeat(4, 1fr);
+    repeat(4, minmax(0, 1fr));
 
-  gap: 8px;
+  gap: 10px;
 }
 
 .key {
-  min-height: 58px;
+  min-height: 60px;
 
   border: 1px solid var(--border);
-
   border-radius: 12px;
 
-  background: var(--surface);
+  background: var(--surface-2);
   color: var(--text);
 
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 700;
 
-  touch-action: manipulation;
-
   transition:
-    transform 0.1s ease,
-    background 0.1s ease,
-    border-color 0.1s ease;
+    transform 0.12s ease,
+    background var(--transition);
 }
 
 .key:hover {
-  background: var(--surface-2);
+  background: var(--green-light);
 }
 
 .key:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
+.key.operator,
 .key.function {
-  color: var(--primary);
-  background: var(--surface-2);
-}
-
-.key.operator {
-  color: var(--primary);
-  font-size: 1.2rem;
+  color: var(--green);
 }
 
 .key.equals {
   grid-column: 1 / -1;
 
-  background: var(--primary);
-  color: #ffffff;
+  background: var(--green);
+  color: white;
 
-  border-color: var(--primary);
-}
-
-.key.equals:hover {
-  background: var(--primary-dark);
-  border-color: var(--primary-dark);
+  border-color: var(--green);
 }
 
 
-/* =========================================================
+/* =========================
    SCIENTIFIC
-========================================================= */
+========================= */
 
 .mode-row {
   display: flex;
+  gap: 10px;
 
-  gap: 8px;
-
-  margin: 10px 0;
+  margin-bottom: 15px;
 }
 
 .small-btn {
-  min-height: 38px;
+  padding: 9px 14px;
 
   border: 1px solid var(--border);
-
-  border-radius: 9px;
+  border-radius: 10px;
 
   background: var(--surface-2);
   color: var(--text);
 
-  padding: 7px 12px;
-
-  font-size: 0.8rem;
-  font-weight: 750;
-
-  transition:
-    background var(--transition),
-    transform 0.1s ease;
-}
-
-.small-btn:hover {
-  background: var(--surface);
-}
-
-.small-btn:active {
-  transform: scale(0.97);
+  font-weight: 700;
 }
 
 .scientific-grid {
   display: grid;
 
   grid-template-columns:
-    repeat(4, 1fr);
+    repeat(4, minmax(0, 1fr));
 
-  gap: 7px;
+  gap: 9px;
 }
 
 .scientific-grid button {
-  min-height: 45px;
+  min-height: 52px;
 
   border: 1px solid var(--border);
+  border-radius: 10px;
 
-  border-radius: 9px;
-
-  background: var(--surface);
+  background: var(--surface-2);
   color: var(--text);
 
-  font-weight: 650;
-
-  touch-action: manipulation;
-
-  transition:
-    transform 0.1s ease,
-    background 0.1s ease;
+  font-weight: 700;
 }
 
 .scientific-grid button:hover {
-  background: var(--surface-2);
-}
-
-.scientific-grid button:active {
-  transform: scale(0.95);
-}
-
-.scientific-grid button:nth-child(-n + 16) {
-  color: var(--primary);
+  background: var(--green-light);
 }
 
 .scientific-grid .sci-equals {
   grid-column: 1 / -1;
 
-  background: var(--primary);
+  background: var(--green);
+  color: white;
 
-  border-color: var(--primary);
-
-  color: #ffffff;
-}
-
-.scientific-grid .sci-equals:hover {
-  background: var(--primary-dark);
-  border-color: var(--primary-dark);
+  border-color: var(--green);
 }
 
 
-/* =========================================================
+/* =========================
    FORMS
-========================================================= */
+========================= */
 
 .form-stack {
   display: grid;
-  gap: 15px;
+  gap: 20px;
 }
 
 .calc-form {
-  padding: 18px;
-
-  background: var(--surface-2);
+  padding: 22px;
 
   border: 1px solid var(--border);
-
   border-radius: 15px;
+
+  background: var(--surface-2);
 }
 
 .calc-form h3 {
-  margin: 0 0 14px;
-
-  font-size: 1rem;
-  line-height: 1.3;
+  margin-top: 0;
 }
 
 label {
-  display: block;
+  display: grid;
+  gap: 7px;
 
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 
-  color: var(--muted);
-
-  font-size: 0.84rem;
   font-weight: 700;
 }
 
-input[type="number"],
-input[type="date"] {
-  display: block;
-
+label input {
   width: 100%;
-  height: 46px;
 
-  margin-top: 5px;
+  min-height: 48px;
+
+  padding: 10px 13px;
 
   border: 1px solid var(--border);
-
   border-radius: 10px;
-
-  padding: 0 12px;
 
   background: var(--surface);
   color: var(--text);
 
   outline: none;
-
-  color-scheme: light;
-
-  transition:
-    border-color var(--transition),
-    box-shadow var(--transition);
 }
 
-input[type="number"]:focus,
-input[type="date"]:focus {
-  border-color: var(--primary);
-
-  box-shadow:
-    0 0 0 3px rgba(23, 107, 69, 0.1);
+label input:focus {
+  border-color: var(--green);
 }
-
-input::placeholder {
-  color: var(--muted);
-  opacity: 0.7;
-}
-
-
-/* =========================================================
-   RESULTS
-========================================================= */
 
 .result,
 .large-result {
-  margin-top: 12px;
+  margin-top: 15px;
 
-  padding: 14px;
+  padding: 15px;
 
   border-radius: 10px;
 
-  background: var(--surface);
+  background: var(--green-light);
 
-  border: 1px solid var(--border);
+  color: var(--text);
 
-  font-weight: 750;
-
-  overflow-wrap: anywhere;
+  font-weight: 650;
 }
 
 .large-result {
-  margin-top: 18px;
-
-  text-align: center;
-
   font-size: 1.15rem;
 }
 
-
-/* =========================================================
-   AGE
-========================================================= */
-
 .age-form {
   display: grid;
+  grid-template-columns: 1fr 1fr;
 
-  grid-template-columns:
-    1fr 1fr;
-
-  gap: 12px;
+  gap: 15px;
 }
 
-.age-form .full {
+.age-form .primary-btn {
   grid-column: 1 / -1;
 }
 
-
-/* =========================================================
-   BMI
-========================================================= */
-
 .unit-tabs {
   display: flex;
+  gap: 8px;
 
-  gap: 7px;
-
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 }
 
 .unit-tab {
   flex: 1;
 
-  min-height: 42px;
-
-  padding: 10px;
+  min-height: 44px;
 
   border: 1px solid var(--border);
-
   border-radius: 10px;
 
   background: var(--surface);
-  color: var(--muted);
+  color: var(--text);
 
-  font-weight: 750;
-
-  transition:
-    background var(--transition),
-    color var(--transition),
-    transform 0.1s ease;
-}
-
-.unit-tab:hover {
-  background: var(--surface-2);
-}
-
-.unit-tab:active {
-  transform: scale(0.98);
+  font-weight: 700;
 }
 
 .unit-tab.active {
-  background: var(--primary);
+  background: var(--green);
+  color: white;
 
-  border-color: var(--primary);
-
-  color: #ffffff;
+  border-color: var(--green);
 }
 
-.bmi-fields {
-  display: grid;
-
-  grid-template-columns:
-    1fr 1fr;
-
-  gap: 12px;
-
-  margin-bottom: 5px;
+.hidden {
+  display: none !important;
 }
 
 .disclaimer {
-  margin: 14px 0 0;
-
   color: var(--muted);
 
-  font-size: 0.76rem;
+  font-size: 0.82rem;
 }
 
 
-/* =========================================================
+/* =========================
    INFORMATION
-========================================================= */
+========================= */
 
-.content-section,
-.faq-section {
-  width: 100%;
-  max-width: 900px;
-
-  margin: 0 auto;
-
-  padding: 40px 20px 70px;
-}
-
-.content-section h2,
-.faq-section h2 {
-  font-size: 1.8rem;
-  line-height: 1.25;
-}
-
-.content-section p {
-  color: var(--muted);
+.content-section {
+  padding-block: 90px;
 }
 
 .info-grid {
   display: grid;
 
   grid-template-columns:
-    repeat(2, 1fr);
+    repeat(4, minmax(0, 1fr));
 
   gap: 15px;
-
-  margin-top: 25px;
 }
 
 .info-grid article {
-  padding: 18px;
-
-  border: 1px solid var(--border);
-
-  border-radius: 14px;
+  padding: 22px;
 
   background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: 15px;
 }
 
 .info-grid h3 {
   margin-top: 0;
-  line-height: 1.3;
 }
 
-
-/* =========================================================
-   FAQ
-========================================================= */
-
-.faq-section details {
-  margin-bottom: 9px;
-
-  border: 1px solid var(--border);
-
-  border-radius: 12px;
-
-  background: var(--surface);
-
-  overflow: hidden;
-}
-
-.faq-section summary {
-  padding: 16px;
-
-  cursor: pointer;
-
-  font-weight: 750;
-
-  user-select: none;
-}
-
-.faq-section details p {
-  padding: 0 16px 16px;
-
-  margin: 0;
-
+.info-grid p {
+  margin-bottom: 0;
   color: var(--muted);
 }
 
 
-/* =========================================================
+/* =========================
+   FAQ
+========================= */
+
+.faq-section {
+  padding-block: 70px 100px;
+}
+
+.faq-section details {
+  padding: 18px 0;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.faq-section summary {
+  cursor: pointer;
+
+  font-weight: 750;
+}
+
+.faq-section details p {
+  color: var(--muted);
+}
+
+
+/* =========================
    FOOTER
-========================================================= */
+========================= */
 
 .site-footer {
-  width: 100%;
-  max-width: 1180px;
+  width: min(1120px, calc(100% - 32px));
 
-  margin: auto;
+  margin-inline: auto;
 
-  padding: 35px 20px;
-
-  border-top: 1px solid var(--border);
+  padding: 35px 0;
 
   display: flex;
 
   justify-content: space-between;
-
-  align-items: flex-start;
+  align-items: center;
 
   gap: 20px;
+
+  border-top: 1px solid var(--border);
 
   color: var(--muted);
 }
@@ -1176,155 +813,118 @@ input::placeholder {
 }
 
 .site-footer p {
-  margin: 3px 0;
+  margin: 4px 0;
 }
 
 
-/* =========================================================
-   DARK MODE
-========================================================= */
-
-body.dark {
-  --bg: #0f1512;
-  --surface: #172019;
-  --surface-2: #202b24;
-  --text: #edf5ef;
-  --muted: #a5b0a9;
-  --border: #303c35;
-
-  --shadow:
-    0 10px 35px rgba(0, 0, 0, 0.25);
-
-  --shadow-hover:
-    0 16px 42px rgba(0, 0, 0, 0.35);
-}
-
-body.dark .site-header {
-  background: rgba(15, 21, 18, 0.94);
-}
-
-body.dark input[type="number"],
-body.dark input[type="date"] {
-  color-scheme: dark;
-}
-
-body.dark .hero {
-  border-bottom-color:
-    rgba(48, 60, 53, 0.55);
-}
-
-
-/* =========================================================
-   TABLET
-========================================================= */
-
-@media (max-width: 900px) {
-
-  .main-nav a {
-    padding: 8px 7px;
-    font-size: 0.82rem;
-  }
-
-  .calculator-cards {
-    gap: 16px;
-  }
-
-}
-
-
-/* =========================================================
+/* =========================
    MOBILE
-========================================================= */
+========================= */
 
-@media (max-width: 800px) {
-
-  .main-nav {
-    display: none;
-  }
+@media (max-width: 760px) {
 
   .header-inner {
-    justify-content: space-between;
+    min-height: 64px;
   }
 
-  .hero {
-    padding: 70px 18px 55px;
+  .logo-icon {
+    width: 34px;
+    height: 34px;
   }
 
-  .calculator-menu {
-    padding: 60px 15px 70px;
-  }
-
-  .calculator-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .calculator-choice {
-    padding: 20px;
-  }
-
-  .calculator-views {
-    padding: 15px 15px 65px;
-  }
-
-  .calculator-card {
-    padding: 20px;
-  }
-
-  .age-form,
-  .bmi-fields,
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .age-form .full {
-    grid-column: auto;
-  }
-
-  .site-footer {
-    flex-direction: column;
-  }
-
-}
-
-
-/* =========================================================
-   SMALL PHONES
-========================================================= */
-
-@media (max-width: 420px) {
-
-  .calculator-choice {
+  .main-nav {
     gap: 14px;
   }
 
-  .choice-icon {
-    width: 48px;
-    height: 48px;
-    flex-basis: 48px;
+  .main-nav a {
+    font-size: 0.9rem;
+  }
 
-    border-radius: 13px;
+  .hero {
+    min-height: 500px;
+
+    padding-block: 60px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.7rem, 14vw, 4.5rem);
+  }
+
+  .calculator-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .info-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .age-form {
+    grid-template-columns: 1fr;
   }
 
   .calculator-card {
-    padding: 16px;
+    padding: 20px;
+  }
+}
+
+
+@media (max-width: 500px) {
+
+  .header-inner {
+    width: min(100% - 20px, 1120px);
+    gap: 10px;
   }
 
-  .display {
-    height: 62px;
-    font-size: 1.4rem;
+  .logo-text {
+    font-size: 1.15rem;
+  }
+
+  .main-nav {
+    gap: 10px;
+  }
+
+  .main-nav a {
+    font-size: 0.78rem;
+  }
+
+  .theme-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  section {
+    width: min(100% - 20px, 1120px);
+  }
+
+  .calculator-views {
+    width: min(100% - 20px, 800px);
+  }
+
+  .calculator-choice {
+    padding: 20px;
+  }
+
+  .choice-icon {
+    width: 50px;
+    height: 50px;
   }
 
   .key {
     min-height: 54px;
   }
 
-  .scientific-grid {
-    gap: 5px;
-  }
-
   .scientific-grid button {
-    min-height: 43px;
+    min-height: 48px;
     font-size: 0.9rem;
   }
 
-     }
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .site-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+   }
