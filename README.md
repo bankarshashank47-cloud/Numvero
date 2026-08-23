@@ -1,18 +1,25 @@
 # Numvero
 
-Fast, private, browser-only calculator.
+A polished, fast, private calculator built with plain HTML, CSS and JavaScript.
 
-## Included
-- + − × ÷, parentheses, %, decimals, ±, AC/C, backspace and equals
-- Operator precedence and safe expression parsing (no `eval`)
-- Keyboard and number-pad support
-- Calculation history with reuse/delete/clear
-- Memory: MC, MR, M+, M−
-- Undo/redo, copy result, shareable calculation URLs
-- Light/dark theme with persistence
-- Responsive mobile-first interface and accessibility support
-- No frameworks, dependencies, login, ads or tracking
+## Features
+- Addition, subtraction, multiplication, division, precedence and parentheses
+- Decimals, percentage, positive/negative, C, AC and backspace
+- Large-number and floating-point handling
+- Safe expression parser with no `eval()` or arbitrary code execution
+- Keyboard and numpad support
+- Calculation history with reuse, deletion and clear-all
+- MC, MR, M+, M− memory controls
+- Undo/redo, copy and shareable calculation URLs
+- Light/dark themes with persistence
+- Responsive mobile, desktop and landscape layouts
+- Accessible buttons, focus states and reduced-motion support
+- No framework, dependency, login, advertising or unnecessary tracking
 
-## Deploy
+## Deployment
 
-Use GitHub Pages with the `main` branch and root folder.
+Deploy the repository root from the `main` branch with GitHub Pages.
+
+## Philosophy
+
+Numvero keeps the interface focused: the calculator is the product, not a collection of distractions.
