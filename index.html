@@ -2,43 +2,39 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0b1020">
-<meta name="description" content="Numvero is a fast, free online calculator for everyday math. Calculate percentages, decimals, negative numbers, parentheses and long expressions with keyboard support and history.">
-<meta name="keywords" content="online calculator, free calculator, basic calculator, percentage calculator, math calculator, calculator online, scientific notation calculator">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f7f5">
+<meta name="description" content="Numvero is a fast, clean and private online calculator with parentheses, percentages, history, memory and keyboard support.">
 <meta name="robots" content="index,follow">
-<link rel="canonical" href="https://bankarshashank47-cloud.github.io/Numvero/">
-<meta property="og:title" content="Numvero — Fast Online Calculator">
-<meta property="og:description" content="A clean, fast and accessible online calculator with history, memory, keyboard controls and dark mode.">
 <meta property="og:type" content="website">
+<meta property="og:title" content="Numvero — Online Calculator">
+<meta property="og:description" content="A fast, private calculator for everyday math. Works on desktop and mobile.">
 <meta property="og:url" content="https://bankarshashank47-cloud.github.io/Numvero/">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="canonical" href="https://bankarshashank47-cloud.github.io/Numvero/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Numvero — Online Calculator</title>
 <link rel="stylesheet" href="styles.css">
-<title>Numvero — Fast Online Calculator</title>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Numvero","url":"https://bankarshank47-cloud.github.io/Numvero/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","description":"Free online calculator for basic arithmetic, percentages, decimals, parentheses and long calculations."}</script>
 </head>
 <body>
-<header class="site-header"><a class="brand" href="./" aria-label="Numvero home"><span class="brand-mark">∑</span><span>Numvero</span></a><nav><a href="#calculator">Calculator</a><a href="#features">Features</a><a href="#how-to">How it works</a></nav><button id="themeBtn" class="icon-btn" type="button" aria-label="Toggle dark mode">☾</button></header>
-<main>
-<section class="hero" aria-labelledby="page-title"><div><p class="eyebrow">FAST • PRIVATE • FREE</p><h1 id="page-title">A better online calculator.</h1><p class="hero-copy">Numvero handles everyday arithmetic without clutter. Type with your keyboard, tap on mobile, reuse your history, and keep your calculations private in your browser.</p><div class="hero-actions"><a class="primary" href="#calculator">Open calculator</a><a class="secondary" href="percentage-calculator.html">Percentage calculator</a></div></div><div class="hero-badge" aria-hidden="true"><span>123</span><strong>+</strong><span>456</span><em>=</em><b>579</b></div></section>
-<section id="calculator" class="calculator-layout" aria-label="Numvero calculator">
-<div class="calculator-card"><div class="display"><div id="expression" class="expression" aria-live="polite">0</div><div id="preview" class="preview" aria-live="polite"></div><div id="result" class="result" aria-live="polite">0</div><div class="display-tools"><button id="copyCalc" type="button" title="Copy calculation">Copy calc</button><button id="copyResult" type="button" title="Copy result">Copy result</button><button id="shareBtn" type="button" title="Share calculation">Share</button></div></div>
-<div class="memory" role="group" aria-label="Memory controls"><button data-memory="MC">MC</button><button data-memory="MR">MR</button><button data-memory="Mplus">M+</button><button data-memory="Mminus">M−</button></div>
-<div class="keypad" role="group" aria-label="Calculator keypad">
-<button class="danger" data-action="clear" aria-label="All clear">AC</button><button class="danger" data-action="clear-entry" aria-label="Clear">C</button><button data-action="backspace" aria-label="Backspace">⌫</button><button class="operator" data-value="/" aria-label="Divide">÷</button>
-<button data-value="(" aria-label="Open parenthesis">(</button><button data-value=")" aria-label="Close parenthesis">)</button><button data-value="%" aria-label="Percent">%</button><button class="operator" data-value="*" aria-label="Multiply">×</button>
-<button data-value="7">7</button><button data-value="8">8</button><button data-value="9">9</button><button class="operator" data-value="-" aria-label="Subtract">−</button>
-<button data-value="4">4</button><button data-value="5">5</button><button data-value="6">6</button><button class="operator" data-value="+" aria-label="Add">+</button>
-<button data-value="1">1</button><button data-value="2">2</button><button data-value="3">3</button><button class="equals" data-action="equals" aria-label="Equals">=</button>
-<button data-action="sign" aria-label="Positive or negative">±</button><button class="zero" data-value="0">0</button><button data-value="." aria-label="Decimal point">.</button>
-</div><div class="keyboard-hint">Keyboard: numbers • + − × ÷ • Enter = • Esc clear • Backspace delete</div></div>
-<aside class="history-card" aria-labelledby="history-title"><div class="panel-heading"><div><p class="eyebrow">YOUR CALCULATIONS</p><h2 id="history-title">History</h2></div><button id="clearHistory" class="text-btn" type="button">Clear all</button></div><div id="history" class="history-list"><p class="empty-history">Your recent calculations will appear here.</p></div></aside>
+<header class="header"><a class="logo" href="./" aria-label="Numvero home"><span class="logo-icon">N</span><span>numvero</span></a><button id="theme" class="round-btn" type="button" aria-label="Toggle dark mode">☾</button></header>
+<main class="page">
+<section class="hero"><p class="kicker">SIMPLE · FAST · PRIVATE</p><h1>Numbers,<br><em>made easy.</em></h1><p class="hero-text">A beautifully simple calculator that stays out of your way.</p></section>
+<section class="workspace" aria-label="Calculator workspace">
+<div class="calculator-card">
+<div class="display-wrap"><div id="expression" class="expression" aria-live="polite">0</div><div id="preview" class="preview" aria-live="polite"></div><output id="result" class="result" aria-label="Calculator result">0</output><div class="display-actions"><button id="copy" type="button">Copy result</button><button id="share" type="button">Share</button></div></div>
+<div id="message" class="message" role="status" aria-live="polite"></div>
+<div class="memory" aria-label="Memory"><button data-memory="MC" type="button">MC</button><button data-memory="MR" type="button">MR</button><button data-memory="M+" type="button">M+</button><button data-memory="M-" type="button">M−</button></div>
+<div id="keys" class="keys" aria-label="Calculator keys">
+<button class="soft" data-action="clear" type="button">AC</button><button class="soft" data-action="clear-entry" type="button">C</button><button class="soft" data-action="delete" type="button" aria-label="Backspace">⌫</button><button class="op" data-value="÷" type="button" aria-label="Divide">÷</button><button class="op" data-value="×" type="button" aria-label="Multiply">×</button>
+<button data-value="(" type="button">(</button><button data-value=")" type="button">)</button><button class="soft" data-value="%" type="button">%</button><button class="op" data-value="−" type="button" aria-label="Subtract">−</button><button class="soft" data-action="undo" type="button" aria-label="Undo">↶</button>
+<button data-value="7" type="button">7</button><button data-value="8" type="button">8</button><button data-value="9" type="button">9</button><button class="op" data-value="+" type="button" aria-label="Add">+</button><button class="soft" data-action="redo" type="button" aria-label="Redo">↷</button>
+<button data-value="4" type="button">4</button><button data-value="5" type="button">5</button><button data-value="6" type="button">6</button><button data-value="1" type="button">1</button><button data-value="2" type="button">2</button>
+<button data-value="3" type="button">3</button><button class="equals" data-action="equals" type="button" aria-label="Equals">=</button><button data-action="sign" type="button" aria-label="Positive or negative">±</button><button class="zero" data-value="0" type="button">0</button><button data-value="." type="button" aria-label="Decimal point">.</button>
+</div><p class="keyboard">Keyboard ready · Enter = calculate · Esc = clear · Backspace = delete</p>
+</div>
+<aside class="history-card"><div class="history-head"><div><p class="kicker">YOUR WORK</p><h2>History</h2></div><button id="clearHistory" type="button">Clear</button></div><div id="history" class="history"><div class="empty">Your calculations will appear here.</div></div></aside>
 </section>
-<section id="features" class="content-section"><p class="eyebrow">BUILT FOR REAL USE</p><h2>Everything you expect from a modern calculator</h2><div class="feature-grid"><article><span>⚡</span><h3>Fast by design</h3><p>No frameworks, trackers or heavy dependencies. Numvero loads quickly and responds instantly.</p></article><article><span>⌨</span><h3>Keyboard first</h3><p>Enter numbers naturally. Enter evaluates, Escape clears, Backspace deletes and operators work from the number pad.</p></article><article><span>📜</span><h3>Useful history</h3><p>Reuse a previous result, copy a calculation, delete individual entries or clear your session history.</p></article><article><span>🌙</span><h3>Comfortable anywhere</h3><p>Light and dark themes persist on your device and the interface adapts from phones to wide desktop screens.</p></article><article><span>♿</span><h3>Accessible</h3><p>Semantic controls, visible focus, labels, large touch targets and reduced-motion support make it easier to use.</p></article><article><span>🛡</span><h3>Private</h3><p>Calculations run locally in your browser. No account is required and no analytics are necessary for the calculator.</p></article></div></section>
-<section id="how-to" class="content-section split"><div><p class="eyebrow">HOW TO USE</p><h2>Calculate without thinking about the interface.</h2></div><div><p>Use <strong>+</strong>, <strong>−</strong>, <strong>×</strong> and <strong>÷</strong> for arithmetic. Parentheses follow normal operator precedence, so <strong>2 + 3 × 4</strong> evaluates to 14. Use <strong>%</strong> as a percentage value, and <strong>±</strong> to change the current number's sign.</p><p>Long results are formatted for readability. Very large or very small finite results switch to scientific notation. Invalid expressions and division by zero show a clear error instead of crashing.</p><p>For a dedicated percentage workflow, use the <a href="percentage-calculator.html">Numvero percentage calculator</a>.</p></div></section>
-</main>
-<footer><span>© 2026 Numvero</span><span>Built for fast, private calculation.</span><a href="404.html">404</a></footer>
-<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<section class="features"><article><b>01</b><h3>Instant</h3><p>No libraries or heavy dependencies. Fast initial load and instant input.</p></article><article><b>02</b><h3>Private</h3><p>Calculations stay in your browser. No account and no tracking.</p></article><article><b>03</b><h3>Everywhere</h3><p>Built for touch, keyboard, phone, tablet and desktop.</p></article></section>
+</main><footer>© 2026 Numvero <span>•</span> Built for everyday math</footer>
 <script src="app.js" defer></script>
 </body></html>
