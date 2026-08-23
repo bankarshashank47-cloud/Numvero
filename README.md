@@ -1,43 +1,34 @@
 # Numvero
 
-Numvero is a fast, privacy-friendly calculator hub: basic, scientific, percentage, age, simple interest, compound interest, EMI, ratio and unit conversion.
+Numvero is a fast, clean, browser-based calculator hub.
 
-## Stack
-- React + TypeScript
-- Vite
-- Tailwind-ready frontend with a custom Purple Galaxy design system
-- Node.js + Express production server
-- No database and no authentication
+## Included calculators
 
-## Local development
+1. Basic Calculator
+2. Scientific Calculator
+3. Percentage Calculator
+4. Age Calculator
+5. Simple Interest Calculator
+6. Compound Interest Calculator
+7. Loan EMI Calculator
+8. Ratio Calculator
+9. Unit Converter
 
-```bash
-npm install
-npm run dev
-```
+## Features
 
-Production build:
+- Responsive desktop and mobile UI
+- Light/dark mode
+- Calculator search
+- Keyboard support for basic/scientific math
+- No login and no client-side account system
+- Calculations run in the browser
+- SEO metadata, canonical URL, Open Graph metadata, structured data, FAQ content, robots.txt and sitemap.xml
+- Pure static HTML/CSS/JavaScript; no build step or framework dependency
 
-```bash
-npm run build
-npm start
-```
+## Deployment
 
-Set `PORT` in `.env` if the VPS should listen on a different port. See `.env.example`.
+The repository is designed to work directly with GitHub Pages. Publish the `main` branch as the Pages source.
 
-## VPS
+## License
 
-1. Install Node.js LTS.
-2. Clone the repository.
-3. Run `npm ci` (or `npm install` when no lockfile is available).
-4. Run `npm run build`.
-5. Run `npm start` behind the VPS reverse proxy.
-6. Keep the Node process alive with the VPS process manager of your choice and terminate TLS at the reverse proxy.
-
-## SEO and accessibility
-
-The site includes semantic sections, keyboard-friendly controls, responsive layouts, descriptive metadata, canonical metadata, Open Graph metadata, structured data, reduced-motion support and a crawler-friendly sitemap/robots setup.
-
-## Design
-
-Purple Galaxy, modern minimal, sans-serif typography, subtle transitions and responsive desktop-first layouts. There are no ads and no login requirement.
+See the repository settings for the project's chosen license.

@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
 Sitemap: https://bankarshashank47-cloud.github.io/Numvero/sitemap.xml
