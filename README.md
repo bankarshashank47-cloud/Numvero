@@ -1,34 +1,18 @@
 # Numvero
 
-Numvero is a fast, clean, browser-based calculator hub.
+Fast, private, browser-only calculator.
 
-## Included calculators
+## Included
+- + − × ÷, parentheses, %, decimals, ±, AC/C, backspace and equals
+- Operator precedence and safe expression parsing (no `eval`)
+- Keyboard and number-pad support
+- Calculation history with reuse/delete/clear
+- Memory: MC, MR, M+, M−
+- Undo/redo, copy result, shareable calculation URLs
+- Light/dark theme with persistence
+- Responsive mobile-first interface and accessibility support
+- No frameworks, dependencies, login, ads or tracking
 
-1. Basic Calculator
-2. Scientific Calculator
-3. Percentage Calculator
-4. Age Calculator
-5. Simple Interest Calculator
-6. Compound Interest Calculator
-7. Loan EMI Calculator
-8. Ratio Calculator
-9. Unit Converter
+## Deploy
 
-## Features
-
-- Responsive desktop and mobile UI
-- Light/dark mode
-- Calculator search
-- Keyboard support for basic/scientific math
-- No login and no client-side account system
-- Calculations run in the browser
-- SEO metadata, canonical URL, Open Graph metadata, structured data, FAQ content, robots.txt and sitemap.xml
-- Pure static HTML/CSS/JavaScript; no build step or framework dependency
-
-## Deployment
-
-The repository is designed to work directly with GitHub Pages. Publish the `main` branch as the Pages source.
-
-## License
-
-See the repository settings for the project's chosen license.
+Use GitHub Pages with the `main` branch and root folder.
