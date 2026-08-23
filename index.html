@@ -3,17 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f7f7f5">
+<meta name="theme-color" content="#f5f5f2">
 <meta name="description" content="Numvero is a fast, clean and private online calculator with parentheses, percentages, history, memory and keyboard support.">
 <meta name="robots" content="index,follow">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Numvero — Online Calculator">
-<meta property="og:description" content="A fast, private calculator for everyday math. Works on desktop and mobile.">
-<meta property="og:url" content="https://bankarshashank47-cloud.github.io/Numvero/">
-<link rel="canonical" href="https://bankarshashank47-cloud.github.io/Numvero/">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<title>Numvero — Online Calculator</title>
-<link rel="stylesheet" href="styles.css">
+<meta property="og:type" content="website"><meta property="og:title" content="Numvero — Online Calculator"><meta property="og:description" content="A fast, private calculator for everyday math. Works on desktop and mobile."><meta property="og:url" content="https://bankarshashank47-cloud.github.io/Numvero/">
+<link rel="canonical" href="https://bankarshashank47-cloud.github.io/Numvero/"><link rel="icon" href="favicon.svg" type="image/svg+xml"><title>Numvero — Online Calculator</title><link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header class="header"><a class="logo" href="./" aria-label="Numvero home"><span class="logo-icon">N</span><span>numvero</span></a><button id="theme" class="round-btn" type="button" aria-label="Toggle dark mode">☾</button></header>
@@ -25,11 +19,12 @@
 <div id="message" class="message" role="status" aria-live="polite"></div>
 <div class="memory" aria-label="Memory"><button data-memory="MC" type="button">MC</button><button data-memory="MR" type="button">MR</button><button data-memory="M+" type="button">M+</button><button data-memory="M-" type="button">M−</button></div>
 <div id="keys" class="keys" aria-label="Calculator keys">
-<button class="soft" data-action="clear" type="button">AC</button><button class="soft" data-action="clear-entry" type="button">C</button><button class="soft" data-action="delete" type="button" aria-label="Backspace">⌫</button><button class="op" data-value="÷" type="button" aria-label="Divide">÷</button><button class="op" data-value="×" type="button" aria-label="Multiply">×</button>
-<button data-value="(" type="button">(</button><button data-value=")" type="button">)</button><button class="soft" data-value="%" type="button">%</button><button class="op" data-value="−" type="button" aria-label="Subtract">−</button><button class="soft" data-action="undo" type="button" aria-label="Undo">↶</button>
-<button data-value="7" type="button">7</button><button data-value="8" type="button">8</button><button data-value="9" type="button">9</button><button class="op" data-value="+" type="button" aria-label="Add">+</button><button class="soft" data-action="redo" type="button" aria-label="Redo">↷</button>
-<button data-value="4" type="button">4</button><button data-value="5" type="button">5</button><button data-value="6" type="button">6</button><button data-value="1" type="button">1</button><button data-value="2" type="button">2</button>
-<button data-value="3" type="button">3</button><button class="equals" data-action="equals" type="button" aria-label="Equals">=</button><button data-action="sign" type="button" aria-label="Positive or negative">±</button><button class="zero" data-value="0" type="button">0</button><button data-value="." type="button" aria-label="Decimal point">.</button>
+<button class="soft" data-action="clear" type="button">AC</button><button class="soft" data-action="clear-entry" type="button">C</button><button class="soft" data-action="delete" type="button" aria-label="Backspace">⌫</button><button class="op" data-value="÷" type="button" aria-label="Divide">÷</button>
+<button class="soft" data-value="(" type="button">(</button><button class="soft" data-value=")" type="button">)</button><button class="soft" data-value="%" type="button">%</button><button class="op" data-value="×" type="button" aria-label="Multiply">×</button>
+<button data-value="7" type="button">7</button><button data-value="8" type="button">8</button><button data-value="9" type="button">9</button><button class="op" data-value="−" type="button" aria-label="Subtract">−</button>
+<button data-value="4" type="button">4</button><button data-value="5" type="button">5</button><button data-value="6" type="button">6</button><button class="op" data-value="+" type="button" aria-label="Add">+</button>
+<button data-value="1" type="button">1</button><button data-value="2" type="button">2</button><button data-value="3" type="button">3</button><button class="equals" data-action="equals" type="button" aria-label="Equals">=</button>
+<button class="soft" data-action="sign" type="button" aria-label="Positive or negative">±</button><button class="zero" data-value="0" type="button">0</button><button data-value="." type="button" aria-label="Decimal point">.</button>
 </div><p class="keyboard">Keyboard ready · Enter = calculate · Esc = clear · Backspace = delete</p>
 </div>
 <aside class="history-card"><div class="history-head"><div><p class="kicker">YOUR WORK</p><h2>History</h2></div><button id="clearHistory" type="button">Clear</button></div><div id="history" class="history"><div class="empty">Your calculations will appear here.</div></div></aside>
