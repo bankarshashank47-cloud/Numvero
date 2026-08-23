@@ -1,0 +1,9 @@
+{
+  "name": "numvero",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {"dev": "vite", "build": "tsc -b && vite build", "preview": "vite preview", "start": "node server.js"},
+  "dependencies": {"@vitejs/plugin-react": "latest", "vite": "latest", "typescript": "latest", "react": "latest", "react-dom": "latest", "lucide-react": "latest", "express": "latest"},
+  "devDependencies": {"tailwindcss": "latest", "@types/react": "latest", "@types/react-dom": "latest", "@types/node": "latest"}
+}
