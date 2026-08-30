@@ -215,8 +215,9 @@ function wirePercentage(){
     const x = parseFloat(a && a.value); const y = parseFloat(b && b.value);
     if(!Number.isFinite(x) || !Number.isFinite(y)){ if(out) out.textContent='Please enter valid numbers'; return; }
     const r = (x/100)*y;
-    if(out) out.textContent = r;
-    addHistoryEntry(`${x}% of ${y} = ${r}`);
+    const result = Math.round(r * 100) / 100;
+    if(out) out.textContent = result;
+    addHistoryEntry(`${x}% of ${y} = ${result}`);
   });
 }
 
