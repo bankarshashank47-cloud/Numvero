@@ -1,26 +1,18 @@
-/* app.js — unified calculator + history handler for Numvero
-   Replaces and centralizes history handling and connects all in-page calculators
-   to the same localStorage-backed history store. Also implements a basic
-   calculator keypad so the homepage calculator continues to work.
-
-   Design goals:
-   - Detect and reuse an existing localStorage key used for history if present.
-   - Persist history as the same array shape (strings) so older entries remain readable.
-   - Expose window.Numvero.history API for compatibility.
-   - Wire each tool on the page (percentage, discount, bmi, unit) to call the
-     shared history only after successful validated calculations.
-   - Provide clearHistory and per-entry deletion that update storage and UI.
+/* app.js — Numvero unified calculator + history system
+   Centralized history handling and calculator initialization for all tools.
+   
+   Architecture:
+   - Single localStorage-backed history store
+   - Unique IDs for each calculator's inputs/outputs
+   - Unified calculator wiring pattern using data-calculator attribute
+   - Shared duplicate prevention and persistence
 */
 (function(){'use strict';
 
-// Utility helpers
-const $ = (s, ctx=document) => ctx.querySelector(s);
-const $$ = (s, ctx=document) => Array.from(ctx.querySelectorAll(s));
+// ============================================================================
+// HISTORY SYSTEM
+// ============================================================================
 
-// Detect an existing history key in localStorage. We look for a key whose
-// value parses to an array and whose entries look like history strings or
-// objects. We intentionally prefer keeping any existing key rather than
-// inventing a new one.
 function detectHistoryKey(){
   try{
     for(let i=0;i<localStorage.length;i++){
@@ -31,21 +23,17 @@ function detectHistoryKey(){
         if(!raw) continue;
         const parsed = JSON.parse(raw);
         if(Array.isArray(parsed) && parsed.length>0){
-          // quick heuristic: entries are strings or objects with recognizable props
           const sample = parsed[0];
           if(typeof sample === 'string') return k;
           if(typeof sample === 'object' && (sample.expr || sample.result || sample.label)) return k;
         }
-      }catch(e){ /* ignore parse errors */ }
+      }catch(e){ /* ignore */ }
     }
   }catch(e){ /* localStorage may be unavailable */ }
-  // fallback: use a conservative, unlikely-to-collide key but only if nothing found
   return 'numvero-history';
 }
 
 const STORAGE_KEY = detectHistoryKey();
-
-// In-memory history array (newest first)
 let history = [];
 
 function loadHistory(){
@@ -60,26 +48,21 @@ function loadHistory(){
 function saveHistory(){
   try{
     localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
-    // notify listeners
     try{ window.dispatchEvent(new CustomEvent('numvero:history-updated',{detail:{key:STORAGE_KEY}})); }catch(e){}
   }catch(e){ console.warn('Could not save history', e); }
 }
 
-// Add an entry (string or object). Keep behavior conservative: if last entry
-// matches exactly, don't add duplicate. Only add valid non-empty strings.
 function addHistoryEntry(entry){
   if(!entry) return false;
-  // Convert objects to a stable representation for duplicate checks but store objects unchanged
   const isObj = (typeof entry === 'object' && entry !== null);
   let preview = isObj ? JSON.stringify(entry) : String(entry).trim();
   if(!preview) return false;
   if(history.length>0){
     const first = history[0];
     const firstPreview = (typeof first === 'object' && first!==null)?JSON.stringify(first):String(first).trim();
-    if(firstPreview === preview) return false; // immediate duplicate
+    if(firstPreview === preview) return false;
   }
   history.unshift(entry);
-  // limit
   if(history.length>300) history.length = 300;
   saveHistory();
   renderHistory();
@@ -96,7 +79,7 @@ function removeHistoryAt(index){
 
 function clearHistory(){ history = []; saveHistory(); renderHistory(); }
 
-// Expose small API
+// Expose API
 window.Numvero = window.Numvero || {};
 window.Numvero.history = window.Numvero.history || {
   add: addHistoryEntry,
@@ -106,63 +89,78 @@ window.Numvero.history = window.Numvero.history || {
   storageKey: STORAGE_KEY
 };
 
-// Rendering the history in the sidebar. The page contains #history element
 function renderHistory(){
-  const container = $('#history');
+  const container = document.getElementById('history');
   if(!container) return;
   container.innerHTML = '';
   if(!history || history.length===0){
-    const d = document.createElement('div'); d.className='empty'; d.textContent='No calculations yet.'; container.appendChild(d); return;
+    const d = document.createElement('div'); 
+    d.className='empty'; 
+    d.textContent='No calculations yet.'; 
+    container.appendChild(d); 
+    return;
   }
   history.forEach((entry, idx)=>{
-    const item = document.createElement('div'); item.className='history-item';
-    const text = document.createElement('div'); text.className='history-text';
+    const item = document.createElement('div'); 
+    item.className='history-item';
+    const text = document.createElement('div'); 
+    text.className='history-text';
     let displayText = '';
     if(typeof entry === 'string') displayText = entry;
     else if(typeof entry === 'object' && entry !== null){
-      // prefer human-readable if provided
       displayText = entry.label || (entry.expr? (entry.expr + (entry.result?(' = '+entry.result):'')) : JSON.stringify(entry));
     } else displayText = String(entry);
     text.textContent = displayText;
     item.appendChild(text);
-    const del = document.createElement('button'); del.className='history-delete'; del.setAttribute('aria-label','Delete history item'); del.textContent='✕';
+    const del = document.createElement('button'); 
+    del.className='history-delete'; 
+    del.setAttribute('aria-label','Delete history item'); 
+    del.textContent='✕';
     del.addEventListener('click', ()=>{ removeHistoryAt(idx); });
     item.appendChild(del);
     container.appendChild(item);
   });
 }
 
-// Wire clearHistory control
 function wireHistoryControls(){
   const clearBtn = document.getElementById('clearHistory');
-  if(clearBtn){ clearBtn.addEventListener('click', ()=>{ if(confirm('Clear all history?')) clearHistory(); }); }
+  if(clearBtn){ 
+    clearBtn.addEventListener('click', ()=>{ 
+      if(confirm('Clear all history?')) clearHistory(); 
+    }); 
+  }
 }
 
-// BASIC CALCULATOR IMPLEMENTATION (keeps behavior simple and robust)
-let expr = '';
-function updateDisplays(){
-  const expEl = document.getElementById('expression');
-  const resEl = document.getElementById('result');
-  if(expEl) expEl.textContent = expr || '0';
+// ============================================================================
+// BASIC CALCULATOR
+// ============================================================================
+
+let basicExpr = '';
+
+function updateBasicDisplay(){
+  const expEl = document.getElementById('basic-expression');
+  const resEl = document.getElementById('basic-result');
+  if(expEl) expEl.textContent = basicExpr || '0';
   if(resEl){
-    try{ const val = evaluateExpression(expr); resEl.textContent = (val===null? '0' : val); }catch(e){ resEl.textContent='Error'; }
+    try{ 
+      const val = evaluateExpression(basicExpr); 
+      resEl.textContent = (val===null? '0' : val); 
+    }catch(e){ 
+      resEl.textContent='Error'; 
+    }
   }
 }
 
 function sanitizeExpression(s){
-  // allow digits, space, parentheses and operators + - * / . %
   if(typeof s !== 'string') return '';
-  // convert × and ÷ and − to * / -
   return s.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/,/g,'');
 }
 
 function evaluateExpression(s){
   const t = sanitizeExpression(s).trim();
   if(!t) return 0;
-  // disallow unsafe characters
   if(!/^[0-9+\-*/().% \t]+$/.test(t)) throw new Error('Invalid expression');
   try{
-    // handle percent occurrences: replace 50% with (50/100)
     const transformed = t.replace(/([0-9]+(?:\.[0-9]+)?)%/g,'($1/100)');
     // eslint-disable-next-line no-new-func
     const v = Function(`"use strict";return (${transformed})`)();
@@ -171,24 +169,25 @@ function evaluateExpression(s){
   }catch(e){ throw e; }
 }
 
-function basicClear(){ expr=''; updateDisplays(); }
-function basicBack(){ expr = expr.slice(0,-1); updateDisplays(); }
-function basicInput(ch){ expr += String(ch); updateDisplays(); }
+function basicClear(){ basicExpr=''; updateBasicDisplay(); }
+function basicBack(){ basicExpr = basicExpr.slice(0,-1); updateBasicDisplay(); }
+function basicInput(ch){ basicExpr += String(ch); updateBasicDisplay(); }
 function basicCompute(){
   try{
-    const val = evaluateExpression(expr);
-    const entry = expr + ' = ' + val;
+    const val = evaluateExpression(basicExpr);
+    const entry = basicExpr + ' = ' + val;
     addHistoryEntry(entry);
-    expr = String(val);
-    updateDisplays();
-  }catch(e){ console.warn('Compute failed', e); updateDisplays(); }
+    basicExpr = String(val);
+    updateBasicDisplay();
+  }catch(e){ console.warn('Compute failed', e); updateBasicDisplay(); }
 }
 
-function wireBasicKeys(){
-  const keys = document.getElementById('keys');
+function wireBasicCalculator(){
+  const keys = document.getElementById('basic-keys');
   if(!keys) return;
   keys.addEventListener('click', (ev)=>{
-    const btn = ev.target.closest('button'); if(!btn) return;
+    const btn = ev.target.closest('button'); 
+    if(!btn) return;
     const key = btn.getAttribute('data-key');
     const action = btn.getAttribute('data-action');
     if(action){
@@ -197,7 +196,6 @@ function wireBasicKeys(){
       else if(action==='equals') basicCompute();
     } else if(key){ basicInput(key); }
   });
-  // keyboard support
   window.addEventListener('keydown',(e)=>{
     if(e.key === 'Enter'){ e.preventDefault(); basicCompute(); }
     else if(e.key === 'Backspace'){ basicBack(); }
@@ -205,96 +203,125 @@ function wireBasicKeys(){
   });
 }
 
-// TOOL: Percentage
+// ============================================================================
+// UNIFIED CALCULATOR WIRING
+// ============================================================================
+
+function wireCalculator(type, config){
+  const button = document.querySelector(`button[data-calculator="${type}"]`);
+  if(!button) return;
+  
+  button.addEventListener('click', ()=>{
+    const inputs = {};
+    const values = {};
+    
+    for(const key in config.inputIds){
+      const id = config.inputIds[key];
+      const elem = document.getElementById(id);
+      if(!elem) continue;
+      inputs[key] = elem;
+      values[key] = parseFloat(elem.value);
+    }
+    
+    // Validate all inputs are numbers
+    const allValid = Object.values(values).every(v => Number.isFinite(v));
+    const outputElem = document.getElementById(config.outputId);
+    
+    if(!allValid){
+      if(outputElem) outputElem.textContent = config.errorMsg || 'Please enter valid numbers';
+      return;
+    }
+    
+    try{
+      const result = config.calculate(values);
+      if(!Number.isFinite(result)){
+        if(outputElem) outputElem.textContent = 'Invalid calculation';
+        return;
+      }
+      if(outputElem) outputElem.textContent = result;
+      const historyEntry = config.format(values, result);
+      addHistoryEntry(historyEntry);
+    }catch(e){
+      console.warn(`${type} calculation failed`, e);
+      if(outputElem) outputElem.textContent = 'Error';
+    }
+  });
+}
+
+// Percentage Calculator
 function wirePercentage(){
-  const section = document.getElementById('percentage'); if(!section) return;
-  const btn = section.querySelector('button[id="run"]') || section.querySelector('button');
-  const a = section.querySelector('#a'); const b = section.querySelector('#b'); const out = section.querySelector('#answer');
-  if(!btn) return;
-  btn.addEventListener('click', ()=>{
-    const x = parseFloat(a && a.value); const y = parseFloat(b && b.value);
-    if(!Number.isFinite(x) || !Number.isFinite(y)){ if(out) out.textContent='Please enter valid numbers'; return; }
-    const r = (x/100)*y;
-    const result = Math.round(r * 100) / 100;
-    if(out) out.textContent = result;
-    addHistoryEntry(`${x}% of ${y} = ${result}`);
+  wireCalculator('percentage', {
+    inputIds: { percent: 'percentage-percent', of: 'percentage-of' },
+    outputId: 'percentage-answer',
+    errorMsg: 'Please enter valid numbers',
+    calculate: (values) => {
+      const result = (values.percent / 100) * values.of;
+      return Math.round(result * 100) / 100;
+    },
+    format: (values, result) => `${values.percent}% of ${values.of} = ${result}`
   });
 }
 
-// TOOL: Discount
+// Discount Calculator
 function wireDiscount(){
-  const section = document.getElementById('discount'); if(!section) return;
-  const btn = section.querySelector('button[id="run"]') || section.querySelector('button');
-  const p = section.querySelector('#p'); const d = section.querySelector('#d'); const out = section.querySelector('#discountAnswer');
-  if(!btn) return;
-  btn.addEventListener('click', ()=>{
-    const price = parseFloat(p && p.value); const disc = parseFloat(d && d.value);
-    if(!Number.isFinite(price) || !Number.isFinite(disc)){ if(out) out.textContent='Please enter valid numbers'; return; }
-    const final = Math.round((price * (1 - disc/100)) * 100)/100;
-    if(out) out.textContent = final;
-    addHistoryEntry(`Discount ${disc}% on ${price} = ${final}`);
+  wireCalculator('discount', {
+    inputIds: { price: 'discount-price', percent: 'discount-percent' },
+    outputId: 'discount-answer',
+    errorMsg: 'Please enter valid numbers',
+    calculate: (values) => {
+      const final = values.price * (1 - values.percent / 100);
+      return Math.round(final * 100) / 100;
+    },
+    format: (values, result) => `Discount ${values.percent}% on ${values.price} = ${result}`
   });
 }
 
-// TOOL: BMI
+// BMI Calculator
 function wireBMI(){
-  const section = document.getElementById('bmi'); if(!section) return;
-  const btn = section.querySelector('button[id="run"]') || section.querySelector('button');
-  const wt = section.querySelector('#wt'); const ht = section.querySelector('#ht'); const out = section.querySelector('#bmiAnswer');
-  if(!btn) return;
-  btn.addEventListener('click', ()=>{
-    const w = parseFloat(wt && wt.value); const hcm = parseFloat(ht && ht.value);
-    if(!Number.isFinite(w) || !Number.isFinite(hcm) || hcm===0){ if(out) out.textContent='Please enter valid numbers'; return; }
-    const h = hcm/100;
-    const bmi = Math.round((w / (h*h)) * 100)/100;
-    if(out) out.textContent = bmi;
-    addHistoryEntry(`BMI for ${w} kg, ${hcm} cm = ${bmi}`);
+  wireCalculator('bmi', {
+    inputIds: { weight: 'bmi-weight', height: 'bmi-height' },
+    outputId: 'bmi-answer',
+    errorMsg: 'Please enter valid numbers',
+    calculate: (values) => {
+      if(values.height === 0) throw new Error('Height cannot be zero');
+      const heightMeters = values.height / 100;
+      const bmi = values.weight / (heightMeters * heightMeters);
+      return Math.round(bmi * 100) / 100;
+    },
+    format: (values, result) => `BMI for ${values.weight} kg, ${values.height} cm = ${result}`
   });
 }
 
-// TOOL: Unit (meters -> centimeters simple example)
+// Unit Converter
 function wireUnit(){
-  const section = document.getElementById('unit'); if(!section) return;
-  const btn = section.querySelector('button[id="run"]') || section.querySelector('button');
-  const meters = section.querySelector('#meters'); const out = section.querySelector('#metersAnswer');
-  if(!btn) return;
-  btn.addEventListener('click', ()=>{
-    const m = parseFloat(meters && meters.value);
-    if(!Number.isFinite(m)){ if(out) out.textContent='Please enter a number'; return; }
-    const cm = Math.round(m*100*100)/100;
-    if(out) out.textContent = `${cm} cm`;
-    addHistoryEntry(`${m} m = ${cm} cm`);
+  wireCalculator('unit', {
+    inputIds: { meters: 'unit-meters' },
+    outputId: 'unit-answer',
+    errorMsg: 'Please enter a valid number',
+    calculate: (values) => {
+      const cm = values.meters * 100;
+      return Math.round(cm * 100) / 100;
+    },
+    format: (values, result) => `${values.meters} m = ${result} cm`
   });
 }
 
-// Initialize on DOMContentLoaded
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+
 window.addEventListener('DOMContentLoaded', ()=>{
   loadHistory();
   renderHistory();
   wireHistoryControls();
-  wireBasicKeys();
+  wireBasicCalculator();
   wirePercentage();
   wireDiscount();
   wireBMI();
   wireUnit();
-
-  // If other code expects a simple global function, expose addToHistory
+  
+  // Expose global for compatibility
   window.addToHistory = addHistoryEntry;
-
-  // Listen for external custom events that some pages may dispatch
-  window.addEventListener('numvero:tool-run', (ev)=>{
-    // For compatibility: try to detect which tool contains the source element
-    const src = ev && ev.detail && ev.detail.source;
-    if(!src) return;
-    const sect = src.closest && src.closest('section');
-    if(!sect) return;
-    const id = sect.id;
-    if(id==='percentage') { sect.querySelector('button')?.click(); }
-    else if(id==='discount') { sect.querySelector('button')?.click(); }
-    else if(id==='bmi'){ sect.querySelector('button')?.click(); }
-    else if(id==='unit'){ sect.querySelector('button')?.click(); }
-  });
-
 });
 
 })();
