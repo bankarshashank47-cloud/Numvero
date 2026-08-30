@@ -1,327 +1,295 @@
-/* app.js — Numvero unified calculator + history system
-   Centralized history handling and calculator initialization for all tools.
-   
-   Architecture:
-   - Single localStorage-backed history store
-   - Unique IDs for each calculator's inputs/outputs
-   - Unified calculator wiring pattern using data-calculator attribute
-   - Shared duplicate prevention and persistence
-*/
-(function(){'use strict';
+/* Numvero — shared calculator + history system */
+(function(){
+  'use strict';
 
-// ============================================================================
-// HISTORY SYSTEM
-// ============================================================================
+  const STORAGE_KEY = 'numvero-history';
+  const MAX_HISTORY = 300;
+  let history = [];
 
-function detectHistoryKey(){
-  try{
-    for(let i=0;i<localStorage.length;i++){
-      const k = localStorage.key(i);
-      if(!k) continue;
-      try{
-        const raw = localStorage.getItem(k);
-        if(!raw) continue;
-        const parsed = JSON.parse(raw);
-        if(Array.isArray(parsed) && parsed.length>0){
-          const sample = parsed[0];
-          if(typeof sample === 'string') return k;
-          if(typeof sample === 'object' && (sample.expr || sample.result || sample.label)) return k;
-        }
-      }catch(e){ /* ignore */ }
-    }
-  }catch(e){ /* localStorage may be unavailable */ }
-  return 'numvero-history';
-}
-
-const STORAGE_KEY = detectHistoryKey();
-let history = [];
-
-function loadHistory(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(!raw) { history = []; return; }
-    const parsed = JSON.parse(raw);
-    if(Array.isArray(parsed)) history = parsed.slice(); else history = [];
-  }catch(e){ history = []; }
-}
-
-function saveHistory(){
-  try{
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
-    try{ window.dispatchEvent(new CustomEvent('numvero:history-updated',{detail:{key:STORAGE_KEY}})); }catch(e){}
-  }catch(e){ console.warn('Could not save history', e); }
-}
-
-function addHistoryEntry(entry){
-  if(!entry) return false;
-  const isObj = (typeof entry === 'object' && entry !== null);
-  let preview = isObj ? JSON.stringify(entry) : String(entry).trim();
-  if(!preview) return false;
-  if(history.length>0){
-    const first = history[0];
-    const firstPreview = (typeof first === 'object' && first!==null)?JSON.stringify(first):String(first).trim();
-    if(firstPreview === preview) return false;
-  }
-  history.unshift(entry);
-  if(history.length>300) history.length = 300;
-  saveHistory();
-  renderHistory();
-  return true;
-}
-
-function removeHistoryAt(index){
-  if(typeof index !== 'number' || index<0 || index>=history.length) return false;
-  history.splice(index,1);
-  saveHistory();
-  renderHistory();
-  return true;
-}
-
-function clearHistory(){ history = []; saveHistory(); renderHistory(); }
-
-// Expose API
-window.Numvero = window.Numvero || {};
-window.Numvero.history = window.Numvero.history || {
-  add: addHistoryEntry,
-  getAll: () => history.slice(),
-  removeAt: removeHistoryAt,
-  clear: clearHistory,
-  storageKey: STORAGE_KEY
-};
-
-function renderHistory(){
-  const container = document.getElementById('history');
-  if(!container) return;
-  container.innerHTML = '';
-  if(!history || history.length===0){
-    const d = document.createElement('div'); 
-    d.className='empty'; 
-    d.textContent='No calculations yet.'; 
-    container.appendChild(d); 
-    return;
-  }
-  history.forEach((entry, idx)=>{
-    const item = document.createElement('div'); 
-    item.className='history-item';
-    const text = document.createElement('div'); 
-    text.className='history-text';
-    let displayText = '';
-    if(typeof entry === 'string') displayText = entry;
-    else if(typeof entry === 'object' && entry !== null){
-      displayText = entry.label || (entry.expr? (entry.expr + (entry.result?(' = '+entry.result):'')) : JSON.stringify(entry));
-    } else displayText = String(entry);
-    text.textContent = displayText;
-    item.appendChild(text);
-    const del = document.createElement('button'); 
-    del.className='history-delete'; 
-    del.setAttribute('aria-label','Delete history item'); 
-    del.textContent='✕';
-    del.addEventListener('click', ()=>{ removeHistoryAt(idx); });
-    item.appendChild(del);
-    container.appendChild(item);
-  });
-}
-
-function wireHistoryControls(){
-  const clearBtn = document.getElementById('clearHistory');
-  if(clearBtn){ 
-    clearBtn.addEventListener('click', ()=>{ 
-      if(confirm('Clear all history?')) clearHistory(); 
-    }); 
-  }
-}
-
-// ============================================================================
-// BASIC CALCULATOR
-// ============================================================================
-
-let basicExpr = '';
-
-function updateBasicDisplay(){
-  const expEl = document.getElementById('basic-expression');
-  const resEl = document.getElementById('basic-result');
-  if(expEl) expEl.textContent = basicExpr || '0';
-  if(resEl){
-    try{ 
-      const val = evaluateExpression(basicExpr); 
-      resEl.textContent = (val===null? '0' : val); 
-    }catch(e){ 
-      resEl.textContent='Error'; 
-    }
-  }
-}
-
-function sanitizeExpression(s){
-  if(typeof s !== 'string') return '';
-  return s.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/,/g,'');
-}
-
-function evaluateExpression(s){
-  const t = sanitizeExpression(s).trim();
-  if(!t) return 0;
-  if(!/^[0-9+\-*/().% \t]+$/.test(t)) throw new Error('Invalid expression');
-  try{
-    const transformed = t.replace(/([0-9]+(?:\.[0-9]+)?)%/g,'($1/100)');
-    // eslint-disable-next-line no-new-func
-    const v = Function(`"use strict";return (${transformed})`)();
-    if(typeof v === 'number' && isFinite(v)) return Math.round((v + Number.EPSILON) * 1e12)/1e12;
-    throw new Error('Invalid result');
-  }catch(e){ throw e; }
-}
-
-function basicClear(){ basicExpr=''; updateBasicDisplay(); }
-function basicBack(){ basicExpr = basicExpr.slice(0,-1); updateBasicDisplay(); }
-function basicInput(ch){ basicExpr += String(ch); updateBasicDisplay(); }
-function basicCompute(){
-  try{
-    const val = evaluateExpression(basicExpr);
-    const entry = basicExpr + ' = ' + val;
-    addHistoryEntry(entry);
-    basicExpr = String(val);
-    updateBasicDisplay();
-  }catch(e){ console.warn('Compute failed', e); updateBasicDisplay(); }
-}
-
-function wireBasicCalculator(){
-  const keys = document.getElementById('basic-keys');
-  if(!keys) return;
-  keys.addEventListener('click', (ev)=>{
-    const btn = ev.target.closest('button'); 
-    if(!btn) return;
-    const key = btn.getAttribute('data-key');
-    const action = btn.getAttribute('data-action');
-    if(action){
-      if(action==='clear') basicClear();
-      else if(action==='back') basicBack();
-      else if(action==='equals') basicCompute();
-    } else if(key){ basicInput(key); }
-  });
-  window.addEventListener('keydown',(e)=>{
-    if(e.key === 'Enter'){ e.preventDefault(); basicCompute(); }
-    else if(e.key === 'Backspace'){ basicBack(); }
-    else if(/^[0-9+\-*/().%]$/.test(e.key)){ basicInput(e.key); }
-  });
-}
-
-// ============================================================================
-// UNIFIED CALCULATOR WIRING
-// ============================================================================
-
-function wireCalculator(type, config){
-  const button = document.querySelector(`button[data-calculator="${type}"]`);
-  if(!button) return;
-  
-  button.addEventListener('click', ()=>{
-    const inputs = {};
-    const values = {};
-    
-    for(const key in config.inputIds){
-      const id = config.inputIds[key];
-      const elem = document.getElementById(id);
-      if(!elem) continue;
-      inputs[key] = elem;
-      values[key] = parseFloat(elem.value);
-    }
-    
-    // Validate all inputs are numbers
-    const allValid = Object.values(values).every(v => Number.isFinite(v));
-    const outputElem = document.getElementById(config.outputId);
-    
-    if(!allValid){
-      if(outputElem) outputElem.textContent = config.errorMsg || 'Please enter valid numbers';
-      return;
-    }
-    
+  function loadHistory(){
     try{
-      const result = config.calculate(values);
-      if(!Number.isFinite(result)){
-        if(outputElem) outputElem.textContent = 'Invalid calculation';
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        const parsed = JSON.parse(raw);
+        history = Array.isArray(parsed) ? parsed.slice(0, MAX_HISTORY) : [];
         return;
       }
-      if(outputElem) outputElem.textContent = result;
-      const historyEntry = config.format(values, result);
-      addHistoryEntry(historyEntry);
-    }catch(e){
-      console.warn(`${type} calculation failed`, e);
-      if(outputElem) outputElem.textContent = 'Error';
+      // One-time migration from an older Numvero history key, if one exists.
+      for(let i=0;i<localStorage.length;i++){
+        const key = localStorage.key(i);
+        if(!key || key === STORAGE_KEY) continue;
+        try{
+          const parsed = JSON.parse(localStorage.getItem(key));
+          if(Array.isArray(parsed) && parsed.length && parsed.some(v => typeof v === 'string' || (v && typeof v === 'object'))){
+            history = parsed.slice(0, MAX_HISTORY);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+            break;
+          }
+        }catch(e){ /* ignore unrelated localStorage entries */ }
+      }
+    }catch(e){ history = []; }
+  }
+
+  function saveHistory(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+      window.dispatchEvent(new CustomEvent('numvero:history-updated'));
+    }catch(e){ console.warn('Numvero: unable to save history.', e); }
+  }
+
+  function entryText(entry){
+    if(typeof entry === 'string') return entry;
+    if(entry && typeof entry === 'object'){
+      return entry.label || (entry.expr ? entry.expr + (entry.result !== undefined ? ' = ' + entry.result : '') : JSON.stringify(entry));
     }
-  });
-}
+    return String(entry ?? '');
+  }
 
-// Percentage Calculator
-function wirePercentage(){
-  wireCalculator('percentage', {
-    inputIds: { percent: 'percentage-percent', of: 'percentage-of' },
-    outputId: 'percentage-answer',
-    errorMsg: 'Please enter valid numbers',
-    calculate: (values) => {
-      const result = (values.percent / 100) * values.of;
-      return Math.round(result * 100) / 100;
-    },
-    format: (values, result) => `${values.percent}% of ${values.of} = ${result}`
-  });
-}
+  function addHistoryEntry(entry){
+    if(entry === null || entry === undefined) return false;
+    const preview = entryText(entry).trim();
+    if(!preview) return false;
+    if(history.length && entryText(history[0]).trim() === preview) return false;
+    history.unshift(entry);
+    if(history.length > MAX_HISTORY) history.length = MAX_HISTORY;
+    saveHistory();
+    renderHistory();
+    return true;
+  }
 
-// Discount Calculator
-function wireDiscount(){
-  wireCalculator('discount', {
-    inputIds: { price: 'discount-price', percent: 'discount-percent' },
-    outputId: 'discount-answer',
-    errorMsg: 'Please enter valid numbers',
-    calculate: (values) => {
-      const final = values.price * (1 - values.percent / 100);
-      return Math.round(final * 100) / 100;
-    },
-    format: (values, result) => `Discount ${values.percent}% on ${values.price} = ${result}`
-  });
-}
+  function removeHistoryAt(index){
+    if(!Number.isInteger(index) || index < 0 || index >= history.length) return false;
+    history.splice(index, 1);
+    saveHistory();
+    renderHistory();
+    return true;
+  }
 
-// BMI Calculator
-function wireBMI(){
-  wireCalculator('bmi', {
-    inputIds: { weight: 'bmi-weight', height: 'bmi-height' },
-    outputId: 'bmi-answer',
-    errorMsg: 'Please enter valid numbers',
-    calculate: (values) => {
-      if(values.height === 0) throw new Error('Height cannot be zero');
-      const heightMeters = values.height / 100;
-      const bmi = values.weight / (heightMeters * heightMeters);
-      return Math.round(bmi * 100) / 100;
-    },
-    format: (values, result) => `BMI for ${values.weight} kg, ${values.height} cm = ${result}`
-  });
-}
+  function clearHistory(){
+    history = [];
+    saveHistory();
+    renderHistory();
+  }
 
-// Unit Converter
-function wireUnit(){
-  wireCalculator('unit', {
-    inputIds: { meters: 'unit-meters' },
-    outputId: 'unit-answer',
-    errorMsg: 'Please enter a valid number',
-    calculate: (values) => {
-      const cm = values.meters * 100;
-      return Math.round(cm * 100) / 100;
-    },
-    format: (values, result) => `${values.meters} m = ${result} cm`
-  });
-}
+  function renderHistory(){
+    const container = document.getElementById('history');
+    if(!container) return;
+    container.replaceChildren();
+    if(!history.length){
+      const empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.textContent = 'No calculations yet.';
+      container.appendChild(empty);
+      return;
+    }
+    history.forEach((entry, index)=>{
+      const item = document.createElement('div');
+      item.className = 'history-item';
 
-// ============================================================================
-// INITIALIZATION
-// ============================================================================
+      const text = document.createElement('div');
+      text.className = 'history-text';
+      text.title = entryText(entry);
+      text.textContent = entryText(entry);
 
-window.addEventListener('DOMContentLoaded', ()=>{
-  loadHistory();
-  renderHistory();
-  wireHistoryControls();
-  wireBasicCalculator();
-  wirePercentage();
-  wireDiscount();
-  wireBMI();
-  wireUnit();
-  
-  // Expose global for compatibility
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'history-delete';
+      del.setAttribute('aria-label', 'Delete history item');
+      del.title = 'Delete this calculation';
+      del.textContent = '✕';
+      del.addEventListener('click', ()=>removeHistoryAt(index));
+
+      item.append(text, del);
+      container.appendChild(item);
+    });
+  }
+
+  function wireHistoryControls(){
+    const clearBtn = document.getElementById('clearHistory');
+    if(clearBtn && !clearBtn.dataset.historyWired){
+      clearBtn.dataset.historyWired = 'true';
+      clearBtn.addEventListener('click', ()=>{
+        if(history.length && window.confirm('Clear all calculation history?')) clearHistory();
+      });
+    }
+  }
+
+  window.Numvero = window.Numvero || {};
+  window.Numvero.history = {
+    add: addHistoryEntry,
+    getAll: ()=>history.slice(),
+    removeAt: removeHistoryAt,
+    clear: clearHistory,
+    storageKey: STORAGE_KEY
+  };
+
+  // BASIC CALCULATOR
+  let basicExpr = '';
+
+  function sanitizeExpression(value){
+    return String(value || '').replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/,/g,'');
+  }
+
+  function evaluateExpression(value){
+    const expression = sanitizeExpression(value).trim();
+    if(!expression) return 0;
+    if(!/^[0-9+\-*/().% \t]+$/.test(expression)) throw new Error('Invalid expression');
+    const transformed = expression.replace(/([0-9]+(?:\.[0-9]+)?)%/g,'($1/100)');
+    // eslint-disable-next-line no-new-func
+    const result = Function('"use strict"; return (' + transformed + ')')();
+    if(typeof result !== 'number' || !Number.isFinite(result)) throw new Error('Invalid result');
+    return Math.round((result + Number.EPSILON) * 1e12) / 1e12;
+  }
+
+  function updateBasicDisplay(){
+    const expression = document.getElementById('basic-expression');
+    const result = document.getElementById('basic-result');
+    if(expression) expression.textContent = basicExpr || '0';
+    if(result){
+      try{ result.textContent = basicExpr ? String(evaluateExpression(basicExpr)) : '0'; }
+      catch(e){ result.textContent = 'Error'; }
+    }
+  }
+
+  function basicClear(){ basicExpr=''; updateBasicDisplay(); }
+  function basicBack(){ basicExpr=basicExpr.slice(0,-1); updateBasicDisplay(); }
+  function basicInput(key){ basicExpr += String(key); updateBasicDisplay(); }
+  function basicCompute(){
+    if(!basicExpr.trim()) return;
+    try{
+      const result = evaluateExpression(basicExpr);
+      addHistoryEntry(basicExpr + ' = ' + result);
+      basicExpr = String(result);
+      updateBasicDisplay();
+    }catch(e){ updateBasicDisplay(); }
+  }
+
+  function wireBasicCalculator(){
+    const keys = document.getElementById('basic-keys');
+    if(!keys || keys.dataset.wired) return;
+    keys.dataset.wired = 'true';
+    keys.addEventListener('click', event=>{
+      const button = event.target.closest('button');
+      if(!button) return;
+      const key = button.dataset.key;
+      const action = button.dataset.action;
+      if(action === 'clear') basicClear();
+      else if(action === 'back') basicBack();
+      else if(action === 'equals') basicCompute();
+      else if(key) basicInput(key);
+    });
+
+    window.addEventListener('keydown', event=>{
+      if(event.target.matches('input,textarea,select')) return;
+      if(event.key === 'Enter'){ event.preventDefault(); basicCompute(); }
+      else if(event.key === 'Backspace'){ event.preventDefault(); basicBack(); }
+      else if(/^[0-9+\-*/().%]$/.test(event.key)){ basicInput(event.key); }
+    });
+    updateBasicDisplay();
+  }
+
+  // SHARED INPUT CALCULATORS
+  function wireCalculator(type, config){
+    const button = document.querySelector('button[data-calculator="' + type + '"]');
+    if(!button || button.dataset.wired) return;
+    button.dataset.wired = 'true';
+
+    const calculate = ()=>{
+      const values = {};
+      for(const key of Object.keys(config.inputIds)){
+        const element = document.getElementById(config.inputIds[key]);
+        values[key] = element ? Number(element.value) : NaN;
+      }
+      const output = document.getElementById(config.outputId);
+
+      if(!Object.values(values).every(Number.isFinite)){
+        if(output) output.textContent = config.errorMsg || 'Please enter valid numbers.';
+        return;
+      }
+      if(config.validate){
+        const error = config.validate(values);
+        if(error){ if(output) output.textContent = error; return; }
+      }
+
+      try{
+        const result = config.calculate(values);
+        if(!Number.isFinite(result)) throw new Error('Invalid result');
+        if(output) output.textContent = result;
+        addHistoryEntry(config.format(values, result));
+      }catch(e){
+        if(output) output.textContent = e.message === 'Height cannot be zero' ? e.message : 'Unable to calculate. Please check your inputs.';
+      }
+    };
+
+    button.addEventListener('click', calculate);
+    Object.values(config.inputIds).forEach(id=>{
+      const input = document.getElementById(id);
+      if(input) input.addEventListener('keydown', event=>{
+        if(event.key === 'Enter'){ event.preventDefault(); calculate(); }
+      });
+    });
+  }
+
+  function wirePercentage(){
+    wireCalculator('percentage',{
+      inputIds:{percent:'percentage-percent',of:'percentage-of'},
+      outputId:'percentage-answer',
+      errorMsg:'Please enter valid numbers.',
+      validate:v => v.of < 0 || v.percent < 0 ? 'Please enter non-negative values.' : '',
+      calculate:v => Math.round(((v.percent/100)*v.of + Number.EPSILON)*100)/100,
+      format:(v,r)=>v.percent + '% of ' + v.of + ' = ' + r
+    });
+  }
+
+  function wireDiscount(){
+    wireCalculator('discount',{
+      inputIds:{price:'discount-price',percent:'discount-percent'},
+      outputId:'discount-answer',
+      errorMsg:'Please enter valid numbers.',
+      validate:v => v.price < 0 ? 'Price cannot be negative.' : (v.percent < 0 || v.percent > 100 ? 'Discount must be between 0% and 100%.' : ''),
+      calculate:v => Math.round((v.price*(1-v.percent/100)+Number.EPSILON)*100)/100,
+      format:(v,r)=>'Discount ' + v.percent + '% on ' + v.price + ' = ' + r
+    });
+  }
+
+  function wireBMI(){
+    wireCalculator('bmi',{
+      inputIds:{weight:'bmi-weight',height:'bmi-height'},
+      outputId:'bmi-answer',
+      errorMsg:'Please enter valid numbers.',
+      validate:v => v.weight <= 0 ? 'Weight must be greater than 0.' : (v.height <= 0 ? 'Height must be greater than 0.' : ''),
+      calculate:v => Math.round((v.weight/Math.pow(v.height/100,2)+Number.EPSILON)*100)/100,
+      format:(v,r)=>'BMI for ' + v.weight + ' kg, ' + v.height + ' cm = ' + r
+    });
+  }
+
+  function wireUnit(){
+    wireCalculator('unit',{
+      inputIds:{meters:'unit-meters'},
+      outputId:'unit-answer',
+      errorMsg:'Please enter a valid number.',
+      validate:v => v.meters < 0 ? 'Meters cannot be negative.' : '',
+      calculate:v => Math.round((v.meters*100+Number.EPSILON)*100)/100,
+      format:(v,r)=>v.meters + ' m = ' + r + ' cm'
+    });
+  }
+
   window.addToHistory = addHistoryEntry;
-});
 
+  window.addEventListener('storage', event=>{
+    if(event.key !== STORAGE_KEY) return;
+    loadHistory();
+    renderHistory();
+  });
+
+  window.addEventListener('DOMContentLoaded',()=>{
+    loadHistory();
+    renderHistory();
+    wireHistoryControls();
+    wireBasicCalculator();
+    wirePercentage();
+    wireDiscount();
+    wireBMI();
+    wireUnit();
+  });
 })();
