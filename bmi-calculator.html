@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#7057ff">
+  <meta name="description" content="Free Online BMI Calculator — Calculate your Body Mass Index (BMI) to check if your weight is healthy for your height. Fast and accurate.">
+  <meta name="keywords" content="BMI calculator, body mass index, BMI chart, health calculator, weight calculator">
+  <meta property="og:title" content="BMI Calculator — Calculate Your Body Mass Index Online | Numvero">
+  <meta property="og:description" content="Calculate your BMI to determine if your weight is healthy for your height. Based on the standard BMI formula.">
+  <meta property="og:url" content="https://bankarshashank47-cloud.github.io/Numvero/bmi-calculator.html">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://bankarshashank47-cloud.github.io/Numvero/bmi-calculator.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>BMI Calculator — Calculate Your Body Mass Index Online | Numvero</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "BMI Calculator",
+    "url": "https://bankarshashank47-cloud.github.io/Numvero/bmi-calculator.html",
+    "description": "Free online calculator to calculate Body Mass Index (BMI)."
+  }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <a href="index.html" class="logo-link">← Numvero</a>
+      <h1>BMI Calculator</h1>
+    </header>
+
+    <main>
+      <section class="calc-intro">
+        <p>Calculate your Body Mass Index (BMI) to understand your weight category. BMI is a measure of body fat based on height and weight.</p>
+      </section>
+
+      <!-- Calculator -->
+      <section class="card calculator-card">
+        <div class="calculator-inputs">
+          <div class="input-group">
+            <label for="bmi-weight">Weight (kg)</label>
+            <input id="bmi-weight" type="number" inputmode="decimal" placeholder="60" min="0" step="any">
+          </div>
+          <div class="input-group">
+            <label for="bmi-height">Height (cm)</label>
+            <input id="bmi-height" type="number" inputmode="decimal" placeholder="170" min="0" step="any">
+          </div>
+          <button class="calc-button" data-calculator="bmi">Calculate</button>
+        </div>
+        <div class="calculator-result" id="bmi-answer">—</div>
+      </section>
+
+      <!-- Formula -->
+      <section class="card info-section">
+        <h2>BMI Formula</h2>
+        <p><strong>BMI = Weight (kg) ÷ Height (m)²</strong></p>
+        <p>Example: For someone weighing 60 kg and 170 cm tall:</p>
+        <p>Height in meters: 170 ÷ 100 = 1.70 m</p>
+        <p>BMI = 60 ÷ (1.70 × 1.70) = 20.76</p>
+      </section>
+
+      <!-- BMI Categories -->
+      <section class="card info-section">
+        <h2>BMI Categories</h2>
+        <table class="bmi-table">
+          <tr>
+            <th>BMI Range</th>
+            <th>Category</th>
+          </tr>
+          <tr>
+            <td>Below 18.5</td>
+            <td>Underweight</td>
+          </tr>
+          <tr>
+            <td>18.5 – 24.9</td>
+            <td>Normal weight</td>
+          </tr>
+          <tr>
+            <td>25.0 – 29.9</td>
+            <td>Overweight</td>
+          </tr>
+          <tr>
+            <td>30.0 and above</td>
+            <td>Obese</td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- How to Use -->
+      <section class="card info-section">
+        <h2>How to Use</h2>
+        <ol>
+          <li>Enter your weight in kilograms</li>
+          <li>Enter your height in centimeters</li>
+          <li>Click "Calculate" to see your BMI</li>
+          <li>Compare your result to the BMI categories above</li>
+        </ol>
+      </section>
+
+      <!-- Related Calculators -->
+      <section class="related-calculators">
+        <h2>Related Calculators</h2>
+        <div class="calc-links">
+          <a href="basic-calculator.html">Basic Calculator</a>
+          <a href="percentage-calculator.html">Percentage Calculator</a>
+          <a href="discount-calculator.html">Discount Calculator</a>
+          <a href="unit-converter.html">Unit Converter</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- History Sidebar -->
+    <aside class="card history">
+      <h2>Calculation History</h2>
+      <div class="history-list" id="history">
+        <div class="empty">No calculations yet.</div>
+      </div>
+      <div class="history-controls">
+        <button id="clearHistory" class="history-btn">Clear History</button>
+      </div>
+    </aside>
+
+    <footer>
+      <p>Numvero — Free online calculators | <a href="https://github.com/bankarshashank47-cloud/Numvero">GitHub</a></p>
+    </footer>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
