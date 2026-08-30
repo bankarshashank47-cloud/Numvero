@@ -3,8 +3,47 @@
   'use strict';
 
   const STORAGE_KEY = 'numvero-history';
+  const THEME_KEY = 'numvero-theme';
   const MAX_HISTORY = 300;
   let history = [];
+
+  function applyTheme(theme){
+    const root = document.documentElement;
+    const resolved = theme === 'dark' || theme === 'light' ? theme : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    root.setAttribute('data-theme', resolved);
+    root.style.colorScheme = resolved;
+    const toggle = document.getElementById('themeToggle');
+    if(toggle){
+      toggle.textContent = resolved === 'dark' ? '☀ Light mode' : '☾ Dark mode';
+      toggle.setAttribute('aria-pressed', resolved === 'dark' ? 'true' : 'false');
+      toggle.setAttribute('aria-label', resolved === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+      toggle.title = resolved === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+    }
+  }
+
+  function wireTheme(){
+    const header = document.querySelector('header.header');
+    if(!header || document.getElementById('themeToggle')) return;
+    const button = document.createElement('button');
+    button.id = 'themeToggle';
+    button.type = 'button';
+    button.className = 'theme-toggle';
+    button.addEventListener('click', function(){
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme(next);
+    });
+    header.appendChild(button);
+    const saved = localStorage.getItem(THEME_KEY);
+    applyTheme(saved === 'dark' || saved === 'light' ? saved : 'system');
+    if(window.matchMedia){
+      const media = window.matchMedia('(prefers-color-scheme: dark)');
+      const sync = function(){ if(!localStorage.getItem(THEME_KEY)) applyTheme('system'); };
+      if(media.addEventListener) media.addEventListener('change', sync);
+      else if(media.addListener) media.addListener(sync);
+    }
+  }
 
   function loadHistory(){
     try{
@@ -14,7 +53,6 @@
         history = Array.isArray(parsed) ? parsed.slice(0, MAX_HISTORY) : [];
         return;
       }
-      // One-time migration from an older Numvero history key, if one exists.
       for(let i=0;i<localStorage.length;i++){
         const key = localStorage.key(i);
         if(!key || key === STORAGE_KEY) continue;
@@ -25,7 +63,7 @@
             localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
             break;
           }
-        }catch(e){ /* ignore unrelated localStorage entries */ }
+        }catch(e){}
       }
     }catch(e){ history = []; }
   }
@@ -39,9 +77,7 @@
 
   function entryText(entry){
     if(typeof entry === 'string') return entry;
-    if(entry && typeof entry === 'object'){
-      return entry.label || (entry.expr ? entry.expr + (entry.result !== undefined ? ' = ' + entry.result : '') : JSON.stringify(entry));
-    }
+    if(entry && typeof entry === 'object') return entry.label || (entry.expr ? entry.expr + (entry.result !== undefined ? ' = ' + entry.result : '') : JSON.stringify(entry));
     return String(entry ?? '');
   }
 
@@ -65,231 +101,127 @@
     return true;
   }
 
-  function clearHistory(){
-    history = [];
-    saveHistory();
-    renderHistory();
-  }
+  function clearHistory(){ history = []; saveHistory(); renderHistory(); }
 
   function renderHistory(){
     const container = document.getElementById('history');
     if(!container) return;
     container.replaceChildren();
     if(!history.length){
-      const empty = document.createElement('div');
-      empty.className = 'empty';
-      empty.textContent = 'No calculations yet.';
-      container.appendChild(empty);
-      return;
+      const empty = document.createElement('div'); empty.className='empty'; empty.textContent='No calculations yet.'; container.appendChild(empty); return;
     }
-    history.forEach((entry, index)=>{
-      const item = document.createElement('div');
-      item.className = 'history-item';
-
-      const text = document.createElement('div');
-      text.className = 'history-text';
-      text.title = entryText(entry);
-      text.textContent = entryText(entry);
-
-      const del = document.createElement('button');
-      del.type = 'button';
-      del.className = 'history-delete';
-      del.setAttribute('aria-label', 'Delete history item');
-      del.title = 'Delete this calculation';
-      del.textContent = '✕';
-      del.addEventListener('click', ()=>removeHistoryAt(index));
-
-      item.append(text, del);
-      container.appendChild(item);
+    history.forEach((entry,index)=>{
+      const item=document.createElement('div'); item.className='history-item';
+      const text=document.createElement('div'); text.className='history-text'; text.title=entryText(entry); text.textContent=entryText(entry);
+      const del=document.createElement('button'); del.type='button'; del.className='history-delete'; del.setAttribute('aria-label','Delete history item'); del.title='Delete this calculation'; del.textContent='✕'; del.addEventListener('click',()=>removeHistoryAt(index));
+      item.append(text,del); container.appendChild(item);
     });
   }
 
   function wireHistoryControls(){
-    const clearBtn = document.getElementById('clearHistory');
+    const clearBtn=document.getElementById('clearHistory');
     if(clearBtn && !clearBtn.dataset.historyWired){
-      clearBtn.dataset.historyWired = 'true';
-      clearBtn.addEventListener('click', ()=>{
-        if(history.length && window.confirm('Clear all calculation history?')) clearHistory();
-      });
+      clearBtn.dataset.historyWired='true';
+      clearBtn.addEventListener('click',()=>{ if(history.length && window.confirm('Clear all calculation history?')) clearHistory(); });
     }
   }
 
-  window.Numvero = window.Numvero || {};
-  window.Numvero.history = {
-    add: addHistoryEntry,
-    getAll: ()=>history.slice(),
-    removeAt: removeHistoryAt,
-    clear: clearHistory,
-    storageKey: STORAGE_KEY
-  };
+  window.Numvero=window.Numvero||{};
+  window.Numvero.history={add:addHistoryEntry,getAll:()=>history.slice(),removeAt:removeHistoryAt,clear:clearHistory,storageKey:STORAGE_KEY};
 
   // BASIC CALCULATOR
-  let basicExpr = '';
+  let basicExpr='';
 
-  function sanitizeExpression(value){
-    return String(value || '').replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/,/g,'');
-  }
+  function sanitizeExpression(value){ return String(value||'').replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/,/g,''); }
 
   function evaluateExpression(value){
-    const expression = sanitizeExpression(value).trim();
+    const expression=sanitizeExpression(value).trim();
     if(!expression) return 0;
     if(!/^[0-9+\-*/().% \t]+$/.test(expression)) throw new Error('Invalid expression');
-    const transformed = expression.replace(/([0-9]+(?:\.[0-9]+)?)%/g,'($1/100)');
-    // eslint-disable-next-line no-new-func
-    const result = Function('"use strict"; return (' + transformed + ')')();
-    if(typeof result !== 'number' || !Number.isFinite(result)) throw new Error('Invalid result');
-    return Math.round((result + Number.EPSILON) * 1e12) / 1e12;
+    const transformed=expression.replace(/([0-9]+(?:\.[0-9]+)?)%/g,'($1/100)');
+    // Incomplete trailing operators are valid while the user is typing, but are rejected for calculation.
+    if(/[+\-*/.]\s*$/.test(transformed)) throw new Error('Incomplete expression');
+    const result=Function('"use strict"; return ('+transformed+')')();
+    if(typeof result!=='number'||!Number.isFinite(result)) throw new Error('Invalid result');
+    return Math.round((result+Number.EPSILON)*1e12)/1e12;
   }
 
+  function isIncompleteBasicExpression(value){ return /[+\-*/.]\s*$/.test(sanitizeExpression(value).trim()); }
+
   function updateBasicDisplay(){
-    const expression = document.getElementById('basic-expression');
-    const result = document.getElementById('basic-result');
-    if(expression) expression.textContent = basicExpr || '0';
+    const expression=document.getElementById('basic-expression');
+    const result=document.getElementById('basic-result');
+    if(expression) expression.textContent=basicExpr||'0';
     if(result){
-      try{ result.textContent = basicExpr ? String(evaluateExpression(basicExpr)) : '0'; }
-      catch(e){ result.textContent = 'Error'; }
+      if(!basicExpr){ result.textContent='0'; return; }
+      if(isIncompleteBasicExpression(basicExpr)){ result.textContent=''; return; }
+      try{ result.textContent=String(evaluateExpression(basicExpr)); }
+      catch(e){ result.textContent=''; }
     }
   }
 
   function basicClear(){ basicExpr=''; updateBasicDisplay(); }
   function basicBack(){ basicExpr=basicExpr.slice(0,-1); updateBasicDisplay(); }
-  function basicInput(key){ basicExpr += String(key); updateBasicDisplay(); }
+  function basicInput(key){ basicExpr+=String(key); updateBasicDisplay(); }
   function basicCompute(){
     if(!basicExpr.trim()) return;
     try{
-      const result = evaluateExpression(basicExpr);
-      addHistoryEntry(basicExpr + ' = ' + result);
-      basicExpr = String(result);
+      const result=evaluateExpression(basicExpr);
+      addHistoryEntry(basicExpr+' = '+result);
+      basicExpr=String(result);
       updateBasicDisplay();
-    }catch(e){ updateBasicDisplay(); }
+    }catch(e){
+      const output=document.getElementById('basic-result');
+      if(output) output.textContent='Error';
+    }
   }
 
   function wireBasicCalculator(){
-    const keys = document.getElementById('basic-keys');
-    if(!keys || keys.dataset.wired) return;
-    keys.dataset.wired = 'true';
-    keys.addEventListener('click', event=>{
-      const button = event.target.closest('button');
-      if(!button) return;
-      const key = button.dataset.key;
-      const action = button.dataset.action;
-      if(action === 'clear') basicClear();
-      else if(action === 'back') basicBack();
-      else if(action === 'equals') basicCompute();
-      else if(key) basicInput(key);
+    const keys=document.getElementById('basic-keys');
+    if(!keys||keys.dataset.wired) return;
+    keys.dataset.wired='true';
+    keys.addEventListener('click',event=>{
+      const button=event.target.closest('button'); if(!button) return;
+      const key=button.dataset.key; const action=button.dataset.action;
+      if(action==='clear') basicClear(); else if(action==='back') basicBack(); else if(action==='equals') basicCompute(); else if(key) basicInput(key);
     });
-
-    window.addEventListener('keydown', event=>{
+    window.addEventListener('keydown',event=>{
       if(event.target.matches('input,textarea,select')) return;
-      if(event.key === 'Enter'){ event.preventDefault(); basicCompute(); }
-      else if(event.key === 'Backspace'){ event.preventDefault(); basicBack(); }
+      if(event.key==='Enter'){ event.preventDefault(); basicCompute(); }
+      else if(event.key==='Backspace'){ event.preventDefault(); basicBack(); }
       else if(/^[0-9+\-*/().%]$/.test(event.key)){ basicInput(event.key); }
     });
     updateBasicDisplay();
   }
 
-  // SHARED INPUT CALCULATORS
-  function wireCalculator(type, config){
-    const button = document.querySelector('button[data-calculator="' + type + '"]');
-    if(!button || button.dataset.wired) return;
-    button.dataset.wired = 'true';
-
-    const calculate = ()=>{
-      const values = {};
-      for(const key of Object.keys(config.inputIds)){
-        const element = document.getElementById(config.inputIds[key]);
-        values[key] = element ? Number(element.value) : NaN;
-      }
-      const output = document.getElementById(config.outputId);
-
-      if(!Object.values(values).every(Number.isFinite)){
-        if(output) output.textContent = config.errorMsg || 'Please enter valid numbers.';
-        return;
-      }
-      if(config.validate){
-        const error = config.validate(values);
-        if(error){ if(output) output.textContent = error; return; }
-      }
-
+  function wireCalculator(type,config){
+    const button=document.querySelector('button[data-calculator="'+type+'"]');
+    if(!button||button.dataset.wired) return;
+    button.dataset.wired='true';
+    const calculate=()=>{
+      const values={};
+      for(const key of Object.keys(config.inputIds)){ const element=document.getElementById(config.inputIds[key]); values[key]=element?Number(element.value):NaN; }
+      const output=document.getElementById(config.outputId);
+      if(!Object.values(values).every(Number.isFinite)){ if(output) output.textContent=config.errorMsg||'Please enter valid numbers.'; return; }
+      if(config.validate){ const error=config.validate(values); if(error){ if(output) output.textContent=error; return; } }
       try{
-        const result = config.calculate(values);
-        if(!Number.isFinite(result)) throw new Error('Invalid result');
-        if(output) output.textContent = result;
-        addHistoryEntry(config.format(values, result));
-      }catch(e){
-        if(output) output.textContent = e.message === 'Height cannot be zero' ? e.message : 'Unable to calculate. Please check your inputs.';
-      }
+        const result=config.calculate(values); if(!Number.isFinite(result)) throw new Error('Invalid result');
+        if(output) output.textContent=result; addHistoryEntry(config.format(values,result));
+      }catch(e){ if(output) output.textContent=e.message==='Height cannot be zero'?e.message:'Unable to calculate. Please check your inputs.'; }
     };
-
-    button.addEventListener('click', calculate);
-    Object.values(config.inputIds).forEach(id=>{
-      const input = document.getElementById(id);
-      if(input) input.addEventListener('keydown', event=>{
-        if(event.key === 'Enter'){ event.preventDefault(); calculate(); }
-      });
-    });
+    button.addEventListener('click',calculate);
+    Object.values(config.inputIds).forEach(id=>{ const input=document.getElementById(id); if(input) input.addEventListener('keydown',event=>{ if(event.key==='Enter'){ event.preventDefault(); calculate(); } }); });
   }
 
-  function wirePercentage(){
-    wireCalculator('percentage',{
-      inputIds:{percent:'percentage-percent',of:'percentage-of'},
-      outputId:'percentage-answer',
-      errorMsg:'Please enter valid numbers.',
-      validate:v => v.of < 0 || v.percent < 0 ? 'Please enter non-negative values.' : '',
-      calculate:v => Math.round(((v.percent/100)*v.of + Number.EPSILON)*100)/100,
-      format:(v,r)=>v.percent + '% of ' + v.of + ' = ' + r
-    });
-  }
+  function wirePercentage(){ wireCalculator('percentage',{inputIds:{percent:'percentage-percent',of:'percentage-of'},outputId:'percentage-answer',errorMsg:'Please enter valid numbers.',validate:v=>v.of<0||v.percent<0?'Please enter non-negative values.':'',calculate:v=>Math.round(((v.percent/100)*v.of+Number.EPSILON)*100)/100,format:(v,r)=>v.percent+'% of '+v.of+' = '+r}); }
+  function wireDiscount(){ wireCalculator('discount',{inputIds:{price:'discount-price',percent:'discount-percent'},outputId:'discount-answer',errorMsg:'Please enter valid numbers.',validate:v=>v.price<0?'Price cannot be negative.':(v.percent<0||v.percent>100?'Discount must be between 0% and 100%.':''),calculate:v=>Math.round((v.price*(1-v.percent/100)+Number.EPSILON)*100)/100,format:(v,r)=>'Discount '+v.percent+'% on '+v.price+' = '+r}); }
+  function wireBMI(){ wireCalculator('bmi',{inputIds:{weight:'bmi-weight',height:'bmi-height'},outputId:'bmi-answer',errorMsg:'Please enter valid numbers.',validate:v=>v.weight<=0?'Weight must be greater than 0.':(v.height<=0?'Height must be greater than 0.':''),calculate:v=>Math.round((v.weight/Math.pow(v.height/100,2)+Number.EPSILON)*100)/100,format:(v,r)=>'BMI for '+v.weight+' kg, '+v.height+' cm = '+r}); }
+  function wireUnit(){ wireCalculator('unit',{inputIds:{meters:'unit-meters'},outputId:'unit-answer',errorMsg:'Please enter a valid number.',validate:v=>v.meters<0?'Meters cannot be negative.':'',calculate:v=>Math.round((v.meters*100+Number.EPSILON)*100)/100,format:(v,r)=>v.meters+' m = '+r+' cm'}); }
 
-  function wireDiscount(){
-    wireCalculator('discount',{
-      inputIds:{price:'discount-price',percent:'discount-percent'},
-      outputId:'discount-answer',
-      errorMsg:'Please enter valid numbers.',
-      validate:v => v.price < 0 ? 'Price cannot be negative.' : (v.percent < 0 || v.percent > 100 ? 'Discount must be between 0% and 100%.' : ''),
-      calculate:v => Math.round((v.price*(1-v.percent/100)+Number.EPSILON)*100)/100,
-      format:(v,r)=>'Discount ' + v.percent + '% on ' + v.price + ' = ' + r
-    });
-  }
-
-  function wireBMI(){
-    wireCalculator('bmi',{
-      inputIds:{weight:'bmi-weight',height:'bmi-height'},
-      outputId:'bmi-answer',
-      errorMsg:'Please enter valid numbers.',
-      validate:v => v.weight <= 0 ? 'Weight must be greater than 0.' : (v.height <= 0 ? 'Height must be greater than 0.' : ''),
-      calculate:v => Math.round((v.weight/Math.pow(v.height/100,2)+Number.EPSILON)*100)/100,
-      format:(v,r)=>'BMI for ' + v.weight + ' kg, ' + v.height + ' cm = ' + r
-    });
-  }
-
-  function wireUnit(){
-    wireCalculator('unit',{
-      inputIds:{meters:'unit-meters'},
-      outputId:'unit-answer',
-      errorMsg:'Please enter a valid number.',
-      validate:v => v.meters < 0 ? 'Meters cannot be negative.' : '',
-      calculate:v => Math.round((v.meters*100+Number.EPSILON)*100)/100,
-      format:(v,r)=>v.meters + ' m = ' + r + ' cm'
-    });
-  }
-
-  window.addToHistory = addHistoryEntry;
-
-  window.addEventListener('storage', event=>{
-    if(event.key !== STORAGE_KEY) return;
-    loadHistory();
-    renderHistory();
-  });
+  window.addToHistory=addHistoryEntry;
+  window.addEventListener('storage',event=>{ if(event.key===STORAGE_KEY){ loadHistory(); renderHistory(); } if(event.key===THEME_KEY){ applyTheme(event.newValue||'system'); } });
 
   window.addEventListener('DOMContentLoaded',()=>{
-    loadHistory();
-    renderHistory();
-    wireHistoryControls();
-    wireBasicCalculator();
-    wirePercentage();
-    wireDiscount();
-    wireBMI();
-    wireUnit();
+    wireTheme(); loadHistory(); renderHistory(); wireHistoryControls(); wireBasicCalculator(); wirePercentage(); wireDiscount(); wireBMI(); wireUnit();
   });
 })();
