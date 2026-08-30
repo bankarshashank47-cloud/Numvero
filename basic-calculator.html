@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#7057ff">
+  <meta name="description" content="Free Online Basic Calculator — Perform arithmetic operations with our simple and intuitive calculator. Add, subtract, multiply, divide, and calculate percentages.">
+  <meta name="keywords" content="basic calculator, free calculator, online calculator, arithmetic, add subtract multiply divide">
+  <meta property="og:title" content="Basic Calculator — Free Online Calculator | Numvero">
+  <meta property="og:description" content="Perform arithmetic operations easily. Add, subtract, multiply, divide, calculate percentages, and more.">
+  <meta property="og:url" content="https://bankarshashank47-cloud.github.io/Numvero/basic-calculator.html">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://bankarshashank47-cloud.github.io/Numvero/basic-calculator.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>Basic Calculator — Free Online Calculator | Numvero</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Basic Calculator",
+    "url": "https://bankarshashank47-cloud.github.io/Numvero/basic-calculator.html",
+    "description": "Free online basic calculator for arithmetic operations.",
+    "applicationCategory": "Utility"
+  }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <a href="index.html" class="logo-link">← Numvero</a>
+      <h1>Basic Calculator</h1>
+    </header>
+    <main>
+      <section class="calc-intro"><p>A simple and intuitive calculator for everyday arithmetic. Perform addition, subtraction, multiplication, division, and percentage calculations.</p></section>
+      <section class="card calculator-card">
+        <div class="calculator-display">
+          <div class="display basic-calc-expr" id="basic-expression">0</div>
+          <div class="display basic-calc-result" id="basic-result">0</div>
+        </div>
+        <div class="keys" id="basic-keys">
+          <button data-action="clear" class="key-btn">AC</button><button data-action="back" class="key-btn">⌫</button><button data-key="%" class="key-btn">%</button><button data-key="/" class="key-btn">÷</button>
+          <button data-key="7" class="key-btn">7</button><button data-key="8" class="key-btn">8</button><button data-key="9" class="key-btn">9</button><button data-key="*" class="key-btn">×</button>
+          <button data-key="4" class="key-btn">4</button><button data-key="5" class="key-btn">5</button><button data-key="6" class="key-btn">6</button><button data-key="-" class="key-btn">−</button>
+          <button data-key="1" class="key-btn">1</button><button data-key="2" class="key-btn">2</button><button data-key="3" class="key-btn">3</button><button data-key="+" class="key-btn">+</button>
+          <button data-key="0" class="key-btn">0</button><button data-key="." class="key-btn">.</button><button data-action="equals" class="key-btn equals-btn">=</button>
+        </div>
+        <div class="calculator-tips"><h3>Keyboard shortcuts</h3><p>Press <kbd>Enter</kbd> to calculate, <kbd>Backspace</kbd> to delete, or use number keys and operators.</p></div>
+      </section>
+      <section class="card info-section"><h2>How to Use</h2><ol><li>Click the number buttons or type numbers on your keyboard</li><li>Select an operation: +, −, ×, ÷, %</li><li>Enter another number</li><li>Press = or Enter to calculate</li><li>Use AC to clear and start over, or ⌫ to delete one digit</li></ol></section>
+      <section class="card info-section"><h2>Examples</h2><div class="example-grid"><div class="example"><p><strong>Addition:</strong> 25 + 15 = 40</p></div><div class="example"><p><strong>Subtraction:</strong> 100 − 30 = 70</p></div><div class="example"><p><strong>Multiplication:</strong> 12 × 8 = 96</p></div><div class="example"><p><strong>Division:</strong> 150 ÷ 5 = 30</p></div><div class="example"><p><strong>Percentage:</strong> 20% of 500 = 100</p></div><div class="example"><p><strong>Brackets:</strong> (10 + 5) × 2 = 30</p></div></div></section>
+      <section class="related-calculators"><h2>Related Calculators</h2><div class="calc-links"><a href="percentage-calculator.html">Percentage Calculator</a><a href="discount-calculator.html">Discount Calculator</a><a href="bmi-calculator.html">BMI Calculator</a><a href="unit-converter.html">Unit Converter</a></div></section>
+    </main>
+    <aside class="card history"><h2>Calculation History</h2><div class="history-list" id="history"><div class="empty">No calculations yet.</div></div><div class="history-controls"><button id="clearHistory" class="history-btn">Clear History</button></div></aside>
+    <footer><p>Numvero — Free online calculators | <a href="https://github.com/bankarshashank47-cloud/Numvero">GitHub</a></p></footer>
+  </div>
+  <script src="app.js" defer></script>
+</body>
+</html>
