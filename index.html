@@ -1,119 +1,177 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#7057ff"><meta name="description" content="Numvero — beautiful, fast, free online calculators."><title>Numvero — Online Calculators</title><link rel="icon" href="favicon.svg"><link rel="stylesheet" href="styles.css"></head><body><header class="nav"><a class="logo" href="./"><span>💡</span> Numvero</a><button id="theme" class="icon" aria-label="Toggle dark mode">⚙️</button></header><main><section class="hero"><div class="pill">FREE • FAST • PRIVATE</div><h1>Every calculation.</h1><br><i>One simple place.</i><p>Pick a calculator below. Clear answers, simple controls, no account required.</p></section><section class="calculator-grid"><a class="calc-tile featured" href="#basic" data-open="basic"><div class="tile-icon">%</div><span>MOST USED</span><h2>Basic Calculator</h2><p>Everyday arithmetic, percentages, brackets, memory and history.</p></a><a class="calc-tile" href="#percentage" data-open="percentage"><div class="tile-icon">%</div><h2>Percentage</h2><p>Percent of a number, increase/decrease.</p></a><a class="calc-tile" href="#discount" data-open="discount"><div class="tile-icon">−%</div><h2>Discount</h2><p>Calculate discount amounts and final price.</p></a><a class="calc-tile" href="#bmi" data-open="bmi"><div class="tile-icon">⚖️</div><h2>BMI</h2><p>Body Mass Index for health screening.</p></a><a class="calc-tile" href="#unit" data-open="unit"><div class="tile-icon">⇄</div><h2>Unit Converter</h2><p>Length, weight, temperature and more.</p></a></section><section id="calculator" class="workspace"><section class="calc-top"><strong id="calcTitle">Basic Calculator</strong><div id="basicUI" class="calculator-grid">
-<div class="display" id="expression">0</div>
-<div class="display" id="result">0</div>
-<div id="keys" class="keys">
-<button data-action="clear" id="run">AC</button>
-<button data-action="back">⌫</button>
-<button data-key="%">%</button>
-<button data-key="/">÷</button>
-<button data-key="7">7</button>
-<button data-key="8">8</button>
-<button data-key="9">9</button>
-<button data-key="*">×</button>
-<button data-key="4">4</button>
-<button data-key="5">5</button>
-<button data-key="6">6</button>
-<button data-key="-">−</button>
-<button data-key="1">1</button>
-<button data-key="2">2</button>
-<button data-key="3">3</button>
-<button data-key="+">+</button>
-<button data-key="0">0</button>
-<button data-key=".">.</button>
-<button data-action="equals">=</button>
-</div>
-</div></section>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#7057ff">
+  <meta name="description" content="Numvero — Free online calculators for percentage, discount, BMI, unit conversion, and more. Fast, accurate, and easy to use.">
+  <meta name="keywords" content="calculators, percentage calculator, discount calculator, BMI calculator, unit converter, math tools">
+  <meta property="og:title" content="Numvero — Free Online Calculators">
+  <meta property="og:description" content="Fast, accurate online calculators for everyday math. Percentage, discount, BMI, unit conversion, and more.">
+  <meta property="og:url" content="https://bankarshashank47-cloud.github.io/Numvero/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Numvero">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Numvero — Free Online Calculators">
+  <meta name="twitter:description" content="Fast, accurate online calculators for everyday calculations.">
+  <link rel="canonical" href="https://bankarshashank47-cloud.github.io/Numvero/">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>Numvero — Free Online Calculators</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Numvero",
+    "description": "Free online calculators for percentage, discount, BMI, unit conversion, and more.",
+    "url": "https://bankarshashank47-cloud.github.io/Numvero/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://bankarshashank47-cloud.github.io/Numvero/#search={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 class="logo">Numvero</h1>
+      <p class="tagline">Free Online Calculators</p>
+    </header>
+    <main>
+      <section class="hero">
+        <h2>Powerful calculators for everyday math</h2>
+        <p>Fast, accurate, and easy to use. All your calculations in one place.</p>
+      </section>
 
-<!-- Percentage tool -->
-<section id="percentage" class="tool-form" data-open="percentage">
-  <h2 id="calcTitle">Percentage Calculator</h2>
-  <div class="tool-form">
-    <label for="a">Percent</label>
-    <input id="a" type="number" inputmode="decimal" placeholder="25">
-    <label for="b">Of</label>
-    <input id="b" type="number" inputmode="decimal" placeholder="800">
-    <button id="run">Calculate</button>
-    <div class="tool-answer" id="answer">—</div>
+      <!-- Basic Calculator -->
+      <section class="card calculator-card" id="basic-calc-section">
+        <h2>Basic Calculator</h2>
+        <div class="calculator-display">
+          <div class="display basic-calc-expr" id="basic-expression">0</div>
+          <div class="display basic-calc-result" id="basic-result">0</div>
+        </div>
+        <div class="keys" id="basic-keys">
+          <button data-action="clear" class="key-btn">AC</button>
+          <button data-action="back" class="key-btn">⌫</button>
+          <button data-key="%" class="key-btn">%</button>
+          <button data-key="/" class="key-btn">÷</button>
+          <button data-key="7" class="key-btn">7</button>
+          <button data-key="8" class="key-btn">8</button>
+          <button data-key="9" class="key-btn">9</button>
+          <button data-key="*" class="key-btn">×</button>
+          <button data-key="4" class="key-btn">4</button>
+          <button data-key="5" class="key-btn">5</button>
+          <button data-key="6" class="key-btn">6</button>
+          <button data-key="-" class="key-btn">−</button>
+          <button data-key="1" class="key-btn">1</button>
+          <button data-key="2" class="key-btn">2</button>
+          <button data-key="3" class="key-btn">3</button>
+          <button data-key="+" class="key-btn">+</button>
+          <button data-key="0" class="key-btn">0</button>
+          <button data-key="." class="key-btn">.</button>
+          <button data-action="equals" class="key-btn equals-btn">=</button>
+        </div>
+      </section>
+
+      <!-- Percentage Calculator -->
+      <section class="card calculator-card" id="percentage-calc-section">
+        <h2>Percentage Calculator</h2>
+        <p class="calculator-desc">Find what percentage one number is of another, or calculate a percentage of a number.</p>
+        <div class="calculator-inputs">
+          <div class="input-group">
+            <label for="percentage-percent">Percent</label>
+            <input id="percentage-percent" type="number" inputmode="decimal" placeholder="25" min="0" step="any">
+          </div>
+          <div class="input-group">
+            <label for="percentage-of">Of</label>
+            <input id="percentage-of" type="number" inputmode="decimal" placeholder="800" min="0" step="any">
+          </div>
+          <button class="calc-button" data-calculator="percentage">Calculate</button>
+        </div>
+        <div class="calculator-result" id="percentage-answer">—</div>
+      </section>
+
+      <!-- Discount Calculator -->
+      <section class="card calculator-card" id="discount-calc-section">
+        <h2>Discount Calculator</h2>
+        <p class="calculator-desc">Calculate the final price after applying a percentage discount.</p>
+        <div class="calculator-inputs">
+          <div class="input-group">
+            <label for="discount-price">Price</label>
+            <input id="discount-price" type="number" inputmode="decimal" placeholder="1000" min="0" step="any">
+          </div>
+          <div class="input-group">
+            <label for="discount-percent">Discount %</label>
+            <input id="discount-percent" type="number" inputmode="decimal" placeholder="20" min="0" max="100" step="any">
+          </div>
+          <button class="calc-button" data-calculator="discount">Calculate</button>
+        </div>
+        <div class="calculator-result" id="discount-answer">—</div>
+      </section>
+
+      <!-- BMI Calculator -->
+      <section class="card calculator-card" id="bmi-calc-section">
+        <h2>BMI Calculator</h2>
+        <p class="calculator-desc">Calculate your Body Mass Index to check if your weight is healthy for your height.</p>
+        <div class="calculator-inputs">
+          <div class="input-group">
+            <label for="bmi-weight">Weight (kg)</label>
+            <input id="bmi-weight" type="number" inputmode="decimal" placeholder="60" min="0" step="any">
+          </div>
+          <div class="input-group">
+            <label for="bmi-height">Height (cm)</label>
+            <input id="bmi-height" type="number" inputmode="decimal" placeholder="170" min="0" step="any">
+          </div>
+          <button class="calc-button" data-calculator="bmi">Calculate</button>
+        </div>
+        <div class="calculator-result" id="bmi-answer">—</div>
+      </section>
+
+      <!-- Unit Converter -->
+      <section class="card calculator-card" id="unit-calc-section">
+        <h2>Unit Converter</h2>
+        <p class="calculator-desc">Convert between meters and centimeters instantly.</p>
+        <div class="calculator-inputs">
+          <div class="input-group">
+            <label for="unit-meters">Meters</label>
+            <input id="unit-meters" type="number" inputmode="decimal" placeholder="1" min="0" step="any">
+          </div>
+          <button class="calc-button" data-calculator="unit">Convert</button>
+        </div>
+        <div class="calculator-result" id="unit-answer">—</div>
+      </section>
+
+      <!-- Calculator List for Navigation -->
+      <section class="card related-calculators">
+        <h2>All Calculators</h2>
+        <ul class="calculator-list">
+          <li><a href="#basic-calc-section">Basic Calculator</a></li>
+          <li><a href="#percentage-calc-section">Percentage Calculator</a></li>
+          <li><a href="#discount-calc-section">Discount Calculator</a></li>
+          <li><a href="#bmi-calc-section">BMI Calculator</a></li>
+          <li><a href="#unit-calc-section">Unit Converter</a></li>
+        </ul>
+      </section>
+    </main>
+
+    <!-- History Sidebar -->
+    <aside class="card history">
+      <h2>Calculation History</h2>
+      <div class="history-list" id="history">
+        <div class="empty">No calculations yet.</div>
+      </div>
+      <div class="history-controls">
+        <button id="clearHistory" class="history-btn">Clear History</button>
+      </div>
+    </aside>
+
+    <footer>
+      <p>Numvero — Free online calculators | <a href="https://github.com/bankarshashank47-cloud/Numvero">GitHub</a></p>
+    </footer>
   </div>
-</section>
 
-<!-- Discount tool (example of another calculator) -->
-<section id="discount" class="tool-form" data-open="discount">
-  <h2>Discount Calculator</h2>
-  <label for="p">Price</label>
-  <input id="p" type="number" inputmode="decimal" placeholder="1000">
-  <label for="d">Discount %</label>
-  <input id="d" type="number" inputmode="decimal" placeholder="20">
-  <button id="run">Calculate</button>
-  <div id="discountAnswer">—</div>
-</section>
-
-<!-- BMI tool -->
-<section id="bmi" class="tool-form" data-open="bmi">
-  <h2>BMI Calculator</h2>
-  <label for="wt">Weight (kg)</label>
-  <input id="wt" type="number" inputmode="decimal" placeholder="60">
-  <label for="ht">Height (cm)</label>
-  <input id="ht" type="number" inputmode="decimal" placeholder="170">
-  <button id="run">Calculate</button>
-  <div id="bmiAnswer">—</div>
-</section>
-
-<!-- Unit converter simple example -->
-<section id="unit" class="tool-form" data-open="unit">
-  <h2>Unit Converter</h2>
-  <label for="meters">Meters</label>
-  <input id="meters" type="number" inputmode="decimal" placeholder="1">
-  <button id="run">Convert</button>
-  <div id="metersAnswer">—</div>
-</section>
-
-<!-- History and tools container -->
-<aside class="card history">
-  <strong id="calcTitle">History</strong>
-  <div id="basicUI">
-    <div id="expression">0</div>
-    <div id="result">0</div>
-  </div>
-  <div id="history" class="history-list">
-    <div class="empty">No calculations yet.</div>
-  </div>
-  <div class="history-controls">
-    <button id="clearHistory">Clear History</button>
-  </div>
-</aside>
-
-</section></main><footer>Numvero — Free online calculators</footer>
-<script src="app.js" defer></script>
-
-<!-- Fix: delegate multiple identical run buttons to the primary run handler so all tools use same calculation flow -->
-<script>
-window.addEventListener('load', function(){
-  try {
-    // Find the first element with id="run" — primary handler is attached to it by app.js
-    var primary = document.querySelector('#run');
-    if (!primary) return;
-    // For every element with id run, if it's not primary, make it trigger primary click
-    var all = document.querySelectorAll('#run');
-    all.forEach(function(el){
-      if (el === primary) return;
-      el.addEventListener('click', function(e){
-        // If the element is inside a tool-form, copy input values into the primary's expected inputs before clicking
-        try{
-          // Map common input ids: a,b -> percent inputs, p/d -> discount, wt/ht -> bmi, meters -> unit
-          if (document.getElementById('a') && document.getElementById('b')){
-            // when percentage's run is clicked, perform its own calculation by triggering primary click
-            // but primary click expects expression-based input; instead we simulate calculation by dispatching a custom event
-            var evt = new CustomEvent('numvero:tool-run', {detail:{source:el}});
-            window.dispatchEvent(evt);
-            return;
-          }
-        }catch(err){/* ignore */}
-        primary.click();
-      });
-    });
-  } catch (e){console.warn('Run delegation failed', e);} 
-});
-</script>
-</body></html>
+  <script src="app.js" defer></script>
+</body>
+</html>
