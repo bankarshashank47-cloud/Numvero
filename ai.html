@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Numvero AI — an AI assistant for maths, calculations, explanations, and everyday questions.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>Numvero AI</title>
+  <style>
+    .ai-card{max-width:820px;margin:0 auto 24px}
+    .ai-badge{display:inline-flex;padding:5px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:.78rem;font-weight:750;margin-bottom:10px}
+    .ai-chat{min-height:430px;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+    .ai-messages{flex:1;padding:18px;overflow:auto;display:flex;flex-direction:column;gap:12px}
+    .ai-message{max-width:88%;padding:12px 14px;border-radius:13px;white-space:pre-wrap;overflow-wrap:anywhere}
+    .ai-message.user{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px}
+    .ai-message.assistant{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
+    .ai-message.system{align-self:center;color:var(--muted);font-size:.85rem;text-align:center}
+    .ai-form{display:flex;gap:9px;padding:12px;border-top:1px solid var(--line);background:var(--surface)}
+    .ai-input{flex:1;min-width:0;resize:none;min-height:48px;max-height:140px;padding:12px 13px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font:inherit}
+    .ai-send{width:auto;min-width:92px}
+    .ai-examples{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .ai-example{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:999px;padding:8px 11px;cursor:pointer;font:inherit;font-size:.85rem}
+    .ai-example:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+    .ai-note{margin:14px 0 0;color:var(--muted);font-size:.82rem}
+    @media(max-width:560px){.ai-form{align-items:stretch}.ai-send{min-width:78px}.ai-message{max-width:94%}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <a class="logo-link" href="index.html">← Numvero</a>
+      <h1 class="logo">Numvero AI</h1>
+      <p class="tagline">Ask. Calculate. Understand.</p>
+    </header>
+
+    <main>
+      <section class="card ai-card">
+        <span class="ai-badge">AI ASSISTANT</span>
+        <h2>Numvero AI</h2>
+        <p class="calculator-desc">Ask maths questions, request explanations, or get help understanding a calculation.</p>
+
+        <div class="ai-chat" aria-label="Numvero AI chat">
+          <div class="ai-messages" id="messages">
+            <div class="ai-message assistant">Hi! I'm Numvero AI. Ask me a maths question or anything you want explained.</div>
+          </div>
+          <form class="ai-form" id="chatForm">
+            <textarea id="prompt" class="ai-input" rows="1" maxlength="4000" placeholder="Ask Numvero AI…" aria-label="Message"></textarea>
+            <button class="calc-button ai-send" id="sendBtn" type="submit">Send</button>
+          </form>
+        </div>
+
+        <div class="ai-examples">
+          <button class="ai-example" type="button" data-prompt="Solve 2x + 5 = 15 step by step.">Solve an equation</button>
+          <button class="ai-example" type="button" data-prompt="Explain percentages with a simple example.">Explain percentages</button>
+          <button class="ai-example" type="button" data-prompt="What is the difference between mean, median, and mode?">Explain a concept</button>
+        </div>
+        <p class="ai-note">Your API key stays on the server. The browser never receives it.</p>
+      </section>
+    </main>
+
+    <footer><p>Numvero — Free online calculators | <a href="index.html">Home</a></p></footer>
+  </div>
+  <script src="ai.js" defer></script>
+</body>
+</html>
